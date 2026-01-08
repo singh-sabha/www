@@ -192,16 +192,22 @@ defmodule SinghSabhaWeb.CalendarLive do
         <%= for row <- 0..(@max_visible_events - 1) do %>
           <% segment = Enum.find(@segments, &(&1.row == row)) %>
 
-          <div class="lg:flex-1">
+          <div class={[
+            "lg:flex-1",
+            segment && segment.starts? && "lg:pl-1",
+            segment && segment.ends? && "lg:pr-1"
+          ]}>
             <%= if segment do %>
               <div class="w-2 h-2 rounded-full bg-blue-500 lg:hidden"></div>
               <div class={[
-                "hidden lg:flex h-full items-center bg-blue-100 text-blue-800 text-xs font-medium",
-                segment.starts? && "rounded-l-md",
-                segment.ends? && "rounded-r-md"
+                "hidden lg:flex h-6 items-center bg-blue-100 text-blue-800 text-xs font-medium -mx-px",
+                segment.starts? && "rounded-l-md ml-0",
+                segment.ends? && "rounded-r-md mr-0",
+                !segment.starts? && "rounded-l-none border-l-0",
+                !segment.ends? && "rounded-r-none border-r-0"
               ]}>
                 <%= if segment.starts? do %>
-                  <div class="flex w-full items-center justify-between px-2">
+                  <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
                     <span class="truncate">{segment.event.title}</span>
                     <span>{format_time(segment.event.start)}</span>
                   </div>
