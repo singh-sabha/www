@@ -200,7 +200,7 @@ defmodule SinghSabhaWeb.CalendarLive do
             <%= if segment do %>
               <div class="w-2 h-2 rounded-full bg-blue-500 lg:hidden"></div>
               <div class={[
-                "hidden lg:flex h-6 items-center bg-blue-100 text-blue-800 text-xs font-medium -mx-px",
+                "hidden lg:flex h-6.5 items-center bg-blue-100 text-blue-800 text-xs font-medium -mx-px",
                 segment.starts? && "rounded-l-md ml-0",
                 segment.ends? && "rounded-r-md mr-0",
                 !segment.starts? && "rounded-l-none border-l-0",
