@@ -263,6 +263,14 @@ defmodule SinghSabhaWeb.CalendarLive do
     {days, first_display, last_display}
   end
 
+  defp format_time(datetime) do
+    hour = datetime.hour
+    minute = String.pad_leading("#{datetime.minute}", 2, "0")
+    period = if hour < 12, do: "AM", else: "PM"
+    display_hour = if hour == 0, do: 12, else: if(hour > 12, do: hour - 12, else: hour)
+    "#{display_hour}:#{minute} #{period}"
+  end
+
   defp segments_for_date(events, event_positions, date) do
     active =
       Enum.filter(events, fn event ->
@@ -292,14 +300,6 @@ defmodule SinghSabhaWeb.CalendarLive do
       end)
 
     {segments, length(hidden)}
-  end
-
-  defp format_time(datetime) do
-    hour = datetime.hour
-    minute = String.pad_leading("#{datetime.minute}", 2, "0")
-    period = if hour < 12, do: "AM", else: "PM"
-    display_hour = if hour == 0, do: 12, else: if(hour > 12, do: hour - 12, else: hour)
-    "#{display_hour}:#{minute} #{period}"
   end
 
   defp calculate_event_positions(events, first_day, last_day, max_rows) do
