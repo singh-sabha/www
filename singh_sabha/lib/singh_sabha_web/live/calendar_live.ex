@@ -160,16 +160,16 @@ defmodule SinghSabhaWeb.CalendarLive do
 
     assigns =
       assigns
-      |> assign(:is_saturday, Date.day_of_week(assigns.date) == 6)
-      |> assign(:is_current_month, assigns.date.month == assigns.current_date.month)
-      |> assign(:is_today, assigns.date == Date.utc_today())
+      |> assign(:saturday?, Date.day_of_week(assigns.date) == 6)
+      |> assign(:current_month?, assigns.date.month == assigns.current_date.month)
+      |> assign(:today?, assigns.date == Date.utc_today())
       |> assign(:segments, segments)
       |> assign(:overflow, overflow)
 
     ~H"""
     <div class={[
       "flex h-full flex-col gap-1 border-t border-base-300 py-1.5 lg:pb-2 lg:pt-1",
-      !@is_saturday && "border-r"
+      !@saturday? && "border-r"
     ]}>
       <button
         phx-click="select_date"
@@ -178,8 +178,8 @@ defmodule SinghSabhaWeb.CalendarLive do
           "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold",
           "hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500",
           "lg:px-2",
-          !@is_current_month && "opacity-20",
-          @is_today && "bg-blue-500 font-bold text-white hover:bg-blue-500"
+          !@current_month? && "opacity-20",
+          @today? && "bg-blue-500 font-bold text-white hover:bg-blue-500"
         ]}
       >
         {@date.day}
@@ -187,7 +187,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
       <div class={[
         "flex h-6 gap-1 px-2 lg:h-[94px] lg:flex-col lg:gap-2 lg:px-0",
-        !@is_current_month && "opacity-50"
+        !@current_month? && "opacity-50"
       ]}>
         <%= for row <- 0..(@max_visible_events - 1) do %>
           <% segment = Enum.find(@segments, &(&1.row == row)) %>
@@ -221,7 +221,7 @@ defmodule SinghSabhaWeb.CalendarLive do
       <%= if @overflow > 0 do %>
         <p class={[
           "h-4.5 px-1.5 text-xs font-semibold text-gray-500",
-          !@is_current_month && "opacity-50"
+          !@current_month? && "opacity-50"
         ]}>
           <span class="sm:hidden">+{@overflow}</span>
           <span class="hidden sm:inline">+{@overflow} more…</span>
