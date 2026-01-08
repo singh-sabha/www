@@ -110,7 +110,22 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp month_view(assigns) do
-    assigns = assign(assigns, :max_visible_events, 3)
+    max_visible_events = 3
+    {dates, first_display, last_display} = month_dates(assigns.current_date)
+
+    event_positions =
+      calculate_event_positions(
+        assigns.events,
+        first_display,
+        last_display,
+        max_visible_events
+      )
+
+    assigns =
+      assigns
+      |> assign(:dates, dates)
+      |> assign(:event_positions, event_positions)
+      |> assign(:max_visible_events, max_visible_events)
 
     ~H"""
     <div>
@@ -121,11 +136,12 @@ defmodule SinghSabhaWeb.CalendarLive do
       </div>
 
       <div class="grid grid-cols-7">
-        <%= for date <- month_dates(@current_date) do %>
+        <%= for date <- @dates do %>
           <.day_cell
             date={date}
             current_date={@current_date}
             events={@events}
+            event_positions={@event_positions}
             max_visible_events={@max_visible_events}
           />
         <% end %>
@@ -135,12 +151,20 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp day_cell(assigns) do
+    {segments, overflow} =
+      segments_for_date(
+        assigns.events,
+        assigns.event_positions,
+        assigns.date
+      )
+
     assigns =
       assigns
       |> assign(:is_saturday, Date.day_of_week(assigns.date) == 6)
       |> assign(:is_current_month, assigns.date.month == assigns.current_date.month)
       |> assign(:is_today, assigns.date == Date.utc_today())
-      |> assign(:cell_events, events_for_date(assigns.events, assigns.date))
+      |> assign(:segments, segments)
+      |> assign(:overflow, overflow)
 
     ~H"""
     <div class={[
@@ -165,28 +189,36 @@ defmodule SinghSabhaWeb.CalendarLive do
         "flex h-6 gap-1 px-2 lg:h-[94px] lg:flex-col lg:gap-2 lg:px-0",
         !@is_current_month && "opacity-50"
       ]}>
-        <%= for position <- 0..(@max_visible_events - 1) do %>
-          <div class="lg:flex-1 lg:px-1">
-            <%= if event = Enum.at(@cell_events, position) do %>
+        <%= for row <- 0..(@max_visible_events - 1) do %>
+          <% segment = Enum.find(@segments, &(&1.row == row)) %>
+
+          <div class="lg:flex-1">
+            <%= if segment do %>
               <div class="w-2 h-2 rounded-full bg-blue-500 lg:hidden"></div>
-              <div class="hidden lg:flex items-center gap-1.5 px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs font-medium">
-                <div class="flex w-full items-center justify-between">
-                  <span class="truncate">{event.title}</span>
-                  <span>{format_time(event.start)}</span>
-                </div>
+              <div class={[
+                "hidden lg:flex h-full items-center bg-blue-100 text-blue-800 text-xs font-medium",
+                segment.starts? && "rounded-l-md",
+                segment.ends? && "rounded-r-md"
+              ]}>
+                <%= if segment.starts? do %>
+                  <div class="flex w-full items-center justify-between px-2">
+                    <span class="truncate">{segment.event.title}</span>
+                    <span>{format_time(segment.event.start)}</span>
+                  </div>
+                <% end %>
               </div>
             <% end %>
           </div>
         <% end %>
       </div>
 
-      <%= if length(@cell_events) > @max_visible_events do %>
+      <%= if @overflow > 0 do %>
         <p class={[
           "h-4.5 px-1.5 text-xs font-semibold text-gray-500",
           !@is_current_month && "opacity-50"
         ]}>
-          <span class="sm:hidden">+{length(@cell_events) - @max_visible_events}</span>
-          <span class="hidden sm:inline">{length(@cell_events) - @max_visible_events} more...</span>
+          <span class="sm:hidden">+{@overflow}</span>
+          <span class="hidden sm:inline">+{@overflow} more…</span>
         </p>
       <% end %>
     </div>
@@ -217,16 +249,43 @@ defmodule SinghSabhaWeb.CalendarLive do
 
     total_days = Date.diff(last_display, first_display)
 
-    Enum.map(0..(total_days - 1), fn i -> Date.add(first_display, i) end)
+    days =
+      Enum.map(0..(total_days - 1), fn i ->
+        Date.add(first_display, i)
+      end)
+
+    {days, first_display, last_display}
   end
 
-  defp events_for_date(events, date) do
-    Enum.filter(events, fn event ->
-      start_date = DateTime.to_date(event.start)
-      end_date = DateTime.to_date(event.end)
+  defp segments_for_date(events, event_positions, date) do
+    active =
+      Enum.filter(events, fn event ->
+        start_date = DateTime.to_date(event.start)
+        end_date = DateTime.to_date(event.end)
 
-      Date.compare(date, start_date) != :lt and Date.compare(date, end_date) != :gt
-    end)
+        Date.compare(date, start_date) != :lt and
+          Date.compare(date, end_date) != :gt
+      end)
+
+    {visible, hidden} =
+      Enum.split_with(active, fn event ->
+        Map.has_key?(event_positions, event.id)
+      end)
+
+    segments =
+      Enum.map(visible, fn event ->
+        start_date = DateTime.to_date(event.start)
+        end_date = DateTime.to_date(event.end)
+
+        %{
+          event: event,
+          row: event_positions[event.id],
+          starts?: date == start_date,
+          ends?: date == end_date
+        }
+      end)
+
+    {segments, length(hidden)}
   end
 
   defp format_time(datetime) do
@@ -235,5 +294,49 @@ defmodule SinghSabhaWeb.CalendarLive do
     period = if hour < 12, do: "AM", else: "PM"
     display_hour = if hour == 0, do: 12, else: if(hour > 12, do: hour - 12, else: hour)
     "#{display_hour}:#{minute} #{period}"
+  end
+
+  defp calculate_event_positions(events, first_day, last_day, max_rows) do
+    date_range =
+      Date.range(first_day, last_day)
+      |> Enum.to_list()
+
+    occupied =
+      Enum.reduce(date_range, %{}, fn day, acc ->
+        Map.put(acc, day, List.duplicate(false, max_rows))
+      end)
+
+    sorted_events =
+      Enum.sort(events, fn a, b ->
+        Date.diff(DateTime.to_date(a.end), DateTime.to_date(a.start)) >=
+          Date.diff(DateTime.to_date(b.end), DateTime.to_date(b.start))
+      end)
+
+    {positions, _} =
+      Enum.reduce(sorted_events, {%{}, occupied}, fn event, {pos_acc, occ} ->
+        event_days =
+          Enum.filter(date_range, fn day ->
+            Date.compare(day, DateTime.to_date(event.start)) != :lt and
+              Date.compare(day, DateTime.to_date(event.end)) != :gt
+          end)
+
+        row =
+          Enum.find(0..(max_rows - 1), fn i ->
+            Enum.all?(event_days, fn day -> not Enum.at(occ[day], i) end)
+          end)
+
+        if row do
+          new_occ =
+            Enum.reduce(event_days, occ, fn day, acc ->
+              Map.update!(acc, day, &List.replace_at(&1, row, true))
+            end)
+
+          {Map.put(pos_acc, event.id, row), new_occ}
+        else
+          {pos_acc, occ}
+        end
+      end)
+
+    positions
   end
 end
