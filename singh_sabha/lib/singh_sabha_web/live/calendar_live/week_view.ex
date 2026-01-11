@@ -1,6 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.WeekView do
   use Phoenix.Component
 
+  alias SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow
   import SinghSabhaWeb.Helpers.CalendarHelpers
 
   def view(assigns) do
@@ -29,47 +30,53 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
     </div>
 
     <div class="hidden flex-col sm:flex">
-      <div class="relative z-20 flex border-b border-base-300 pr-[15px]">
-        <div class="w-18 flex-shrink-0"></div>
-        <div class="grid flex-1 grid-cols-7 border-l border-base-300">
-          <%= for day <- @week_days do %>
-            <div class="py-2 text-center text-xs font-medium text-base-400 border-r border-base-300 last:border-r-0">
-              {Calendar.strftime(day, "%a")}
-              <span class="ml-1 font-semibold text-base-content">
-                {day.day}
-              </span>
-            </div>
-          <% end %>
-        </div>
-      </div>
-
-      <div class="overflow-auto max-h-[736px]">
-        <div class="flex overflow-hidden">
-          <div class="relative w-18 flex-shrink-0">
-            <%= for {hour, index} <- Enum.with_index(@hours) do %>
-              <div class="relative h-[96px]">
-                <%= if index != 0 do %>
-                  <div class="absolute -top-3 right-2 flex h-6 items-center">
-                    <span class="text-xs text-base-400">{format_hour(hour)}</span>
-                  </div>
-                <% end %>
+      <div>
+        <WeekViewMultiDayEventsRow.row
+          current_date={@current_date}
+          multi_day_events={@multi_day_events}
+        />
+        <div class="relative z-20 flex border-b border-base-300 pr-[15px]">
+          <div class="w-18 flex-shrink-0"></div>
+          <div class="grid flex-1 grid-cols-7 border-l border-base-300">
+            <%= for day <- @week_days do %>
+              <div class="py-2 text-center text-xs font-medium text-base-400 border-r border-base-300 last:border-r-0">
+                {Calendar.strftime(day, "%a")}
+                <span class="ml-1 font-semibold text-base-content">
+                  {day.day}
+                </span>
               </div>
             <% end %>
           </div>
+        </div>
 
-          <div class="relative flex-1 border-l border-base-300">
-            <div class="grid grid-cols-7">
-              <%= for day <- @week_days do %>
-                <.day_column
-                  day={day}
-                  hours={@hours}
-                  events={@single_day_events}
-                  working_hours={@working_hours}
-                />
+        <div class="overflow-auto max-h-[736px]">
+          <div class="flex overflow-hidden">
+            <div class="relative w-18 flex-shrink-0">
+              <%= for {hour, index} <- Enum.with_index(@hours) do %>
+                <div class="relative h-[96px]">
+                  <%= if index != 0 do %>
+                    <div class="absolute -top-3 right-2 flex h-6 items-center">
+                      <span class="text-xs text-base-400">{format_hour(hour)}</span>
+                    </div>
+                  <% end %>
+                </div>
               <% end %>
             </div>
 
-            <.calendar_timeline current_time={@current_time} hours={@hours} />
+            <div class="relative flex-1 border-l border-base-300">
+              <div class="grid grid-cols-7">
+                <%= for day <- @week_days do %>
+                  <.day_column
+                    day={day}
+                    hours={@hours}
+                    events={@single_day_events}
+                    working_hours={@working_hours}
+                  />
+                <% end %>
+              </div>
+
+              <.calendar_timeline current_time={@current_time} hours={@hours} />
+            </div>
           </div>
         </div>
       </div>
