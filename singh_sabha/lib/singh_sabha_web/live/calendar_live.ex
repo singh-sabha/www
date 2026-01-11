@@ -7,7 +7,13 @@ defmodule SinghSabhaWeb.CalendarLive do
     today = Date.utc_today()
 
     if connected?(socket) do
-      Process.send_after(self(), :tick, 60_000)
+      now = DateTime.utc_now()
+      seconds_until_next_minute = 60 - now.second
+
+      milliseconds_until_next_minute =
+        seconds_until_next_minute * 1000 - rem(now.microsecond |> elem(0), 1000)
+
+      Process.send_after(self(), :tick, milliseconds_until_next_minute)
     end
 
     socket =
@@ -38,7 +44,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_info(:tick, socket) do
-    Process.send_after(self(), :tick, 60_000)
+    Process.send_after(self(), :tick, 30_000)
 
     {:noreply, assign(socket, :current_time, DateTime.utc_now())}
   end
