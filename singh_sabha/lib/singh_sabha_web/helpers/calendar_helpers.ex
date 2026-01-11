@@ -131,7 +131,6 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
         Enum.find_index(groups, fn group ->
           last_event = List.last(group)
           last_event_end = last_event.end
-
           DateTime.compare(event_start, last_event_end) != :lt
         end)
 
@@ -145,7 +144,12 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
     end)
   end
 
-  def get_event_style(event, day, group_index, total_groups, hours) do
+  def events_overlap?(event1, event2) do
+    DateTime.compare(event1.start, event2.end) == :lt and
+      DateTime.compare(event1.end, event2.start) == :gt
+  end
+
+  def get_event_style(event, relative_position, total_overlapping, hours) do
     first_hour = List.first(hours)
     last_hour = List.last(hours)
 
@@ -153,15 +157,14 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
     end_minutes = event.end.hour * 60 + event.end.minute
 
     visible_start_minutes = first_hour * 60
-    visible_end_minutes = last_hour * 60
+    visible_end_minutes = (last_hour + 1) * 60
     visible_range = visible_end_minutes - visible_start_minutes
 
     top = (start_minutes - visible_start_minutes) / visible_range * 100
-
     height = (end_minutes - start_minutes) / visible_range * 100
 
-    width = 100 / total_groups
-    left = group_index * width
+    width = 100 / total_overlapping
+    left = relative_position * width
 
     "top: #{top}%; height: #{height}%; width: #{width}%; left: #{left}%;"
   end

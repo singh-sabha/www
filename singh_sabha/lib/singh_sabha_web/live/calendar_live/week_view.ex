@@ -87,10 +87,26 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
 
     grouped_events = group_overlapping_events(day_events)
 
+    events_with_overlap_info =
+      for {group, group_index} <- Enum.with_index(grouped_events),
+          event <- group do
+        overlapping_group_indices =
+          grouped_events
+          |> Enum.with_index()
+          |> Enum.filter(fn {other_group, _other_index} ->
+            Enum.any?(other_group, fn other_event ->
+              events_overlap?(event, other_event)
+            end)
+          end)
+          |> Enum.map(fn {_group, index} -> index end)
+
+        {event, group_index, overlapping_group_indices}
+      end
+
     assigns =
       assigns
       |> assign(:day_events, day_events)
-      |> assign(:grouped_events, grouped_events)
+      |> assign(:events_with_overlap_info, events_with_overlap_info)
 
     ~H"""
     <div class="relative border-r border-base-300 last:border-r-0">
@@ -106,18 +122,19 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
         </div>
       <% end %>
 
-      <%= for {group, group_index} <- Enum.with_index(@grouped_events) do %>
-        <%= for event <- group do %>
-          <% style = get_event_style(event, @day, group_index, length(@grouped_events), @hours) %>
-          <div class="absolute p-1" style={style}>
-            <div class="h-full rounded-md bg-blue-100 text-blue-800 px-2 py-1 text-xs overflow-hidden">
-              <div class="font-medium truncate">{event.title}</div>
-              <div class="text-blue-800">
-                {format_time(event.start)} - {format_time(event.end)}
-              </div>
+      <%= for {event, group_index, overlapping_indices} <- @events_with_overlap_info do %>
+        <% total_overlapping = length(overlapping_indices) %>
+        <% relative_position = Enum.find_index(overlapping_indices, &(&1 == group_index)) %>
+        <% style =
+          get_event_style(event, relative_position, total_overlapping, @hours) %>
+        <div class="absolute p-1" style={style}>
+          <div class="h-full rounded-md bg-blue-100 text-blue-800 px-2 py-1 text-xs overflow-hidden">
+            <div class="font-medium truncate">{event.title}</div>
+            <div class="text-blue-800">
+              {format_time(event.start)} - {format_time(event.end)}
             </div>
           </div>
-        <% end %>
+        </div>
       <% end %>
     </div>
     """
