@@ -23,6 +23,8 @@ end
 config :singh_sabha, SinghSabhaWeb.Endpoint,
   http: [port: String.to_integer(System.get_env("PORT", "4000"))]
 
+config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

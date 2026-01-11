@@ -4,10 +4,10 @@ defmodule SinghSabhaWeb.CalendarLive do
   alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView}
 
   def mount(_params, _session, socket) do
-    today = Date.utc_today()
+    now = DateTime.now!("America/Vancouver")
+    today = DateTime.to_date(now)
 
     if connected?(socket) do
-      now = DateTime.utc_now()
       seconds_until_next_minute = 60 - now.second
 
       milliseconds_until_next_minute =
@@ -20,7 +20,7 @@ defmodule SinghSabhaWeb.CalendarLive do
       socket
       |> assign(:view_mode, :month)
       |> assign(:current_date, today)
-      |> assign(:current_time, DateTime.utc_now())
+      |> assign(:current_time, now)
       |> assign(:selected_date, today)
       |> assign(:working_hours, %{start: 4, end: 20})
       |> assign(:visible_hours, :working_hours)
@@ -46,7 +46,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 30_000)
 
-    {:noreply, assign(socket, :current_time, DateTime.utc_now())}
+    {:noreply, assign(socket, :current_time, DateTime.now!("America/Vancouver"))}
   end
 
   defp load_events(socket) do
