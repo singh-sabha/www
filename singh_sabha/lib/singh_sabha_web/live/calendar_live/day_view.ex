@@ -78,7 +78,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
           <div class="relative flex-1 border-l border-base-300">
             <div class="relative">
               <%= for {hour, index} <- Enum.with_index(@hours) do %>
-                <% is_working = is_working_hour(@current_date, hour, @working_hours) %>
+                <% is_working = working_hour?(@current_date, hour, @working_hours) %>
                 <div class={["relative h-[96px]", !is_working && "bg-calendar-disabled-hour"]}>
                   <%= if index != 0 do %>
                     <div class="pointer-events-none absolute inset-x-0 top-0 border-b border-base-300">

@@ -54,6 +54,14 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
       DateTime.compare(event1.end, event2.start) == :gt
   end
 
+  def working_hour?(day, hour, working_hours) do
+    day_of_week = Date.day_of_week(day)
+
+    weekday? = day_of_week >= 1 and day_of_week <= 5
+
+    weekday? and hour >= working_hours.start and hour < working_hours.end
+  end
+
   def get_event_style(event, relative_position, total_overlapping, hours) do
     first_hour = List.first(hours)
     last_hour = List.last(hours)
@@ -72,13 +80,5 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
     left = relative_position * width
 
     "top: #{top}%; height: #{height}%; width: #{width}%; left: #{left}%;"
-  end
-
-  def is_working_hour(day, hour, working_hours) do
-    day_of_week = Date.day_of_week(day)
-
-    is_weekday = day_of_week >= 1 and day_of_week <= 5
-
-    is_weekday and hour >= working_hours.start and hour < working_hours.end
   end
 end

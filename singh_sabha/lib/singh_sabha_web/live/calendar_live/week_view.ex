@@ -118,7 +118,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
     ~H"""
     <div class="relative border-r border-base-300 last:border-r-0">
       <%= for {hour, index} <- Enum.with_index(@hours) do %>
-        <% is_working = is_working_hour(@day, hour, @working_hours) %>
+        <% is_working = working_hour?(@day, hour, @working_hours) %>
         <div class={["relative h-[96px]", !is_working && "bg-calendar-disabled-hour"]}>
           <%= if index != 0 do %>
             <div class="pointer-events-none absolute inset-x-0 top-0 border-b border-base-300"></div>
