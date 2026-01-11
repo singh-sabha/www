@@ -65,7 +65,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   defp period_label(date, :month), do: Calendar.strftime(date, "%B %Y")
 
   defp period_label(date, :week) do
-    week_start = Date.beginning_of_week(date)
+    week_start = Date.beginning_of_week(date, :sunday)
     week_end = Date.add(week_start, 6)
     "#{Calendar.strftime(week_start, "%b %d")} - #{Calendar.strftime(week_end, "%b %d, %Y")}"
   end
