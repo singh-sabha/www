@@ -1,0 +1,65 @@
+defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
+  use Phoenix.Component
+
+  def row(assigns) do
+    day_start = assigns.current_date
+    day_end = assigns.current_date
+
+    multi_day_events_in_day =
+      assigns.multi_day_events
+      |> Enum.filter(fn event ->
+        event_start = DateTime.to_date(event.start)
+        event_end = DateTime.to_date(event.end)
+
+        Date.compare(event_end, day_start) != :lt and
+          Date.compare(event_start, day_end) != :gt
+      end)
+      |> Enum.sort(fn a, b ->
+        duration_a = Date.diff(DateTime.to_date(a.end), DateTime.to_date(a.start))
+        duration_b = Date.diff(DateTime.to_date(b.end), DateTime.to_date(b.start))
+        duration_b >= duration_a
+      end)
+
+    has_events = length(multi_day_events_in_day) > 0
+
+    assigns =
+      assigns
+      |> assign(:multi_day_events_in_day, multi_day_events_in_day)
+      |> assign(:has_events, has_events)
+
+    ~H"""
+    <%= if @has_events do %>
+      <div class="flex border-b border-base-300">
+        <div class="w-18"></div>
+        <div class="flex flex-1 flex-col gap-1 border-l border-base-300 py-1">
+          <%= for event <- @multi_day_events_in_day do %>
+            <% event_start = DateTime.to_date(event.start) %>
+            <% event_end = DateTime.to_date(event.end) %>
+            <% event_total_days = Date.diff(event_end, event_start) + 1 %>
+            <% event_current_day = Date.diff(@current_date, event_start) + 1 %>
+
+            <.multi_day_event_badge
+              event={event}
+              event_current_day={event_current_day}
+              event_total_days={event_total_days}
+            />
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    """
+  end
+
+  defp multi_day_event_badge(assigns) do
+    ~H"""
+    <div class="flex h-6.5 items-center bg-blue-100 text-xs font-medium px-2 rounded-md">
+      <div class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap">
+        <span class="truncate text-blue-800">{@event.title}</span>
+        <span class="text-blue-800 ml-2">
+          Day {@event_current_day} of {@event_total_days}
+        </span>
+      </div>
+    </div>
+    """
+  end
+end

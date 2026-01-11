@@ -148,7 +148,13 @@ defmodule SinghSabhaWeb.CalendarLive do
       <% end %>
 
       <%= if @view_mode == :day do %>
-        <DayView.view current_date={@current_date} events={@events} />
+        <DayView.view
+          current_date={@current_date}
+          current_time={@current_time}
+          events={@events}
+          working_hours={@working_hours}
+          visible_hours={@visible_hours}
+        />
       <% end %>
     </div>
     """
