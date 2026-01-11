@@ -57,21 +57,39 @@ defmodule SinghSabhaWeb.CalendarLive do
         start: ~U[2026-01-15 10:00:00Z],
         end: ~U[2026-01-15 11:00:00Z]
       },
-      %{id: 2, title: "Lunch", start: ~U[2026-01-15 12:00:00Z], end: ~U[2026-01-15 13:00:00Z]},
-      %{id: 3, title: "Dinner", start: ~U[2026-01-15 17:00:00Z], end: ~U[2026-01-15 19:00:00Z]},
       %{
-        id: 4,
+        id: 2,
+        title: "Standup",
+        start: ~U[2026-01-15 10:00:00Z],
+        end: ~U[2026-01-15 10:15:00Z]
+      },
+      %{
+        id: 3,
+        title: "Review",
+        start: ~U[2026-01-15 10:30:00Z],
+        end: ~U[2026-01-15 11:00:00Z]
+      },
+      %{id: 4, title: "Lunch", start: ~U[2026-01-15 12:00:00Z], end: ~U[2026-01-15 13:00:00Z]},
+      %{id: 5, title: "Dinner", start: ~U[2026-01-15 17:00:00Z], end: ~U[2026-01-15 19:00:00Z]},
+      %{
+        id: 6,
         title: "Project Review",
         start: ~U[2026-01-16 14:00:00Z],
         end: ~U[2026-01-16 16:00:00Z]
       },
       %{
-        id: 5,
+        id: 7,
         title: "Conference",
         start: ~U[2026-01-13 09:00:00Z],
         end: ~U[2026-01-15 17:00:00Z]
       },
-      %{id: 6, title: "Vacation", start: ~U[2026-01-20 00:00:00Z], end: ~U[2026-01-25 23:59:59Z]}
+      %{
+        id: 8,
+        title: "Seminar",
+        start: ~U[2026-01-13 09:00:00Z],
+        end: ~U[2026-01-15 17:00:00Z]
+      },
+      %{id: 9, title: "Vacation", start: ~U[2026-01-20 00:00:00Z], end: ~U[2026-01-25 23:59:59Z]}
     ]
 
     assign(socket, :events, events)
