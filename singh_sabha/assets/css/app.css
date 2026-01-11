@@ -100,6 +100,16 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 /* Make LiveView wrapper divs transparent for layout */
-[data-phx-session], [data-phx-teleported-src] { display: contents }
+[data-phx-session],
+[data-phx-teleported-src] {
+  display: contents;
+}
 
 /* This file is for your main application CSS */
+.bg-calendar-disabled-hour {
+  background-image: repeating-linear-gradient(
+    -60deg,
+    #ccc 0 0.5px,
+    transparent 0.5px 8px
+  );
+}

@@ -6,11 +6,18 @@ defmodule SinghSabhaWeb.CalendarLive do
   def mount(_params, _session, socket) do
     today = Date.utc_today()
 
+    if connected?(socket) do
+      Process.send_after(self(), :tick, 60_000)
+    end
+
     socket =
       socket
       |> assign(:view_mode, :month)
       |> assign(:current_date, today)
+      |> assign(:current_time, DateTime.utc_now())
       |> assign(:selected_date, today)
+      |> assign(:working_hours, %{start: 4, end: 20})
+      |> assign(:visible_hours, :working_hours)
       |> load_events()
 
     {:ok, socket}
@@ -28,6 +35,12 @@ defmodule SinghSabhaWeb.CalendarLive do
   def handle_event("next_period", _, socket) do
     new_date = shift_date(socket.assigns.current_date, socket.assigns.view_mode, 1)
     {:noreply, socket |> assign(:current_date, new_date) |> load_events()}
+  end
+
+  def handle_info(:tick, socket) do
+    Process.send_after(self(), :tick, 60_000)
+
+    {:noreply, assign(socket, :current_time, DateTime.utc_now())}
   end
 
   defp load_events(socket) do
@@ -101,7 +114,13 @@ defmodule SinghSabhaWeb.CalendarLive do
       <% end %>
 
       <%= if @view_mode == :week do %>
-        <WeekView.view current_date={@current_date} events={@events} />
+        <WeekView.view
+          current_date={@current_date}
+          current_time={@current_time}
+          events={@events}
+          working_hours={@working_hours}
+          visible_hours={@visible_hours}
+        />
       <% end %>
 
       <%= if @view_mode == :day do %>

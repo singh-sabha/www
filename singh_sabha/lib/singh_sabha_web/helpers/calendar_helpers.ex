@@ -27,6 +27,12 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
     "#{display_hour}:#{minute} #{period}"
   end
 
+  def format_hour(hour) do
+    period = if hour < 12, do: "AM", else: "PM"
+    display_hour = if hour == 0, do: 12, else: if(hour > 12, do: hour - 12, else: hour)
+    "#{display_hour} #{period}"
+  end
+
   def segments_for_date(events, event_positions, date) do
     active =
       Enum.filter(events, fn event ->
@@ -100,5 +106,71 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
       end)
 
     positions
+  end
+
+  def partition_events(events) do
+    Enum.split_with(events, fn event ->
+      start_date = DateTime.to_date(event.start)
+      end_date = DateTime.to_date(event.end)
+      Date.compare(start_date, end_date) == :eq
+    end)
+  end
+
+  def get_visible_hours(:working_hours, working_hours),
+    do: Enum.to_list(working_hours.start..working_hours.end)
+
+  def get_visible_hours(:all_hours, _working_hours), do: Enum.to_list(0..23)
+
+  def group_overlapping_events(events) do
+    sorted = Enum.sort_by(events, & &1.start, DateTime)
+
+    Enum.reduce(sorted, [], fn event, groups ->
+      event_start = event.start
+
+      group_index =
+        Enum.find_index(groups, fn group ->
+          last_event = List.last(group)
+          last_event_end = last_event.end
+
+          DateTime.compare(event_start, last_event_end) != :lt
+        end)
+
+      case group_index do
+        nil ->
+          groups ++ [[event]]
+
+        index ->
+          List.update_at(groups, index, fn group -> group ++ [event] end)
+      end
+    end)
+  end
+
+  def get_event_style(event, day, group_index, total_groups, hours) do
+    first_hour = List.first(hours)
+    last_hour = List.last(hours)
+
+    start_minutes = event.start.hour * 60 + event.start.minute
+    end_minutes = event.end.hour * 60 + event.end.minute
+
+    visible_start_minutes = first_hour * 60
+    visible_end_minutes = last_hour * 60
+    visible_range = visible_end_minutes - visible_start_minutes
+
+    top = (start_minutes - visible_start_minutes) / visible_range * 100
+
+    height = (end_minutes - start_minutes) / visible_range * 100
+
+    width = 100 / total_groups
+    left = group_index * width
+
+    "top: #{top}%; height: #{height}%; width: #{width}%; left: #{left}%;"
+  end
+
+  def is_working_hour(day, hour, working_hours) do
+    day_of_week = Date.day_of_week(day)
+
+    is_weekday = day_of_week >= 1 and day_of_week <= 5
+
+    is_weekday and hour >= working_hours.start and hour < working_hours.end
   end
 end
