@@ -29,7 +29,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
       <p>Please switch to daily or monthly view.</p>
     </div>
 
-    <div class="hidden flex-col sm:flex">
+    <div class="hidden flex-col sm:flex border-t border-base-300">
       <div>
         <WeekViewMultiDayEventsRow.row
           current_date={@current_date}

@@ -22,7 +22,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       |> assign(:max_visible_events, max_visible_events)
 
     ~H"""
-    <div>
+    <div class="border-t border-base-300">
       <div class="grid grid-cols-7 divide-x divide-base-300">
         <%= for day <- ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] do %>
           <div class="text-xs text-base-400 font-medium text-center py-2">{day}</div>
@@ -75,6 +75,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
     assigns =
       assigns
       |> assign(:saturday?, Date.day_of_week(assigns.date) == 6)
+      |> assign(:sunday?, Date.day_of_week(assigns.date) == 7)
       |> assign(:current_month?, assigns.date.month == assigns.current_date.month)
       |> assign(:today?, assigns.date == Date.utc_today())
       |> assign(:segments, segments)
@@ -114,11 +115,13 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
             <%= if segment do %>
               <div class="w-2 h-2 rounded-full bg-blue-500 lg:hidden"></div>
               <div class={[
-                "hidden lg:flex h-6.5 items-center bg-blue-100 text-blue-800 text-xs font-medium -mx-px",
-                segment.starts? && "rounded-l-md ml-0",
-                segment.ends? && "rounded-r-md mr-0",
+                "hidden lg:flex h-6.5 items-center bg-blue-100 text-blue-800 text-xs font-medium",
+                segment.starts? && "rounded-l-md",
+                segment.ends? && "rounded-r-md",
                 !segment.starts? && "rounded-l-none border-l-0",
-                !segment.ends? && "rounded-r-none border-r-0"
+                !segment.ends? && "rounded-r-none border-r-0",
+                !@sunday? && "-ml-px",
+                !@saturday? && "-mr-px"
               ]}>
                 <%= if segment.starts? do %>
                   <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">

@@ -43,7 +43,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
       |> assign(:hours, hours)
 
     ~H"""
-    <div class="flex flex-1 flex-col">
+    <div class="flex flex-1 flex-col border-t border-base-300">
       <div>
         <DayViewMultiDayEventsRow.row
           current_date={@current_date}

@@ -111,7 +111,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   def render(assigns) do
     ~H"""
-    <div class="p-2 ">
+    <div class="m-2 border border-base-300 rounded-md">
       <div class="flex justify-between p-4">
         <div class="space-x-4">
           <button phx-click="prev_period" class="btn btn-square">
