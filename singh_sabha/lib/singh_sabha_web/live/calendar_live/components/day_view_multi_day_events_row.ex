@@ -31,7 +31,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
     <%= if @has_events do %>
       <div class="flex border-b border-base-300">
         <div class="w-18"></div>
-        <div class="flex flex-1 flex-col gap-1 border-l border-base-300 py-1">
+        <div class="flex flex-1 flex-col gap-1 border-l border-base-300 py-1 px-1">
           <%= for event <- @multi_day_events_in_day do %>
             <% event_start = DateTime.to_date(event.start) %>
             <% event_end = DateTime.to_date(event.end) %>
