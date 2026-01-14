@@ -35,7 +35,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
           current_date={@current_date}
           multi_day_events={@multi_day_events}
         />
-        <div class="relative z-20 flex border-b border-base-300 pr-[15px]">
+        <div class="relative z-20 flex border-b border-base-300">
           <div class="w-18 flex-shrink-0"></div>
           <div class="grid flex-1 grid-cols-7 border-l border-base-300">
             <%= for day <- @week_days do %>
@@ -49,7 +49,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
           </div>
         </div>
 
-        <div class="overflow-auto max-h-[736px]">
+        <div class="overflow-auto hide-scrollbar max-h-[736px]">
           <div class="flex overflow-hidden">
             <div class="relative w-18 flex-shrink-0">
               <%= for {hour, index} <- Enum.with_index(@hours) do %>

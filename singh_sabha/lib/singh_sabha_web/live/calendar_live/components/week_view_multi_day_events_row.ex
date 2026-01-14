@@ -26,7 +26,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
     <%= if @has_events do %>
       <div class="hidden overflow-hidden sm:flex">
         <div class="w-18 border-b border-base-300"></div>
-        <div class="grid flex-1 grid-cols-7 border-b border-l border-base-300 pr-[15px]">
+        <div class="grid flex-1 grid-cols-7 border-b border-l border-base-300">
           <%= for {day, day_index} <- Enum.with_index(@week_days) do %>
             <div class="flex h-full flex-col gap-1 py-1 border-r border-base-300 last:border-r-0">
               <%= for {row, row_index} <- Enum.with_index(@event_rows) do %>

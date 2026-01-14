@@ -61,7 +61,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
         </div>
       </div>
 
-      <div class="overflow-auto max-h-[800px]">
+      <div class="overflow-auto hide-scrollbar max-h-[800px]">
         <div class="flex">
           <div class="relative w-18 flex-shrink-0">
             <%= for {hour, index} <- Enum.with_index(@hours) do %>
