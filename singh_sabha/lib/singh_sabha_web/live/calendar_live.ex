@@ -3,6 +3,57 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView}
 
+  def render(assigns) do
+    ~H"""
+    <div class="m-2 border border-base-300 rounded-md">
+      <div class="flex justify-between p-4">
+        <div class="space-x-4">
+          <button phx-click="prev_period" class="btn btn-square">
+            <.icon name="hero-chevron-left" />
+          </button>
+
+          <span class="text-sm text-base-400">
+            {period_label(@current_date, @view_mode)}
+          </span>
+
+          <button phx-click="next_period" class="btn btn-square">
+            <.icon name="hero-chevron-right" />
+          </button>
+        </div>
+        <div class="join flex justify-end">
+          <button class="btn join-item" phx-click="change_view" phx-value-view="month">Month</button>
+          <button class="btn join-item" phx-click="change_view" phx-value-view="week">Week</button>
+          <button class="btn join-item" phx-click="change_view" phx-value-view="day">Day</button>
+        </div>
+      </div>
+
+      <%= if @view_mode == :month do %>
+        <MonthView.view current_date={@current_date} events={@events} />
+      <% end %>
+
+      <%= if @view_mode == :week do %>
+        <WeekView.view
+          current_date={@current_date}
+          current_time={@current_time}
+          events={@events}
+          working_hours={@working_hours}
+          visible_hours={@visible_hours}
+        />
+      <% end %>
+
+      <%= if @view_mode == :day do %>
+        <DayView.view
+          current_date={@current_date}
+          current_time={@current_time}
+          events={@events}
+          working_hours={@working_hours}
+          visible_hours={@visible_hours}
+        />
+      <% end %>
+    </div>
+    """
+  end
+
   def mount(_params, _session, socket) do
     now = DateTime.now!("America/Vancouver")
     today = DateTime.to_date(now)
@@ -108,55 +159,4 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp period_label(date, :day), do: Calendar.strftime(date, "%A, %B %d, %Y")
-
-  def render(assigns) do
-    ~H"""
-    <div class="m-2 border border-base-300 rounded-md">
-      <div class="flex justify-between p-4">
-        <div class="space-x-4">
-          <button phx-click="prev_period" class="btn btn-square">
-            <.icon name="hero-chevron-left" />
-          </button>
-
-          <span class="text-sm text-base-400">
-            {period_label(@current_date, @view_mode)}
-          </span>
-
-          <button phx-click="next_period" class="btn btn-square">
-            <.icon name="hero-chevron-right" />
-          </button>
-        </div>
-        <div class="join flex justify-end">
-          <button class="btn join-item" phx-click="change_view" phx-value-view="month">Month</button>
-          <button class="btn join-item" phx-click="change_view" phx-value-view="week">Week</button>
-          <button class="btn join-item" phx-click="change_view" phx-value-view="day">Day</button>
-        </div>
-      </div>
-
-      <%= if @view_mode == :month do %>
-        <MonthView.view current_date={@current_date} events={@events} />
-      <% end %>
-
-      <%= if @view_mode == :week do %>
-        <WeekView.view
-          current_date={@current_date}
-          current_time={@current_time}
-          events={@events}
-          working_hours={@working_hours}
-          visible_hours={@visible_hours}
-        />
-      <% end %>
-
-      <%= if @view_mode == :day do %>
-        <DayView.view
-          current_date={@current_date}
-          current_time={@current_time}
-          events={@events}
-          working_hours={@working_hours}
-          visible_hours={@visible_hours}
-        />
-      <% end %>
-    </div>
-    """
-  end
 end
