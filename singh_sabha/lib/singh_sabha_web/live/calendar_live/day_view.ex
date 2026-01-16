@@ -114,7 +114,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
         </div>
       </div>
 
-      <div class="hidden lg:block border-l border-t border-base-300">
+      <div class="hidden lg:block border-l border-t border-base-300 flex flex-col">
         <calendar-date class="cally border-b border-base-300" first-day-of-week="0" locale="en-CA">
           <svg
             aria-label="Previous"
@@ -142,8 +142,60 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
           </svg>
           <calendar-month></calendar-month>
         </calendar-date>
+
+        <div class="p-2">
+          <% current_events = happening_now(@current_time, @single_day_events) %>
+          <%= if length(current_events) > 0 do %>
+            <div class="flex items-start gap-2 px-4 pt-4">
+              <span class="relative mt-[5px] flex h-2.5 w-2.5">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
+              </span>
+              <p class="text-sm font-semibold">Happening now</p>
+            </div>
+
+            <div class="mt-3 px-4">
+              <div class="space-y-6 pb-4">
+                <%= for event <- current_events do %>
+                  <div class="space-y-1.5">
+                    <p class="line-clamp-2 text-sm font-semibold">{event.title}</p>
+
+                    <div class="flex items-center gap-1.5 text-base-content/70">
+                      <.icon name="hero-calendar" class="h-3.5 w-3.5" />
+                      <span class="text-sm">{format_date(event.start)}</span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 text-base-content/70">
+                      <.icon name="hero-clock" class="h-3.5 w-3.5" />
+                      <span class="text-sm">
+                        {format_time(event.start)} - {format_time(event.end)}
+                      </span>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% else %>
+            <p class="p-4 text-center text-sm italic opacity-60">
+              No events at the moment
+            </p>
+          <% end %>
+        </div>
       </div>
     </div>
     """
+  end
+
+  defp happening_now(current_time, single_day_events) do
+    Enum.reduce(single_day_events, [], fn event, acc ->
+      start_time = DateTime.to_time(event.start)
+      end_time = DateTime.to_time(event.end)
+
+      if Time.after?(current_time, start_time) && Time.before?(current_time, end_time) do
+        [event | acc]
+      else
+        acc
+      end
+    end)
   end
 end
