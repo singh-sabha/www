@@ -17,7 +17,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.CalendarTimeline do
     if show_timeline do
       minutes = current_hour * 60 + current_minute
       visible_start_minutes = first_hour * 60
-      visible_end_minutes = last_hour * 60
+      visible_end_minutes = (last_hour + 1) * 60
       visible_range_minutes = visible_end_minutes - visible_start_minutes
       position = (minutes - visible_start_minutes) / visible_range_minutes * 100
 
