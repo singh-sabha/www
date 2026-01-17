@@ -1,29 +1,78 @@
 defmodule SinghSabhaWeb.CalendarLive do
   use SinghSabhaWeb, :live_view
 
+  import SinghSabhaWeb.Helpers.CalendarHelpers
+
   alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView}
 
   def render(assigns) do
     ~H"""
     <div class="m-2 border border-base-300 rounded-md">
-      <div class="flex justify-between p-4">
-        <div class="space-x-4">
-          <button phx-click="prev_period" class="btn btn-square">
-            <.icon name="hero-chevron-left" />
-          </button>
+      <div class="p-4 space-y-4 lg:space-y-0">
+        <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
+          <div class="flex gap-4 items-start">
+            <button
+              class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
+              phx-click="change_view_to_today"
+            >
+              <p class="flex h-6 w-full items-center justify-center bg-black text-center text-xs font-semibold text-white">
+                {String.upcase(get_month_label(@today, :abbreviation))}
+              </p>
+              <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
+                {@today.day}
+              </p>
+            </button>
 
-          <span class="text-sm text-base-400">
-            {period_label(@current_date, @view_mode)}
-          </span>
+            <div class="space-y-1">
+              <div class="flex items-center space-x-2">
+                <span class="text-lg font-semibold">
+                  {get_month_label(@current_date, :full)} {@current_date.year}
+                </span>
+                <div class="badge badge-outline badge-primary">
+                  <% period_events_total = get_total_events(@events, @current_date, @view_mode) %>
+                  {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
+                </div>
+              </div>
 
-          <button phx-click="next_period" class="btn btn-square">
-            <.icon name="hero-chevron-right" />
-          </button>
-        </div>
-        <div class="join flex justify-end">
-          <button class="btn join-item" phx-click="change_view" phx-value-view="month">Month</button>
-          <button class="btn join-item" phx-click="change_view" phx-value-view="week">Week</button>
-          <button class="btn join-item" phx-click="change_view" phx-value-view="day">Day</button>
+              <div class="space-x-4">
+                <button phx-click="prev_period" class="btn btn-sm btn-square">
+                  <.icon name="hero-chevron-left" />
+                </button>
+
+                <span class="text-sm text-base-400">
+                  {period_label(@current_date, @view_mode)}
+                </span>
+
+                <button phx-click="next_period" class="btn btn-sm btn-square">
+                  <.icon name="hero-chevron-right" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="join w-full lg:w-auto">
+            <button
+              class="btn join-item flex-1 lg:flex-none"
+              phx-click="change_view"
+              phx-value-view="month"
+            >
+              Month
+            </button>
+            <button
+              class="btn join-item flex-1 lg:flex-none"
+              phx-click="change_view"
+              phx-value-view="week"
+            >
+              Week
+            </button>
+            <button
+              class="btn join-item flex-1 lg:flex-none"
+              phx-click="change_view"
+              phx-value-view="day"
+            >
+              Day
+            </button>
+          </div>
         </div>
       </div>
 
@@ -70,6 +119,7 @@ defmodule SinghSabhaWeb.CalendarLive do
     socket =
       socket
       |> assign(:view_mode, :month)
+      |> assign(:today, today)
       |> assign(:current_date, today)
       |> assign(:current_time, now)
       |> assign(:selected_date, today)
@@ -92,6 +142,11 @@ defmodule SinghSabhaWeb.CalendarLive do
   def handle_event("next_period", _, socket) do
     new_date = shift_date(socket.assigns.current_date, socket.assigns.view_mode, 1)
     {:noreply, socket |> assign(:current_date, new_date) |> load_events()}
+  end
+
+  def handle_event("change_view_to_today", _, socket) do
+    today = DateTime.to_date(DateTime.now!("America/Vancouver"))
+    {:noreply, socket |> assign(:current_date, today) |> load_events()}
   end
 
   def handle_info(:tick, socket) do

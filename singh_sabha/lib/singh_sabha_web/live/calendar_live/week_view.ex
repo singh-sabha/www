@@ -24,7 +24,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
       |> assign(:hours, hours)
 
     ~H"""
-    <div class="flex flex-col items-center justify-center border-b border-base-300 py-4 text-sm text-base-400 sm:hidden">
+    <div class="flex flex-col items-center justify-center border-t border-base-300 py-4 text-sm text-base-400 sm:hidden">
       <p>Weekly view is not available on smaller devices.</p>
       <p>Please switch to daily or monthly view.</p>
     </div>

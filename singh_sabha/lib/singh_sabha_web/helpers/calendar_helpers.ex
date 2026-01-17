@@ -25,6 +25,35 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
     end)
   end
 
+  def get_month_label(date, :abbreviation), do: Calendar.strftime(date, "%b")
+  def get_month_label(date, :full), do: Calendar.strftime(date, "%B")
+
+  def get_total_events(events, date, :day) do
+    Enum.count(events, fn event ->
+      event_date = DateTime.to_date(event.start)
+      Date.compare(event_date, date) == :eq
+    end)
+  end
+
+  def get_total_events(events, date, :week) do
+    week_start = Date.beginning_of_week(date, :sunday)
+    week_end = Date.add(week_start, 6)
+
+    Enum.count(events, fn event ->
+      event_date = DateTime.to_date(event.start)
+
+      Date.compare(event_date, week_start) in [:eq, :gt] and
+        Date.compare(event_date, week_end) in [:eq, :lt]
+    end)
+  end
+
+  def get_total_events(events, date, :month) do
+    Enum.count(events, fn event ->
+      event_date = DateTime.to_date(event.start)
+      event_date.year == date.year and event_date.month == date.month
+    end)
+  end
+
   def get_visible_hours(:working_hours, working_hours),
     do: Enum.to_list(working_hours.start..working_hours.end)
 
