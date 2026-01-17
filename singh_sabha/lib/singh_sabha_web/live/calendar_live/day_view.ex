@@ -188,10 +188,8 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
 
   defp happening_now(current_time, single_day_events) do
     Enum.reduce(single_day_events, [], fn event, acc ->
-      start_time = DateTime.to_time(event.start)
-      end_time = DateTime.to_time(event.end)
-
-      if Time.after?(current_time, start_time) && Time.before?(current_time, end_time) do
+      if DateTime.compare(current_time, event.start) in [:gt, :eq] &&
+           DateTime.compare(current_time, event.end) == :lt do
         [event | acc]
       else
         acc
