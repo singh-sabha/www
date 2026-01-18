@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
   use Phoenix.Component
 
-  import SinghSabhaWeb.Helpers.CalendarHelpers
+  import SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
 
   def row(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
@@ -33,10 +33,15 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
                 <% event =
                   Enum.find(row, fn e -> e.start_index <= day_index and e.end_index >= day_index end) %>
                 <%= if event do %>
-                  <% position = get_event_position(event, day_index) %>
+                  <% starts = day_index == event.start_index %>
+                  <% ends = day_index == event.end_index %>
+                  <% colour = event_type_to_colour(event.original_event.type) %>
+
                   <.multi_day_event_badge
                     event={event.original_event}
-                    position={position}
+                    colour={colour}
+                    starts={starts}
+                    ends={ends}
                   />
                 <% else %>
                   <div class="h-6.5"></div>
@@ -110,36 +115,23 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
     end)
   end
 
-  defp get_event_position(event, day_index) do
-    cond do
-      day_index == event.start_index and day_index == event.end_index -> :none
-      day_index == event.start_index -> :first
-      day_index == event.end_index -> :last
-      true -> :middle
-    end
-  end
-
   defp multi_day_event_badge(assigns) do
     ~H"""
     <div class={[
-      "h-6.5 text-xs font-medium -mx-px flex items-center",
-      position_classes(@position)
+      "h-6.5 text-xs font-medium flex items-center border -mx-px",
+      badge_colour(@colour),
+      @starts && "rounded-l-md ml-1",
+      @ends && "rounded-r-md mr-1",
+      !@starts && "rounded-l-none border-l-0",
+      !@ends && "rounded-r-none border-r-0"
     ]}>
-      <%= if @position == :first or @position == :none do %>
+      <%= if @starts do %>
         <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
-          <span class="truncate text-blue-800">{@event.title}</span>
-          <span class="text-blue-800">{format_time(@event.start)}</span>
+          <span class="truncate">{@event.title}</span>
+          <span>{format_time(@event.start)}</span>
         </div>
       <% end %>
     </div>
     """
   end
-
-  defp position_classes(:none), do: "bg-blue-100 rounded-md ml-0 mr-0"
-  defp position_classes(:first), do: "bg-blue-100 rounded-l-md ml-1 rounded-r-none border-r-0"
-
-  defp position_classes(:middle),
-    do: "bg-blue-100 rounded-l-none border-l-0 rounded-r-none border-r-0"
-
-  defp position_classes(:last), do: "bg-blue-100 rounded-r-md mr-1 rounded-l-none border-l-0"
 end

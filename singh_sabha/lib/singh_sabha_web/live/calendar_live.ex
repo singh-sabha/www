@@ -160,41 +160,65 @@ defmodule SinghSabhaWeb.CalendarLive do
         id: 1,
         title: "Team Meeting",
         start: ~U[2026-01-15 10:00:00Z],
-        end: ~U[2026-01-15 11:00:00Z]
+        end: ~U[2026-01-15 11:00:00Z],
+        type: "Akhand Path"
       },
       %{
         id: 2,
         title: "Standup",
         start: ~U[2026-01-15 10:00:00Z],
-        end: ~U[2026-01-15 10:15:00Z]
+        end: ~U[2026-01-15 10:15:00Z],
+        type: "Akhand Path"
       },
       %{
         id: 3,
         title: "Review",
         start: ~U[2026-01-15 10:30:00Z],
-        end: ~U[2026-01-15 11:00:00Z]
+        end: ~U[2026-01-15 11:00:00Z],
+        type: "Akhand Path"
       },
-      %{id: 4, title: "Lunch", start: ~U[2026-01-15 12:00:00Z], end: ~U[2026-01-15 13:00:00Z]},
-      %{id: 5, title: "Dinner", start: ~U[2026-01-15 17:00:00Z], end: ~U[2026-01-15 19:00:00Z]},
+      %{
+        id: 4,
+        title: "Lunch",
+        start: ~U[2026-01-15 12:00:00Z],
+        end: ~U[2026-01-15 13:00:00Z],
+        type: "Akhand Path"
+      },
+      %{
+        id: 5,
+        title: "Dinner",
+        start: ~U[2026-01-15 17:00:00Z],
+        end: ~U[2026-01-15 19:00:00Z],
+        type: "Akhand Path"
+      },
       %{
         id: 6,
         title: "Project Review",
         start: ~U[2026-01-16 14:00:00Z],
-        end: ~U[2026-01-16 16:00:00Z]
+        end: ~U[2026-01-16 16:00:00Z],
+        type: "Akhand Path"
       },
       %{
         id: 7,
         title: "Conference",
         start: ~U[2026-01-13 09:00:00Z],
-        end: ~U[2026-01-15 17:00:00Z]
+        end: ~U[2026-01-15 17:00:00Z],
+        type: "Akhand Path"
       },
       %{
         id: 8,
         title: "Seminar",
         start: ~U[2026-01-13 09:00:00Z],
-        end: ~U[2026-01-15 17:00:00Z]
+        end: ~U[2026-01-15 17:00:00Z],
+        type: "Akhand Path"
       },
-      %{id: 9, title: "Vacation", start: ~U[2026-01-20 00:00:00Z], end: ~U[2026-01-25 23:59:59Z]}
+      %{
+        id: 9,
+        title: "Vacation",
+        start: ~U[2026-01-20 00:00:00Z],
+        end: ~U[2026-01-25 23:59:59Z],
+        type: "Akhand Path"
+      }
     ]
 
     assign(socket, :events, events)

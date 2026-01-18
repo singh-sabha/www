@@ -1,6 +1,8 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
   use Phoenix.Component
 
+  import SinghSabhaWeb.Helpers.{EventTypeHelpers}
+
   def row(assigns) do
     day_start = assigns.current_date
     day_end = assigns.current_date
@@ -52,10 +54,15 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
 
   defp multi_day_event_badge(assigns) do
     ~H"""
-    <div class="flex h-6.5 items-center bg-blue-100 text-xs font-medium px-2 rounded-md">
+    <% colour = event_type_to_colour(@event.type) %>
+
+    <div class={[
+      "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
+      badge_colour(colour)
+    ]}>
       <div class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap">
-        <span class="truncate text-blue-800">{@event.title}</span>
-        <span class="text-blue-800 ml-2">
+        <span class="truncate">{@event.title}</span>
+        <span class="ml-2">
           Day {@event_current_day} of {@event_total_days}
         </span>
       </div>

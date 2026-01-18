@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
   use Phoenix.Component
 
   alias SinghSabhaWeb.CalendarLive.Components.{WeekViewMultiDayEventsRow, CalendarTimeline}
-  import SinghSabhaWeb.Helpers.CalendarHelpers
+  import SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
 
   def view(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
@@ -134,12 +134,16 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
         <% relative_position = Enum.find_index(overlapping_indices, &(&1 == group_index)) %>
         <% style =
           get_event_style(event, relative_position, total_overlapping, @hours) %>
+
+        <% colour = event_type_to_colour(event.type) %>
+
         <div class="absolute p-1" style={style}>
-          <div class="h-full rounded-md bg-blue-100 text-blue-800 px-2 py-1 text-xs overflow-hidden">
+          <div class={[
+            "h-full rounded-md border px-2 py-1 text-xs overflow-hidden",
+            badge_colour(colour)
+          ]}>
             <div class="font-medium truncate">{event.title}</div>
-            <div class="text-blue-800">
-              {format_time(event.start)} - {format_time(event.end)}
-            </div>
+            {format_time(event.start)} - {format_time(event.end)}
           </div>
         </div>
       <% end %>

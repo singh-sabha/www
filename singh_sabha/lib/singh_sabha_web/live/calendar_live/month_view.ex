@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.MonthView do
   use Phoenix.Component
 
-  import SinghSabhaWeb.Helpers.CalendarHelpers
+  import SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
 
   def view(assigns) do
     max_visible_events = 4
@@ -108,14 +108,21 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
           <% segment = Enum.find(@segments, &(&1.row == row)) %>
 
           <%= if segment do %>
+            <% colour = event_type_to_colour(segment.event.type) %>
+
             <div class={[
               "lg:flex-1",
               segment.starts? && "lg:pl-1",
               segment.ends? && "lg:pr-1"
             ]}>
-              <div class="w-2 h-2 rounded-full bg-blue-500 lg:hidden"></div>
               <div class={[
-                "hidden lg:flex h-6.5 items-center bg-blue-100 text-blue-800 text-xs font-medium",
+                "w-2 h-2 rounded-full lg:hidden",
+                dot_colour(colour)
+              ]}>
+              </div>
+              <div class={[
+                "hidden lg:flex h-6.5 items-center text-xs font-medium border",
+                badge_colour(colour),
                 segment.starts? && "rounded-l-md",
                 segment.ends? && "rounded-r-md",
                 !segment.starts? && "rounded-l-none border-l-0",
