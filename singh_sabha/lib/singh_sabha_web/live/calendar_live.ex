@@ -37,7 +37,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                   <button phx-click="prev_period" class="btn btn-sm btn-square">
                     <.icon name="hero-chevron-left" />
                   </button>
-                  <span class="text-sm text-base-400">
+                  <span class="text-sm text-base-content/50">
                     {period_label(@current_date, @view_mode)}
                   </span>
                   <button phx-click="next_period" class="btn btn-sm btn-square">

@@ -54,7 +54,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
 
           <div class="relative z-20 flex border-b border-base-300">
             <div class="w-18"></div>
-            <span class="flex-1 border-l border-base-300 py-2 text-center text-xs font-medium text-base-400">
+            <span class="flex-1 border-l border-base-300 py-2 text-center text-xs font-medium text-base-content/50">
               {Calendar.strftime(@current_date, "%a")}
               <span class="ml-1 font-semibold text-base-content">
                 {@current_date.day}
@@ -70,7 +70,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                 <div class="relative h-[96px]">
                   <%= if index != 0 do %>
                     <div class="absolute -top-3 right-2 flex h-6 items-center">
-                      <span class="text-xs text-base-400">{format_hour(hour)}</span>
+                      <span class="text-xs text-base-content/50">{format_hour(hour)}</span>
                     </div>
                   <% end %>
                 </div>

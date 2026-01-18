@@ -25,7 +25,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
     <div class="border-t border-base-300 h-full flex flex-col">
       <div class="grid grid-cols-7 divide-x divide-base-300 shrink-0">
         <%= for day <- ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] do %>
-          <div class="text-xs text-base-400 font-medium text-center py-2">{day}</div>
+          <div class="text-xs text-base-content/50 font-medium text-center py-2">{day}</div>
         <% end %>
       </div>
 
@@ -149,7 +149,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
         !@current_month? && "opacity-50"
       ]}>
         <%= if @overflow > 0 do %>
-          <p class="text-xs font-semibold text-gray-500">
+          <p class="text-xs font-semibold text-base-content/50">
             <span class="sm:hidden">+{@overflow}</span>
             <span class="hidden sm:inline">+{@overflow} more…</span>
           </p>

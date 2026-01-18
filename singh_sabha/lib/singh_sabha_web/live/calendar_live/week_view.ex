@@ -39,7 +39,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
           <div class="w-18 flex-shrink-0"></div>
           <div class="grid flex-1 grid-cols-7 border-l border-base-300">
             <%= for day <- @week_days do %>
-              <div class="py-2 text-center text-xs font-medium text-base-400 border-r border-base-300 last:border-r-0">
+              <div class="py-2 text-center text-xs font-medium text-base-content/50 border-r border-base-300 last:border-r-0">
                 {Calendar.strftime(day, "%a")}
                 <span class="ml-1 font-semibold text-base-content">
                   {day.day}
@@ -51,13 +51,13 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
       </div>
 
       <div class="flex-1 min-h-0 overflow-auto hide-scrollbar">
-        <div class="flex overflow-hidden">
+        <div class="flex">
           <div class="relative w-18 flex-shrink-0">
             <%= for {hour, index} <- Enum.with_index(@hours) do %>
               <div class="relative h-[96px]">
                 <%= if index != 0 do %>
                   <div class="absolute -top-3 right-2 flex h-6 items-center">
-                    <span class="text-xs text-base-400">{format_hour(hour)}</span>
+                    <span class="text-xs text-base-content/50">{format_hour(hour)}</span>
                   </div>
                 <% end %>
               </div>
