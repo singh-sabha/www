@@ -16,10 +16,10 @@ defmodule SinghSabhaWeb.CalendarLive do
               phx-click="change_view_to_today"
             >
               <p class="flex h-6 w-full items-center justify-center bg-black text-center text-xs font-semibold text-white">
-                {String.upcase(get_month_label(@today, :abbreviation))}
+                {String.upcase(get_month_label(@current_time, :abbreviation))}
               </p>
               <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
-                {@today.day}
+                {@current_time.day}
               </p>
             </button>
 
@@ -77,7 +77,10 @@ defmodule SinghSabhaWeb.CalendarLive do
       </div>
 
       <%= if @view_mode == :month do %>
-        <MonthView.view current_date={@current_date} events={@events} />
+        <MonthView.view
+          current_date={@current_date}
+          events={@events}
+        />
       <% end %>
 
       <%= if @view_mode == :week do %>
@@ -119,7 +122,6 @@ defmodule SinghSabhaWeb.CalendarLive do
     socket =
       socket
       |> assign(:view_mode, :month)
-      |> assign(:today, today)
       |> assign(:current_date, today)
       |> assign(:current_time, now)
       |> assign(:selected_date, today)
