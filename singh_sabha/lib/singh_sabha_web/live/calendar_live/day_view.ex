@@ -117,7 +117,14 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
       </div>
 
       <div class="hidden lg:block border-l border-t border-base-300 flex flex-col">
-        <calendar-date class="cally border-b border-base-300" first-day-of-week="0" locale="en-CA">
+        <calendar-date
+          id="day-view-mini-calendar"
+          phx-hook="CalendarDate"
+          class="cally border-b border-base-300"
+          first-day-of-week="0"
+          show-outside-days="true"
+          locale="en-CA"
+        >
           <svg
             aria-label="Previous"
             slot="previous"

@@ -148,6 +148,19 @@ defmodule SinghSabhaWeb.CalendarLive do
     {:noreply, socket |> assign(:current_date, today) |> load_events()}
   end
 
+  def handle_event("date-selected", %{"date" => date}, socket) do
+    case Date.from_iso8601(date) do
+      {:ok, date} ->
+        {:noreply,
+         socket
+         |> assign(:selected_date, date)
+         |> assign(:current_date, date)}
+
+      {:error, _} ->
+        {:noreply, socket}
+    end
+  end
+
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 30_000)
 
