@@ -4,7 +4,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
   import SinghSabhaWeb.Helpers.CalendarHelpers
 
   def view(assigns) do
-    max_visible_events = 3
+    max_visible_events = 4
     {dates, first_display, last_display} = month_dates(assigns.current_date)
 
     event_positions =
@@ -83,14 +83,14 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
 
     ~H"""
     <div class={[
-      "flex h-full flex-col gap-1 border-t border-base-300 py-1.5 lg:pb-2 lg:pt-1",
+      "flex h-full flex-col border-t border-base-300 py-1.5 lg:py-1",
       !@saturday? && "border-r"
     ]}>
       <button
         phx-click="select_date"
         phx-value-date={Date.to_iso8601(@date)}
         class={[
-          "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold",
+          "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0",
           "hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500",
           "lg:px-2",
           !@current_month? && "opacity-20",
@@ -101,18 +101,18 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       </button>
 
       <div class={[
-        "flex h-6 gap-1 px-2 lg:h-[94px] lg:flex-col lg:gap-2 lg:px-0",
+        "flex flex-1 h-6 gap-1 px-2 lg:h-auto lg:flex-col lg:gap-2 lg:px-0",
         !@current_month? && "opacity-50"
       ]}>
         <%= for row <- 0..(@max_visible_events - 1) do %>
           <% segment = Enum.find(@segments, &(&1.row == row)) %>
 
-          <div class={[
-            "lg:flex-1",
-            segment && segment.starts? && "lg:pl-1",
-            segment && segment.ends? && "lg:pr-1"
-          ]}>
-            <%= if segment do %>
+          <%= if segment do %>
+            <div class={[
+              "lg:flex-1",
+              segment.starts? && "lg:pl-1",
+              segment.ends? && "lg:pr-1"
+            ]}>
               <div class="w-2 h-2 rounded-full bg-blue-500 lg:hidden"></div>
               <div class={[
                 "hidden lg:flex h-6.5 items-center bg-blue-100 text-blue-800 text-xs font-medium",
@@ -130,20 +130,24 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
                   </div>
                 <% end %>
               </div>
-            <% end %>
-          </div>
+            </div>
+          <% else %>
+            <div class="lg:flex-1"></div>
+          <% end %>
         <% end %>
       </div>
 
-      <%= if @overflow > 0 do %>
-        <p class={[
-          "h-4.5 px-1.5 text-xs font-semibold text-gray-500",
-          !@current_month? && "opacity-50"
-        ]}>
-          <span class="sm:hidden">+{@overflow}</span>
-          <span class="hidden sm:inline">+{@overflow} more…</span>
-        </p>
-      <% end %>
+      <div class={[
+        "flex items-center ml-1 shrink-0 h-4",
+        !@current_month? && "opacity-50"
+      ]}>
+        <%= if @overflow > 0 do %>
+          <p class="text-xs font-semibold text-gray-500">
+            <span class="sm:hidden">+{@overflow}</span>
+            <span class="hidden sm:inline">+{@overflow} more…</span>
+          </p>
+        <% end %>
+      </div>
     </div>
     """
   end
