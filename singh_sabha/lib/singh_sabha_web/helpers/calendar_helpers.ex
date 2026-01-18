@@ -30,27 +30,37 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
 
   def get_total_events(events, date, :day) do
     Enum.count(events, fn event ->
-      event_date = DateTime.to_date(event.start)
-      Date.compare(event_date, date) == :eq
+      start_date = DateTime.to_date(event.start)
+      end_date = DateTime.to_date(event.end)
+
+      Date.compare(date, start_date) != :lt and
+        Date.compare(date, end_date) != :gt
     end)
   end
 
   def get_total_events(events, date, :week) do
     week_start = Date.beginning_of_week(date, :sunday)
-    week_end = Date.add(week_start, 6)
+    week_end = Date.end_of_week(date, :sunday)
 
     Enum.count(events, fn event ->
-      event_date = DateTime.to_date(event.start)
+      start_date = DateTime.to_date(event.start)
+      end_date = DateTime.to_date(event.end)
 
-      Date.compare(event_date, week_start) in [:eq, :gt] and
-        Date.compare(event_date, week_end) in [:eq, :lt]
+      Date.compare(start_date, week_end) != :gt and
+        Date.compare(end_date, week_start) != :lt
     end)
   end
 
   def get_total_events(events, date, :month) do
+    month_start = Date.beginning_of_month(date)
+    month_end = Date.end_of_month(date)
+
     Enum.count(events, fn event ->
-      event_date = DateTime.to_date(event.start)
-      event_date.year == date.year and event_date.month == date.month
+      start_date = DateTime.to_date(event.start)
+      end_date = DateTime.to_date(event.end)
+
+      Date.compare(start_date, month_end) != :gt and
+        Date.compare(end_date, month_start) != :lt
     end)
   end
 
