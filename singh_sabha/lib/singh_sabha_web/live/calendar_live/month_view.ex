@@ -22,14 +22,14 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       |> assign(:max_visible_events, max_visible_events)
 
     ~H"""
-    <div class="border-t border-base-300">
-      <div class="grid grid-cols-7 divide-x divide-base-300">
+    <div class="border-t border-base-300 h-full flex flex-col">
+      <div class="grid grid-cols-7 divide-x divide-base-300 shrink-0">
         <%= for day <- ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] do %>
           <div class="text-xs text-base-400 font-medium text-center py-2">{day}</div>
         <% end %>
       </div>
 
-      <div class="grid grid-cols-7">
+      <div class="grid grid-cols-7 flex-1 grid-rows-[repeat(auto-fit,minmax(0,1fr))]">
         <%= for date <- @dates do %>
           <.day_cell
             date={date}

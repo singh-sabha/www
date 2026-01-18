@@ -29,8 +29,8 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
       <p>Please switch to daily or monthly view.</p>
     </div>
 
-    <div class="hidden flex-col sm:flex border-t border-base-300">
-      <div>
+    <div class="hidden sm:flex flex-col border-t border-base-300 h-full">
+      <div class="shrink-0">
         <WeekViewMultiDayEventsRow.row
           current_date={@current_date}
           multi_day_events={@multi_day_events}
@@ -48,35 +48,35 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
             <% end %>
           </div>
         </div>
+      </div>
 
-        <div class="overflow-auto hide-scrollbar max-h-[736px]">
-          <div class="flex overflow-hidden">
-            <div class="relative w-18 flex-shrink-0">
-              <%= for {hour, index} <- Enum.with_index(@hours) do %>
-                <div class="relative h-[96px]">
-                  <%= if index != 0 do %>
-                    <div class="absolute -top-3 right-2 flex h-6 items-center">
-                      <span class="text-xs text-base-400">{format_hour(hour)}</span>
-                    </div>
-                  <% end %>
-                </div>
+      <div class="flex-1 min-h-0 overflow-auto hide-scrollbar">
+        <div class="flex overflow-hidden">
+          <div class="relative w-18 flex-shrink-0">
+            <%= for {hour, index} <- Enum.with_index(@hours) do %>
+              <div class="relative h-[96px]">
+                <%= if index != 0 do %>
+                  <div class="absolute -top-3 right-2 flex h-6 items-center">
+                    <span class="text-xs text-base-400">{format_hour(hour)}</span>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="relative flex-1 border-l border-base-300">
+            <div class="grid grid-cols-7">
+              <%= for day <- @week_days do %>
+                <.day_column
+                  day={day}
+                  hours={@hours}
+                  events={@single_day_events}
+                  working_hours={@working_hours}
+                />
               <% end %>
             </div>
 
-            <div class="relative flex-1 border-l border-base-300">
-              <div class="grid grid-cols-7">
-                <%= for day <- @week_days do %>
-                  <.day_column
-                    day={day}
-                    hours={@hours}
-                    events={@single_day_events}
-                    working_hours={@working_hours}
-                  />
-                <% end %>
-              </div>
-
-              <CalendarTimeline.view current_time={@current_time} hours={@hours} />
-            </div>
+            <CalendarTimeline.view current_time={@current_time} hours={@hours} />
           </div>
         </div>
       </div>

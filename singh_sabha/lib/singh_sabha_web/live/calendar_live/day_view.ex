@@ -44,9 +44,9 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
       |> assign(:hours, hours)
 
     ~H"""
-    <div class="flex flex-row">
+    <div class="flex flex-row h-full">
       <div class="flex flex-1 flex-col border-t border-base-300">
-        <div>
+        <div class="shrink-0">
           <DayViewMultiDayEventsRow.row
             current_date={@current_date}
             multi_day_events={@multi_day_events}
@@ -63,7 +63,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
           </div>
         </div>
 
-        <div class="overflow-auto hide-scrollbar max-h-[800px]">
+        <div class="flex-1 min-h-0 overflow-auto hide-scrollbar">
           <div class="flex">
             <div class="relative w-18 flex-shrink-0">
               <%= for {hour, index} <- Enum.with_index(@hours) do %>

@@ -7,101 +7,98 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   def render(assigns) do
     ~H"""
-    <div class="m-2 border border-base-300 rounded-md">
-      <div class="p-4 space-y-4 lg:space-y-0">
-        <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
-          <div class="flex gap-4 items-start">
-            <button
-              class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
-              phx-click="change_view_to_today"
-            >
-              <p class="flex h-6 w-full items-center justify-center bg-black text-center text-xs font-semibold text-white">
-                {String.upcase(get_month_label(@current_time, :abbreviation))}
-              </p>
-              <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
-                {@current_time.day}
-              </p>
-            </button>
-
-            <div class="space-y-1">
-              <div class="flex items-center space-x-2">
-                <span class="text-lg font-semibold">
-                  {get_month_label(@current_date, :full)} {@current_date.year}
-                </span>
-                <div class="badge badge-outline badge-primary">
-                  <% period_events_total = get_total_events(@events, @current_date, @view_mode) %>
-                  {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
+    <div class="p-4 h-screen">
+      <div class="border border-base-300 rounded-md h-full flex flex-col">
+        <div class="p-4 space-y-4 lg:space-y-0 shrink-0">
+          <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
+            <div class="flex gap-4 items-start">
+              <button
+                class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
+                phx-click="change_view_to_today"
+              >
+                <p class="flex h-6 w-full items-center justify-center bg-black text-center text-xs font-semibold text-white">
+                  {String.upcase(get_month_label(@current_time, :abbreviation))}
+                </p>
+                <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
+                  {@current_time.day}
+                </p>
+              </button>
+              <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                  <span class="text-lg font-semibold">
+                    {get_month_label(@current_date, :full)} {@current_date.year}
+                  </span>
+                  <div class="badge badge-outline badge-primary">
+                    <% period_events_total = get_total_events(@events, @current_date, @view_mode) %>
+                    {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
+                  </div>
+                </div>
+                <div class="space-x-4">
+                  <button phx-click="prev_period" class="btn btn-sm btn-square">
+                    <.icon name="hero-chevron-left" />
+                  </button>
+                  <span class="text-sm text-base-400">
+                    {period_label(@current_date, @view_mode)}
+                  </span>
+                  <button phx-click="next_period" class="btn btn-sm btn-square">
+                    <.icon name="hero-chevron-right" />
+                  </button>
                 </div>
               </div>
-
-              <div class="space-x-4">
-                <button phx-click="prev_period" class="btn btn-sm btn-square">
-                  <.icon name="hero-chevron-left" />
-                </button>
-
-                <span class="text-sm text-base-400">
-                  {period_label(@current_date, @view_mode)}
-                </span>
-
-                <button phx-click="next_period" class="btn btn-sm btn-square">
-                  <.icon name="hero-chevron-right" />
-                </button>
-              </div>
+            </div>
+            <div class="join w-full lg:w-auto">
+              <button
+                class="btn join-item flex-1 lg:flex-none"
+                phx-click="change_view"
+                phx-value-view="month"
+              >
+                Month
+              </button>
+              <button
+                class="btn join-item flex-1 lg:flex-none"
+                phx-click="change_view"
+                phx-value-view="week"
+              >
+                Week
+              </button>
+              <button
+                class="btn join-item flex-1 lg:flex-none"
+                phx-click="change_view"
+                phx-value-view="day"
+              >
+                Day
+              </button>
             </div>
           </div>
+        </div>
 
-          <div class="join w-full lg:w-auto">
-            <button
-              class="btn join-item flex-1 lg:flex-none"
-              phx-click="change_view"
-              phx-value-view="month"
-            >
-              Month
-            </button>
-            <button
-              class="btn join-item flex-1 lg:flex-none"
-              phx-click="change_view"
-              phx-value-view="week"
-            >
-              Week
-            </button>
-            <button
-              class="btn join-item flex-1 lg:flex-none"
-              phx-click="change_view"
-              phx-value-view="day"
-            >
-              Day
-            </button>
-          </div>
+        <div class="flex-1 min-h-0 overflow-auto">
+          <%= if @view_mode == :month do %>
+            <MonthView.view
+              current_date={@current_date}
+              events={@events}
+            />
+          <% end %>
+          <%= if @view_mode == :week do %>
+            <WeekView.view
+              current_date={@current_date}
+              current_time={@current_time}
+              events={@events}
+              working_hours={@working_hours}
+              visible_hours={@visible_hours}
+            />
+          <% end %>
+          <%= if @view_mode == :day do %>
+            <DayView.view
+              current_date={@current_date}
+              current_time={@current_time}
+              events={@events}
+              working_hours={@working_hours}
+              visible_hours={@visible_hours}
+            />
+          <% end %>
         </div>
       </div>
-
-      <%= if @view_mode == :month do %>
-        <MonthView.view
-          current_date={@current_date}
-          events={@events}
-        />
-      <% end %>
-
-      <%= if @view_mode == :week do %>
-        <WeekView.view
-          current_date={@current_date}
-          current_time={@current_time}
-          events={@events}
-          working_hours={@working_hours}
-          visible_hours={@visible_hours}
-        />
-      <% end %>
-
-      <%= if @view_mode == :day do %>
-        <DayView.view
-          current_date={@current_date}
-          current_time={@current_time}
-          events={@events}
-          working_hours={@working_hours}
-          visible_hours={@visible_hours}
-        />
-      <% end %>
     </div>
     """
   end
