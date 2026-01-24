@@ -18,8 +18,8 @@ defmodule SinghSabhaWeb.CalendarLive.EventModal do
         </p>
         <.form
           for={@form}
-          phx-change="validate"
-          phx-submit="save"
+          phx-change="validate_event"
+          phx-submit="create_event"
           phx-target={@myself}
           class="space-y-4 mt-4"
         >
@@ -64,7 +64,7 @@ defmodule SinghSabhaWeb.CalendarLive.EventModal do
           />
 
           <div class="modal-action">
-            <button type="submit" class="btn btn-primary">Save Event</button>
+            <button type="submit" class="btn btn-primary">Create Event</button>
             <button type="button" class="btn" onclick="event_modal.close()">Cancel</button>
           </div>
         </.form>
@@ -84,7 +84,7 @@ defmodule SinghSabhaWeb.CalendarLive.EventModal do
      |> assign(form: to_form(Events.change_event(%Event{})))}
   end
 
-  def handle_event("validate", %{"event" => params}, socket) do
+  def handle_event("validate_event", %{"event" => params}, socket) do
     form =
       %Event{}
       |> Events.change_event(params)
@@ -93,7 +93,7 @@ defmodule SinghSabhaWeb.CalendarLive.EventModal do
     {:noreply, assign(socket, form: form)}
   end
 
-  def handle_event("save", %{"event" => params}, socket) do
+  def handle_event("create_event", %{"event" => params}, socket) do
     case Events.create_event(params) do
       {:ok, event} ->
         Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_created, event})
