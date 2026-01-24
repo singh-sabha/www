@@ -90,9 +90,8 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
         phx-click="select_date"
         phx-value-date={Date.to_iso8601(@date)}
         class={[
-          "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0",
+          "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0 mb-1",
           "hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500",
-          "lg:px-2",
           !@current_month? && "opacity-20",
           @today? && "bg-black text-white"
         ]}
