@@ -135,14 +135,14 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
         <% style =
           get_event_style(event, relative_position, total_overlapping, @hours) %>
 
-        <% colour = event_type_to_colour(event.type) %>
+        <% colour = event_type_to_colour(event.event_type.display_name) %>
 
         <div class="absolute p-1" style={style}>
           <div class={[
             "h-full rounded-md border px-2 py-1 text-xs overflow-hidden",
             badge_colour(colour)
           ]}>
-            <div class="font-medium truncate">{event.title}</div>
+            <div class="font-medium truncate">{event.occassion}</div>
             {format_time(event.start)} - {format_time(event.end)}
           </div>
         </div>

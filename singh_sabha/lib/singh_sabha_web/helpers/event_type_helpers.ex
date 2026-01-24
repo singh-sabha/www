@@ -1,6 +1,11 @@
 defmodule SinghSabhaWeb.Helpers.EventTypeHelpers do
-  def event_type_to_colour("Akhand Path"), do: :green
-  def event_type_to_colour(_), do: :gray
+  def event_type_to_colour("Other"), do: :gray
+  def event_type_to_colour("Funeral"), do: :green
+  def event_type_to_colour("Sukhmani Sahib Path"), do: :blue
+  def event_type_to_colour("Sehaj Path"), do: :red
+  def event_type_to_colour("Akhand Path"), do: :orange
+  def event_type_to_colour("Langar"), do: :purple
+  def event_type_to_colour("Anand Karaj"), do: :yellow
 
   def badge_colour(:green) do
     "border-green-200 bg-green-50 text-green-700 " <>
@@ -37,8 +42,8 @@ defmodule SinghSabhaWeb.Helpers.EventTypeHelpers do
       "dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300"
   end
 
-  def dot_colour(:green), do: "bg-green-600"
   def dot_colour(:gray), do: "bg-neutral-600"
+  def dot_colour(:green), do: "bg-green-600"
   def dot_colour(:blue), do: "bg-blue-600"
   def dot_colour(:red), do: "bg-red-600"
   def dot_colour(:orange), do: "bg-orange-600"

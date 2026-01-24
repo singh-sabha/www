@@ -3,10 +3,12 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   import SinghSabhaWeb.Helpers.CalendarHelpers
 
-  alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView}
+  alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView, EventModal}
+  alias SinghSabha.Events
 
   def render(assigns) do
     ~H"""
+    <div id="success">{Phoenix.Flash.get(@flash, :success)}</div>
     <div class="p-4 h-screen">
       <div class="border border-base-300 rounded-md h-full flex flex-col">
         <div class="p-4 space-y-4 lg:space-y-0 shrink-0">
@@ -46,27 +48,34 @@ defmodule SinghSabhaWeb.CalendarLive do
                 </div>
               </div>
             </div>
-            <div class="join w-full lg:w-auto">
-              <button
-                class="btn join-item flex-1 lg:flex-none"
-                phx-click="change_view"
-                phx-value-view="month"
-              >
-                Month
-              </button>
-              <button
-                class="btn join-item flex-1 lg:flex-none"
-                phx-click="change_view"
-                phx-value-view="week"
-              >
-                Week
-              </button>
-              <button
-                class="btn join-item flex-1 lg:flex-none"
-                phx-click="change_view"
-                phx-value-view="day"
-              >
-                Day
+
+            <div class="space-x-2">
+              <div class="join w-full lg:w-auto">
+                <button
+                  class="btn join-item flex-1 lg:flex-none"
+                  phx-click="change_view"
+                  phx-value-view="month"
+                >
+                  Month
+                </button>
+                <button
+                  class="btn join-item flex-1 lg:flex-none"
+                  phx-click="change_view"
+                  phx-value-view="week"
+                >
+                  Week
+                </button>
+                <button
+                  class="btn join-item flex-1 lg:flex-none"
+                  phx-click="change_view"
+                  phx-value-view="day"
+                >
+                  Day
+                </button>
+              </div>
+
+              <button class="btn" onclick="event_modal.showModal()">
+                <.icon name="hero-plus-circle" /> Create Event
               </button>
             </div>
           </div>
@@ -99,6 +108,8 @@ defmodule SinghSabhaWeb.CalendarLive do
           <% end %>
         </div>
       </div>
+
+      <.live_component module={EventModal} id="event_modal" />
     </div>
     """
   end
@@ -108,6 +119,8 @@ defmodule SinghSabhaWeb.CalendarLive do
     today = DateTime.to_date(now)
 
     if connected?(socket) do
+      Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
+
       seconds_until_next_minute = 60 - now.second
 
       milliseconds_until_next_minute =
@@ -167,74 +180,21 @@ defmodule SinghSabhaWeb.CalendarLive do
     {:noreply, assign(socket, :current_time, DateTime.now!("America/Vancouver"))}
   end
 
-  defp load_events(socket) do
-    events = [
-      %{
-        id: 1,
-        title: "Team Meeting",
-        start: ~U[2026-01-15 10:00:00Z],
-        end: ~U[2026-01-15 11:00:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 2,
-        title: "Standup",
-        start: ~U[2026-01-15 10:00:00Z],
-        end: ~U[2026-01-15 10:15:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 3,
-        title: "Review",
-        start: ~U[2026-01-15 10:30:00Z],
-        end: ~U[2026-01-15 11:00:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 4,
-        title: "Lunch",
-        start: ~U[2026-01-15 12:00:00Z],
-        end: ~U[2026-01-15 13:00:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 5,
-        title: "Dinner",
-        start: ~U[2026-01-15 17:00:00Z],
-        end: ~U[2026-01-15 19:00:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 6,
-        title: "Project Review",
-        start: ~U[2026-01-16 14:00:00Z],
-        end: ~U[2026-01-16 16:00:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 7,
-        title: "Conference",
-        start: ~U[2026-01-13 09:00:00Z],
-        end: ~U[2026-01-15 17:00:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 8,
-        title: "Seminar",
-        start: ~U[2026-01-13 09:00:00Z],
-        end: ~U[2026-01-15 17:00:00Z],
-        type: "Akhand Path"
-      },
-      %{
-        id: 9,
-        title: "Vacation",
-        start: ~U[2026-01-20 00:00:00Z],
-        end: ~U[2026-01-25 23:59:59Z],
-        type: "Akhand Path"
-      }
-    ]
+  def handle_info({:event_created, _event}, socket) do
+    {:noreply, load_events(socket)}
+  end
 
-    assign(socket, :events, events)
+  def handle_info({:event_updated, _event}, socket) do
+    {:noreply, load_events(socket)}
+  end
+
+  def handle_info({:event_deleted, _event}, socket) do
+    {:noreply, load_events(socket)}
+  end
+
+  defp load_events(socket) do
+    socket
+    |> assign(:events, Events.list_events())
   end
 
   defp shift_date(date, :month, offset), do: Date.add(date, offset * 30)

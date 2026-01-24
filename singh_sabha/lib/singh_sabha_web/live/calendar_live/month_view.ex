@@ -108,7 +108,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
           <% segment = Enum.find(@segments, &(&1.row == row)) %>
 
           <%= if segment do %>
-            <% colour = event_type_to_colour(segment.event.type) %>
+            <% colour = event_type_to_colour(segment.event.event_type.display_name) %>
 
             <div class={[
               "lg:flex-1",
@@ -132,7 +132,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
               ]}>
                 <%= if segment.starts? do %>
                   <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
-                    <span class="truncate">{segment.event.title}</span>
+                    <span class="truncate">{segment.event.occassion}</span>
                     <span>{format_time(segment.event.start)}</span>
                   </div>
                 <% end %>

@@ -35,7 +35,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
                 <%= if event do %>
                   <% starts = day_index == event.start_index %>
                   <% ends = day_index == event.end_index %>
-                  <% colour = event_type_to_colour(event.original_event.type) %>
+                  <% colour = event_type_to_colour(event.original_event.event_type.display_name) %>
 
                   <.multi_day_event_badge
                     event={event.original_event}
@@ -127,7 +127,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
     ]}>
       <%= if @starts do %>
         <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
-          <span class="truncate">{@event.title}</span>
+          <span class="truncate">{@event.occassion}</span>
           <span>{format_time(@event.start)}</span>
         </div>
       <% end %>

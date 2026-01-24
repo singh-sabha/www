@@ -97,13 +97,13 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                   <% relative_position = Enum.find_index(overlapping_indices, &(&1 == group_index)) %>
                   <% style =
                     get_event_style(event, relative_position, total_overlapping, @hours) %>
-                  <% colour = event_type_to_colour(event.type) %>
+                  <% colour = event_type_to_colour(event.event_type.display_name) %>
                   <div class="absolute p-1" style={style}>
                     <div class={[
                       "h-full rounded-md border px-2 py-1 text-xs overflow-hidden",
                       badge_colour(colour)
                     ]}>
-                      <div class="font-medium truncate">{event.title}</div>
+                      <div class="font-medium truncate">{event.occassion}</div>
                       {format_time(event.start)} - {format_time(event.end)}
                     </div>
                   </div>
@@ -167,7 +167,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
               <div class="space-y-6 pb-4">
                 <%= for event <- current_events do %>
                   <div class="space-y-1.5">
-                    <p class="line-clamp-2 text-sm font-semibold">{event.title}</p>
+                    <p class="line-clamp-2 text-sm font-semibold">{event.occassion}</p>
 
                     <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-calendar" class="h-3.5 w-3.5" />
