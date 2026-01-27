@@ -31,7 +31,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
             required
           />
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-0">
             <.input
               field={@form[:start]}
               type="datetime-local"
@@ -61,6 +61,13 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
             label="Notes"
             placeholder="Add any notes or requests, for example, requesting an evening or afternoon Langar"
             rows="4"
+          />
+
+          <.input
+            field={@form[:is_public]}
+            type="checkbox"
+            label="Public event"
+            class="checkbox"
           />
 
           <div class="modal-action">
@@ -101,7 +108,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         {:noreply,
          socket
          |> put_flash(:success, "Event created")
-         |> push_event("close_modal", %{id: "create_event_modal"})}
+         |> push_event("close-modal", %{id: "create_event_modal"})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
