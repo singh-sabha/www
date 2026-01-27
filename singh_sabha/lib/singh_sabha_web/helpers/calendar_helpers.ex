@@ -17,6 +17,10 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
     Calendar.strftime(datetime, "%b %-d, %Y")
   end
 
+  def format_datetime(datetime) do
+    Calendar.strftime(datetime, "%b %-d, %Y %-I:%M %p")
+  end
+
   def partition_events(events) do
     Enum.split_with(events, fn event ->
       start_date = DateTime.to_date(event.start)
