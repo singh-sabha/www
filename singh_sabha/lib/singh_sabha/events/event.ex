@@ -35,6 +35,18 @@ defmodule SinghSabha.Events.Event do
       :is_deposit_paid
     ])
     |> validate_required([:type, :start, :end, :occassion])
+    |> validate_event_period()
     |> foreign_key_constraint(:type)
+  end
+
+  def validate_event_period(changeset) do
+    start_time = get_field(changeset, :start)
+    end_time = get_field(changeset, :end)
+
+    if start_time && end_time && DateTime.compare(end_time, start_time) == :lt do
+      add_error(changeset, :end, "must be after the start time")
+    else
+      changeset
+    end
   end
 end
