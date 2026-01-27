@@ -77,7 +77,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       |> assign(:saturday?, Date.day_of_week(assigns.date) == 6)
       |> assign(:sunday?, Date.day_of_week(assigns.date) == 7)
       |> assign(:current_month?, assigns.date.month == assigns.current_date.month)
-      |> assign(:today?, assigns.date == Date.utc_today())
+      |> assign(:today?, assigns.date == assigns.current_date)
       |> assign(:segments, segments)
       |> assign(:overflow, overflow)
 
@@ -119,16 +119,20 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
                 dot_colour(colour)
               ]}>
               </div>
-              <div class={[
-                "hidden lg:flex h-6.5 items-center text-xs font-medium border",
-                badge_colour(colour),
-                segment.starts? && "rounded-l-md",
-                segment.ends? && "rounded-r-md",
-                !segment.starts? && "rounded-l-none border-l-0",
-                !segment.ends? && "rounded-r-none border-r-0",
-                !@sunday? && "-ml-px",
-                !@saturday? && "-mr-px"
-              ]}>
+              <div
+                class={[
+                  "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
+                  badge_colour(colour),
+                  segment.starts? && "rounded-l-md",
+                  segment.ends? && "rounded-r-md",
+                  !segment.starts? && "rounded-l-none border-l-0",
+                  !segment.ends? && "rounded-r-none border-r-0",
+                  !@sunday? && "-ml-px",
+                  !@saturday? && "-mr-px"
+                ]}
+                phx-click="view_event"
+                phx-value-event-id={segment.event.id}
+              >
                 <%= if segment.starts? do %>
                   <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
                     <span class="truncate">{segment.event.occassion}</span>

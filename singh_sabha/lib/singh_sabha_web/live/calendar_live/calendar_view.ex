@@ -3,7 +3,15 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   import SinghSabhaWeb.Helpers.CalendarHelpers
 
-  alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView, CreateEventModal}
+  alias SinghSabhaWeb.CalendarLive.{
+    MonthView,
+    WeekView,
+    DayView,
+    CreateEventModal,
+    EditEventModal,
+    ViewEventModal
+  }
+
   alias SinghSabha.Events
 
   def render(assigns) do
@@ -109,7 +117,19 @@ defmodule SinghSabhaWeb.CalendarLive do
         </div>
       </div>
 
+      <.live_component
+        module={ViewEventModal}
+        id="view_event_modal"
+        selected_event={@selected_event}
+      />
       <.live_component module={CreateEventModal} id="create_event_modal" />
+      <.live_component
+        module={EditEventModal}
+        id="edit_event_modal"
+        selected_event={@selected_event}
+      />
+
+      <div phx-hook="ModalManager" id="modal-manager"></div>
     </div>
     """
   end
@@ -137,6 +157,7 @@ defmodule SinghSabhaWeb.CalendarLive do
       |> assign(:selected_date, today)
       |> assign(:working_hours, %{start: 4, end: 20})
       |> assign(:visible_hours, :working_hours)
+      |> assign(:selected_event, nil)
       |> load_events()
 
     {:ok, socket}
@@ -174,6 +195,30 @@ defmodule SinghSabhaWeb.CalendarLive do
     end
   end
 
+  def handle_event("view_event", %{"event-id" => event_id}, socket) do
+    event =
+      Enum.find(socket.assigns.events, fn event ->
+        event.id == String.to_integer(event_id)
+      end)
+
+    {:noreply,
+     socket
+     |> assign(:selected_event, event)
+     |> push_event("open-modal", %{id: "view_event_modal"})}
+  end
+
+  def handle_event("edit_event", %{"event-id" => event_id}, socket) do
+    event =
+      Enum.find(socket.assigns.events, fn event ->
+        event.id == String.to_integer(event_id)
+      end)
+
+    {:noreply,
+     socket
+     |> assign(:selected_event, event)
+     |> push_event("open-modal", %{id: "edit_event_modal"})}
+  end
+
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 30_000)
 
@@ -184,8 +229,20 @@ defmodule SinghSabhaWeb.CalendarLive do
     {:noreply, load_events(socket)}
   end
 
-  def handle_info({:event_updated, _event}, socket) do
-    {:noreply, load_events(socket)}
+  def handle_info({:event_updated, updated_event}, socket) do
+    socket =
+      socket
+      |> load_events()
+      |> then(fn socket ->
+        if socket.assigns.selected_event &&
+             socket.assigns.selected_event.id == updated_event.id do
+          assign(socket, :selected_event, Events.get_event!(updated_event.id))
+        else
+          socket
+        end
+      end)
+
+    {:noreply, socket}
   end
 
   def handle_info({:event_deleted, _event}, socket) do
@@ -193,8 +250,19 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp load_events(socket) do
+    events = Events.list_events()
+
+    events_in_local_tz =
+      Enum.map(events, fn event ->
+        %{
+          event
+          | start: DateTime.shift_zone!(event.start, "America/Vancouver"),
+            end: DateTime.shift_zone!(event.end, "America/Vancouver")
+        }
+      end)
+
     socket
-    |> assign(:events, Events.list_events())
+    |> assign(:events, events_in_local_tz)
   end
 
   defp shift_date(date, :month, offset), do: Date.add(date, offset * 30)
