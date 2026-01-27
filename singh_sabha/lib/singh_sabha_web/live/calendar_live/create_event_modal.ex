@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.EventModal do
+defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabha.Events.Event
@@ -7,7 +7,7 @@ defmodule SinghSabhaWeb.CalendarLive.EventModal do
   def render(assigns) do
     ~H"""
     <dialog
-      id="event_modal"
+      id="create_event_modal"
       class="modal overflow-y-scroll"
       phx-mounted={JS.ignore_attributes(["open"])}
     >
@@ -65,7 +65,7 @@ defmodule SinghSabhaWeb.CalendarLive.EventModal do
 
           <div class="modal-action">
             <button type="submit" class="btn btn-primary">Create Event</button>
-            <button type="button" class="btn" onclick="event_modal.close()">Cancel</button>
+            <button type="button" class="btn" onclick="create_event_modal.close()">Cancel</button>
           </div>
         </.form>
       </div>
@@ -101,7 +101,7 @@ defmodule SinghSabhaWeb.CalendarLive.EventModal do
         {:noreply,
          socket
          |> put_flash(:success, "Event created")
-         |> push_event("close_modal", %{id: "event_modal"})}
+         |> push_event("close_modal", %{id: "create_event_modal"})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}

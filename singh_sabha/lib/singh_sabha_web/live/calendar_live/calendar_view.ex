@@ -3,7 +3,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   import SinghSabhaWeb.Helpers.CalendarHelpers
 
-  alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView, EventModal}
+  alias SinghSabhaWeb.CalendarLive.{MonthView, WeekView, DayView, CreateEventModal}
   alias SinghSabha.Events
 
   def render(assigns) do
@@ -74,7 +74,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                 </button>
               </div>
 
-              <button class="btn" onclick="event_modal.showModal()">
+              <button class="btn" onclick="create_event_modal.showModal()">
                 <.icon name="hero-plus-circle" /> Create Event
               </button>
             </div>
@@ -109,7 +109,7 @@ defmodule SinghSabhaWeb.CalendarLive do
         </div>
       </div>
 
-      <.live_component module={EventModal} id="event_modal" />
+      <.live_component module={CreateEventModal} id="create_event_modal" />
     </div>
     """
   end
