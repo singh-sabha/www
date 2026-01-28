@@ -117,14 +117,18 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
 
   defp multi_day_event_badge(assigns) do
     ~H"""
-    <div class={[
-      "h-6.5 text-xs font-medium flex items-center border -mx-px",
-      badge_colour(@colour),
-      @starts && "rounded-l-md ml-1",
-      @ends && "rounded-r-md mr-1",
-      !@starts && "rounded-l-none border-l-0",
-      !@ends && "rounded-r-none border-r-0"
-    ]}>
+    <div
+      class={[
+        "h-6.5 text-xs font-medium flex items-center border -mx-px cursor-pointer",
+        badge_colour(@colour),
+        @starts && "rounded-l-md ml-1",
+        @ends && "rounded-r-md mr-1",
+        !@starts && "rounded-l-none border-l-0",
+        !@ends && "rounded-r-none border-r-0"
+      ]}
+      phx-click="view_event"
+      phx-value-event-id={@event.id}
+    >
       <%= if @starts do %>
         <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
           <span class="truncate">{@event.occassion}</span>

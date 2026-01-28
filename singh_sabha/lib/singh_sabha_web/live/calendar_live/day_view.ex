@@ -99,10 +99,14 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                     get_event_style(event, relative_position, total_overlapping, @hours) %>
                   <% colour = event_type_to_colour(event.event_type.display_name) %>
                   <div class="absolute p-1" style={style}>
-                    <div class={[
-                      "h-full rounded-md border px-2 py-1 text-xs overflow-hidden",
-                      badge_colour(colour)
-                    ]}>
+                    <div
+                      class={[
+                        "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer",
+                        badge_colour(colour)
+                      ]}
+                      phx-click="view_event"
+                      phx-value-event-id={event.id}
+                    >
                       <div class="font-medium truncate">{event.occassion}</div>
                       {format_time(event.start)} - {format_time(event.end)}
                     </div>

@@ -60,7 +60,11 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
       "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
       badge_colour(colour)
     ]}>
-      <div class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap">
+      <div
+        class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap cursor-pointer"
+        phx-click="view_event"
+        phx-value-event-id={@event.id}
+      >
         <span class="truncate">
           Day {@event_current_day} of {@event_total_days} • {@event.occassion}
         </span>
