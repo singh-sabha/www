@@ -16,6 +16,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         <p class="text-base-content/70 text-sm">
           Fill out the form based on your request. Click submit when you're done.
         </p>
+
         <.form
           for={@form}
           phx-change="validate_event"
@@ -72,10 +73,13 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
 
           <div class="modal-action">
             <button type="submit" class="btn btn-primary">Create Event</button>
-            <button type="button" class="btn" onclick="create_event_modal.close()">Cancel</button>
+            <button type="button" class="btn" onclick="create_event_modal.close()">
+              Cancel
+            </button>
           </div>
         </.form>
       </div>
+
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
       </form>
@@ -87,23 +91,32 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:event_types, Events.list_event_types())
-     |> assign(form: to_form(Events.change_event(%Event{})))}
+     |> assign(
+       form:
+         to_form(
+           Events.change_event(%Event{}),
+           as: :create_event
+         )
+     )}
   end
 
-  def handle_event("validate_event", %{"event" => params}, socket) do
+  def handle_event("validate_event", %{"create_event" => params}, socket) do
     form =
       %Event{}
       |> Events.change_event(params)
-      |> to_form(action: :validate)
+      |> to_form(action: :validate, as: :create_event)
 
     {:noreply, assign(socket, form: form)}
   end
 
-  def handle_event("create_event", %{"event" => params}, socket) do
+  def handle_event("create_event", %{"create_event" => params}, socket) do
     case Events.create_event(params) do
       {:ok, event} ->
-        Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_created, event})
+        Phoenix.PubSub.broadcast(
+          SinghSabha.PubSub,
+          "events",
+          {:event_created, event}
+        )
 
         {:noreply,
          socket
@@ -111,7 +124,11 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
          |> push_event("close-modal", %{id: "create_event_modal"})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply,
+         assign(
+           socket,
+           form: to_form(changeset, as: :create_event)
+         )}
     end
   end
 end

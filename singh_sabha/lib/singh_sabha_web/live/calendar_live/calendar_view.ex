@@ -122,7 +122,11 @@ defmodule SinghSabhaWeb.CalendarLive do
         id="view_event_modal"
         selected_event={@selected_event}
       />
-      <.live_component module={CreateEventModal} id="create_event_modal" />
+      <.live_component
+        module={CreateEventModal}
+        id="create_event_modal"
+        event_types={@event_types}
+      />
       <.live_component
         module={EditEventModal}
         id="edit_event_modal"
@@ -159,6 +163,7 @@ defmodule SinghSabhaWeb.CalendarLive do
       |> assign(:visible_hours, :working_hours)
       |> assign(:selected_event, nil)
       |> load_events()
+      |> load_event_types()
 
     {:ok, socket}
   end
@@ -291,6 +296,11 @@ defmodule SinghSabhaWeb.CalendarLive do
 
     socket
     |> assign(:events, events_in_local_tz)
+  end
+
+  defp load_event_types(socket) do
+    socket
+    |> assign(:event_types, Events.list_event_types())
   end
 
   defp shift_date(date, :month, offset), do: Date.add(date, offset * 30)
