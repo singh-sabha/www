@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.MonthView do
   use Phoenix.Component
 
-  import SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
 
   def view(assigns) do
     max_visible_events = 4
@@ -107,7 +107,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
           <% segment = Enum.find(@segments, &(&1.row == row)) %>
 
           <%= if segment do %>
-            <% colour = event_type_to_colour(segment.event.event_type.display_name) %>
+            <% colour = EventTypeHelpers.event_type_to_colour(segment.event.event_type.display_name) %>
 
             <div class={[
               "lg:flex-1",
@@ -116,13 +116,13 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
             ]}>
               <div class={[
                 "w-2 h-2 rounded-full lg:hidden",
-                dot_colour(colour)
+                EventTypeHelpers.dot_colour(colour)
               ]}>
               </div>
               <div
                 class={[
                   "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
-                  badge_colour(colour),
+                  EventTypeHelpers.badge_colour(colour),
                   segment.starts? && "rounded-l-md",
                   segment.ends? && "rounded-r-md",
                   !segment.starts? && "rounded-l-none border-l-0",
@@ -136,7 +136,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
                 <%= if segment.starts? do %>
                   <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
                     <span class="truncate">{segment.event.occassion}</span>
-                    <span>{format_time(segment.event.start)}</span>
+                    <span>{CalendarHelpers.format_time(segment.event.start)}</span>
                   </div>
                 <% end %>
               </div>

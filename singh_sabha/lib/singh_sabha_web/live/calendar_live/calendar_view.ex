@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive do
   use SinghSabhaWeb, :live_view
 
-  import SinghSabhaWeb.Helpers.CalendarHelpers
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
 
   alias SinghSabhaWeb.CalendarLive.{
     MonthView,
@@ -27,7 +27,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                 phx-click="change_view_to_today"
               >
                 <p class="flex h-6 w-full items-center justify-center bg-black text-center text-xs font-semibold text-white">
-                  {String.upcase(get_month_label(@current_time, :abbreviation))}
+                  {String.upcase(CalendarHelpers.get_month_label(@current_time, :abbreviation))}
                 </p>
                 <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
                   {@current_time.day}
@@ -36,10 +36,11 @@ defmodule SinghSabhaWeb.CalendarLive do
               <div class="space-y-1">
                 <div class="flex items-center space-x-2">
                   <span class="text-lg font-semibold">
-                    {get_month_label(@current_date, :full)} {@current_date.year}
+                    {CalendarHelpers.get_month_label(@current_date, :full)} {@current_date.year}
                   </span>
                   <div class="badge badge-outline badge-primary">
-                    <% period_events_total = get_total_events(@events, @current_date, @view_mode) %>
+                    <% period_events_total =
+                      CalendarHelpers.get_total_events(@events, @current_date, @view_mode) %>
                     {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
                   </div>
                 </div>
@@ -139,7 +140,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def mount(_params, _session, socket) do
-    now = DateTime.now!("America/Vancouver")
+    now = DateTime.now!(TimezoneHelpers.local())
     today = DateTime.to_date(now)
 
     if connected?(socket) do
@@ -249,7 +250,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 30_000)
 
-    {:noreply, assign(socket, :current_time, DateTime.now!("America/Vancouver"))}
+    {:noreply, assign(socket, :current_time, DateTime.now!(TimezoneHelpers.local()))}
   end
 
   def handle_info({:event_created, _event}, socket) do
@@ -277,24 +278,11 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp load_events(socket) do
-    events = Events.list_events()
-
-    events_in_local_tz =
-      Enum.map(events, fn event ->
-        %{
-          event
-          | start: DateTime.shift_zone!(event.start, "America/Vancouver"),
-            end: DateTime.shift_zone!(event.end, "America/Vancouver")
-        }
-      end)
-
-    socket
-    |> assign(:events, events_in_local_tz)
+    assign(socket, :events, Events.list_events())
   end
 
   defp load_event_types(socket) do
-    socket
-    |> assign(:event_types, Events.list_event_types())
+    assign(socket, :event_types, Events.list_event_types())
   end
 
   defp shift_date(date, :month, offset), do: Date.add(date, offset * 30)

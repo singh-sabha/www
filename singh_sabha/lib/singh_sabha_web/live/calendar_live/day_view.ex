@@ -2,11 +2,11 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  import SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
   alias SinghSabhaWeb.CalendarLive.Components.{DayViewMultiDayEventsRow, CalendarTimeline}
 
   def view(assigns) do
-    {single_day_events, multi_day_events} = partition_events(assigns.events)
+    {single_day_events, multi_day_events} = CalendarHelpers.partition_events(assigns.events)
 
     day_events =
       single_day_events
@@ -15,7 +15,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
         Date.compare(event_date, assigns.current_date) == :eq
       end)
 
-    grouped_events = group_overlapping_events(day_events)
+    grouped_events = CalendarHelpers.group_overlapping_events(day_events)
 
     events_with_overlap_info =
       for {group, group_index} <- Enum.with_index(grouped_events),
@@ -25,7 +25,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
           |> Enum.with_index()
           |> Enum.filter(fn {other_group, _other_index} ->
             Enum.any?(other_group, fn other_event ->
-              events_overlap?(event, other_event)
+              CalendarHelpers.events_overlap?(event, other_event)
             end)
           end)
           |> Enum.map(fn {_group, index} -> index end)
@@ -33,7 +33,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
         {event, group_index, overlapping_group_indices}
       end
 
-    hours = get_visible_hours(assigns.visible_hours, assigns.working_hours)
+    hours = CalendarHelpers.get_visible_hours(assigns.visible_hours, assigns.working_hours)
 
     assigns =
       assigns
@@ -70,7 +70,9 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                 <div class="relative h-[96px]">
                   <%= if index != 0 do %>
                     <div class="absolute -top-3 right-2 flex h-6 items-center">
-                      <span class="text-xs text-base-content/50">{format_hour(hour)}</span>
+                      <span class="text-xs text-base-content/50">
+                        {CalendarHelpers.format_hour(hour)}
+                      </span>
                     </div>
                   <% end %>
                 </div>
@@ -80,7 +82,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
             <div class="relative flex-1 border-l border-base-300">
               <div class="relative">
                 <%= for {hour, index} <- Enum.with_index(@hours) do %>
-                  <% is_working = working_hour?(@current_date, hour, @working_hours) %>
+                  <% is_working = CalendarHelpers.working_hour?(@current_date, hour, @working_hours) %>
                   <div class={["relative h-[96px]", !is_working && "bg-calendar-disabled-hour"]}>
                     <%= if index != 0 do %>
                       <div class="pointer-events-none absolute inset-x-0 top-0 border-b border-base-300">
@@ -96,19 +98,26 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                   <% total_overlapping = length(overlapping_indices) %>
                   <% relative_position = Enum.find_index(overlapping_indices, &(&1 == group_index)) %>
                   <% style =
-                    get_event_style(event, relative_position, total_overlapping, @hours) %>
-                  <% colour = event_type_to_colour(event.event_type.display_name) %>
+                    CalendarHelpers.get_event_style(
+                      event,
+                      relative_position,
+                      total_overlapping,
+                      @hours
+                    ) %>
+                  <% colour = EventTypeHelpers.event_type_to_colour(event.event_type.display_name) %>
                   <div class="absolute p-1" style={style}>
                     <div
                       class={[
                         "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer",
-                        badge_colour(colour)
+                        EventTypeHelpers.badge_colour(colour)
                       ]}
                       phx-click="view_event"
                       phx-value-event-id={event.id}
                     >
                       <div class="font-medium truncate">{event.occassion}</div>
-                      {format_time(event.start)} - {format_time(event.end)}
+                      {CalendarHelpers.format_time(event.start)} - {CalendarHelpers.format_time(
+                        event.end
+                      )}
                     </div>
                   </div>
                 <% end %>
@@ -175,13 +184,15 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
 
                     <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-calendar" class="h-3.5 w-3.5" />
-                      <span class="text-sm">{format_date(event.start)}</span>
+                      <span class="text-sm">{CalendarHelpers.format_date(event.start)}</span>
                     </div>
 
                     <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-clock" class="h-3.5 w-3.5" />
                       <span class="text-sm">
-                        {format_time(event.start)} - {format_time(event.end)}
+                        {CalendarHelpers.format_time(event.start)} - {CalendarHelpers.format_time(
+                          event.end
+                        )}
                       </span>
                     </div>
                   </div>

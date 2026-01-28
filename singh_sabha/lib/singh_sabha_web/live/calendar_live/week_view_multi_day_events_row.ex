@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
   use Phoenix.Component
 
-  import SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
 
   def row(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
@@ -35,7 +35,10 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
                 <%= if event do %>
                   <% starts = day_index == event.start_index %>
                   <% ends = day_index == event.end_index %>
-                  <% colour = event_type_to_colour(event.original_event.event_type.display_name) %>
+                  <% colour =
+                    EventTypeHelpers.event_type_to_colour(
+                      event.original_event.event_type.display_name
+                    ) %>
 
                   <.multi_day_event_badge
                     event={event.original_event}
@@ -120,7 +123,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
     <div
       class={[
         "h-6.5 text-xs font-medium flex items-center border -mx-px cursor-pointer",
-        badge_colour(@colour),
+        EventTypeHelpers.badge_colour(@colour),
         @starts && "rounded-l-md ml-1",
         @ends && "rounded-r-md mr-1",
         !@starts && "rounded-l-none border-l-0",
@@ -132,7 +135,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
       <%= if @starts do %>
         <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
           <span class="truncate">{@event.occassion}</span>
-          <span>{format_time(@event.start)}</span>
+          <span>{CalendarHelpers.format_time(@event.start)}</span>
         </div>
       <% end %>
     </div>

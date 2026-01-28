@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.CalendarTimeline do
   use Phoenix.Component
 
-  import SinghSabhaWeb.Helpers.CalendarHelpers
+  alias SinghSabhaWeb.Helpers.CalendarHelpers
 
   def view(assigns) do
     now = assigns.current_time
@@ -21,7 +21,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.CalendarTimeline do
       visible_range_minutes = visible_end_minutes - visible_start_minutes
       position = (minutes - visible_start_minutes) / visible_range_minutes * 100
 
-      time_string = format_time(now)
+      time_string = CalendarHelpers.format_time(now)
 
       assigns =
         assigns
