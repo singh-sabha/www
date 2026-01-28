@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
   use Phoenix.Component
 
-  import SinghSabhaWeb.Helpers.{EventTypeHelpers}
+  import SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
 
   def row(assigns) do
     day_start = assigns.current_date
@@ -61,10 +61,10 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
       badge_colour(colour)
     ]}>
       <div class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap">
-        <span class="truncate">{@event.occassion}</span>
-        <span class="ml-2">
-          Day {@event_current_day} of {@event_total_days}
+        <span class="truncate">
+          Day {@event_current_day} of {@event_total_days} • {@event.occassion}
         </span>
+        <span class="ml-2">{format_time(@event.start)}</span>
       </div>
     </div>
     """
