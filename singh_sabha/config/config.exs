@@ -35,6 +35,9 @@ config :singh_sabha, SinghSabhaWeb.Endpoint,
   pubsub_server: SinghSabha.PubSub,
   live_view: [signing_salt: "Du4NU1nw"]
 
+config :singh_sabha,
+  timezone: "America/Vancouver"
+
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
