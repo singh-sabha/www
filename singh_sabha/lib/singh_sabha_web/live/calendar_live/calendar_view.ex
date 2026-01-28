@@ -57,7 +57,7 @@ defmodule SinghSabhaWeb.CalendarLive do
               </div>
             </div>
 
-            <div class="space-x-2">
+            <div class="space-y-2 lg:space-y-0 lg:space-x-2">
               <div class="join w-full lg:w-auto">
                 <button
                   class="btn join-item flex-1 lg:flex-none"
@@ -82,7 +82,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                 </button>
               </div>
 
-              <button class="btn" onclick="create_event_modal.showModal()">
+              <button class="btn w-full lg:w-auto" onclick="create_event_modal.showModal()">
                 <.icon name="hero-plus-circle" /> Create Event
               </button>
             </div>
