@@ -69,9 +69,15 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
               >
                 Edit
               </button>
-              <form method="dialog">
-                <button class="btn">Close</button>
-              </form>
+
+              <button
+                type="button"
+                class="btn btn-error"
+                phx-click="delete_event"
+                phx-value-event-id={@selected_event.id}
+              >
+                Delete
+              </button>
             </div>
           </div>
         <% else %>

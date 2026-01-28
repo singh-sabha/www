@@ -195,6 +195,12 @@ defmodule SinghSabhaWeb.CalendarLive do
     end
   end
 
+  def handle_event("open_create_modal", _, socket) do
+    send_update(CreateEventModal, id: "create_event_modal", action: :reset)
+
+    {:noreply, push_event(socket, "open-modal", %{id: "create_event_modal"})}
+  end
+
   def handle_event("view_event", %{"event-id" => event_id}, socket) do
     event =
       Enum.find(socket.assigns.events, fn event ->
@@ -217,6 +223,28 @@ defmodule SinghSabhaWeb.CalendarLive do
      socket
      |> assign(:selected_event, event)
      |> push_event("open-modal", %{id: "edit_event_modal"})}
+  end
+
+  def handle_event("delete_event", %{"event-id" => event_id}, socket) do
+    event =
+      Enum.find(socket.assigns.events, fn event ->
+        event.id == String.to_integer(event_id)
+      end)
+
+    case Events.delete_event(event) do
+      {:ok, _} ->
+        Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
+
+        {:noreply,
+         socket
+         |> push_event("close-modal", %{id: "view_event_modal"})}
+
+      {:error, _} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Failed to delete event. Please try again.")
+         |> push_event("close-modal", %{id: "view_event_modal"})}
+    end
   end
 
   def handle_info(:tick, socket) do
