@@ -200,12 +200,6 @@ defmodule SinghSabhaWeb.CalendarLive do
     end
   end
 
-  def handle_event("open_create_modal", _, socket) do
-    send_update(CreateEventModal, id: "create_event_modal", action: :reset)
-
-    {:noreply, push_event(socket, "open-modal", %{id: "create_event_modal"})}
-  end
-
   def handle_event("view_event", %{"event-id" => event_id}, socket) do
     event =
       Enum.find(socket.assigns.events, fn event ->
