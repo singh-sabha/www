@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.WeekView do
   use Phoenix.Component
 
-  alias SinghSabhaWeb.CalendarLive.Components.{WeekViewMultiDayEventsRow, CalendarTimeline}
+  alias SinghSabhaWeb.CalendarLive.Components.{WeekViewMultiDayEventsRow, Timeline}
   alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
 
   def view(assigns) do
@@ -78,7 +78,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
               <% end %>
             </div>
 
-            <CalendarTimeline.view current_time={@current_time} hours={@hours} />
+            <Timeline.view current_time={@current_time} hours={@hours} />
           </div>
         </div>
       </div>

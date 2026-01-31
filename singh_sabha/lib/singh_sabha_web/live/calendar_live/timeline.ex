@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.Components.CalendarTimeline do
+defmodule SinghSabhaWeb.CalendarLive.Components.Timeline do
   use Phoenix.Component
 
   alias SinghSabhaWeb.Helpers.CalendarHelpers

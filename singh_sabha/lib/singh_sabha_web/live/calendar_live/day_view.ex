@@ -3,7 +3,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
   use SinghSabhaWeb, :html
 
   alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
-  alias SinghSabhaWeb.CalendarLive.Components.{DayViewMultiDayEventsRow, CalendarTimeline}
+  alias SinghSabhaWeb.CalendarLive.Components.{DayViewMultiDayEventsRow, Timeline}
 
   def view(assigns) do
     {single_day_events, multi_day_events} = CalendarHelpers.partition_events(assigns.events)
@@ -123,7 +123,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                 <% end %>
               </div>
 
-              <CalendarTimeline.view current_time={@current_time} hours={@hours} />
+              <Timeline.view current_time={@current_time} hours={@hours} />
             </div>
           </div>
         </div>
