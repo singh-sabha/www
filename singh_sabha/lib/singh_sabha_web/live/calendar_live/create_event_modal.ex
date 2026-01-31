@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
   use SinghSabhaWeb, :live_component
 
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
   alias SinghSabha.Events.Event
   alias SinghSabha.Events
 
@@ -12,75 +12,115 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
       class="modal overflow-y-scroll"
       phx-mounted={JS.ignore_attributes(["open"])}
     >
-      <div class="modal-box">
-        <h3 class="font-bold text-lg">Create Event</h3>
+      <div class="modal-box max-w-4xl">
+        <h3 class="font-bold text-lg">
+          {if CalendarHelpers.is_admin?(assigns), do: "Create Event", else: "Book Event"}
+        </h3>
         <p class="text-base-content/70 text-sm">
           Fill out the form based on your request. Click submit when you're done.
         </p>
-
         <.form
           for={@form}
           phx-change="validate_event"
           phx-submit="create_event"
           phx-target={@myself}
-          class="space-y-4 mt-4"
+          class="mt-4"
         >
-          <.input
-            field={@form[:occassion]}
-            type="text"
-            placeholder="Add the occassion"
-            label="Occassion"
-            required
-          />
+          <div class={[
+            "flex flex-col justify-between space-y-4",
+            !CalendarHelpers.is_admin?(assigns) && "md:flex-row md:space-y-0 md:space-x-4"
+          ]}>
+            <%= if !CalendarHelpers.is_admin?(assigns) do %>
+              <div class="grid grid-cols-1 h-fit w-full md:w-1/3">
+                <.input
+                  field={@form[:registrant_full_name]}
+                  type="text"
+                  placeholder="Add full name"
+                  label="Full Name"
+                  required
+                />
+                <.input
+                  field={@form[:registrant_email]}
+                  type="email"
+                  placeholder="Add email"
+                  label="Email"
+                  required
+                />
+                <.input
+                  field={@form[:registrant_phone_number]}
+                  type="text"
+                  placeholder="Add phone number"
+                  label="Phone Number"
+                  required
+                />
+              </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-0">
-            <.input
-              field={@form[:start]}
-              type="datetime-local"
-              label="Start Time"
-              required
-            />
+              <div class="divider my-0 mb-4 md:hidden"></div>
+              <div class="divider divider-horizontal mx-0 mr-4 hidden md:flex"></div>
+            <% end %>
 
-            <.input
-              field={@form[:end]}
-              type="datetime-local"
-              label="End Time"
-              required
-            />
+            <div class={[
+              "grid grid-cols-1 w-full",
+              !CalendarHelpers.is_admin?(assigns) && "md:w-2/3"
+            ]}>
+              <.input
+                field={@form[:occassion]}
+                type="text"
+                placeholder="Add the occassion"
+                label="Occassion"
+                required
+              />
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <.input
+                  field={@form[:start]}
+                  type="datetime-local"
+                  label="Start Time"
+                  required
+                />
+                <.input
+                  field={@form[:end]}
+                  type="datetime-local"
+                  label="End Time"
+                  required
+                />
+              </div>
+
+              <.input
+                field={@form[:type]}
+                type="select"
+                label="Select an event type"
+                options={Enum.map(@event_types, &{&1.display_name, &1.id})}
+                required
+              />
+
+              <.input
+                field={@form[:note]}
+                type="textarea"
+                label="Notes"
+                placeholder="Add any notes or requests, for example, requesting an evening or afternoon Langar"
+                rows="4"
+              />
+
+              <.input
+                field={@form[:is_public]}
+                type="checkbox"
+                label="Public event"
+                class="checkbox"
+              />
+            </div>
           </div>
 
-          <.input
-            field={@form[:type]}
-            type="select"
-            label="Select an event type"
-            options={Enum.map(@event_types, &{&1.display_name, &1.id})}
-            required
-          />
-
-          <.input
-            field={@form[:note]}
-            type="textarea"
-            label="Notes"
-            placeholder="Add any notes or requests, for example, requesting an evening or afternoon Langar"
-            rows="4"
-          />
-
-          <.input
-            field={@form[:is_public]}
-            type="checkbox"
-            label="Public event"
-            class="checkbox"
-          />
-
           <div class="modal-action">
-            <button type="submit" class="btn btn-primary">Create Event</button>
+            <button type="submit" class="btn btn-primary">
+              {if CalendarHelpers.is_admin?(assigns), do: "Create Event", else: "Submit"}
+            </button>
             <button type="button" class="btn" onclick="create_event_modal.close()">
               Cancel
             </button>
           </div>
         </.form>
       </div>
-
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
       </form>
@@ -121,9 +161,16 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           {:event_created, event}
         )
 
+        success_message =
+          if CalendarHelpers.is_admin?(socket.assigns) do
+            "Event created successfully"
+          else
+            "Event booking submitted and confirmation email sent successfully!"
+          end
+
         {:noreply,
          socket
-         |> put_flash(:success, "Event created")
+         |> put_flash(:success, success_message)
          |> push_event("close-modal", %{id: "create_event_modal"})}
 
       {:error, %Ecto.Changeset{} = changeset} ->

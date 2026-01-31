@@ -1,6 +1,8 @@
 defmodule SinghSabhaWeb.CalendarLive do
   use SinghSabhaWeb, :live_view
 
+  on_mount {SinghSabhaWeb.UserAuth, :mount_current_scope}
+
   alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
 
   alias SinghSabhaWeb.CalendarLive.{
@@ -93,7 +95,8 @@ defmodule SinghSabhaWeb.CalendarLive do
               </div>
 
               <button class="btn w-full lg:w-auto" onclick="create_event_modal.showModal()">
-                <.icon name="hero-plus-circle" /> Create Event
+                <.icon name="hero-plus-circle" />
+                {if CalendarHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
               </button>
             </div>
           </div>
@@ -131,11 +134,13 @@ defmodule SinghSabhaWeb.CalendarLive do
         module={ViewEventModal}
         id="view_event_modal"
         selected_event={@selected_event}
+        current_scope={@current_scope}
       />
       <.live_component
         module={CreateEventModal}
         id="create_event_modal"
         event_types={@event_types}
+        current_scope={@current_scope}
       />
       <.live_component
         module={EditEventModal}
@@ -292,7 +297,10 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   defp load_events(socket) do
     events =
-      Events.list_events()
+      case socket.assigns.current_scope do
+        nil -> Events.list_public_events()
+        _ -> Events.list_events()
+      end
       |> Enum.map(fn event ->
         %{
           event
@@ -305,7 +313,10 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp load_event_types(socket) do
-    assign(socket, :event_types, Events.list_event_types())
+    case socket.assigns.current_scope do
+      nil -> assign(socket, :event_types, Events.list_public_event_types())
+      _ -> assign(socket, :event_types, Events.list_event_types())
+    end
   end
 
   defp shift_date(date, :month, offset), do: Date.add(date, offset * 30)

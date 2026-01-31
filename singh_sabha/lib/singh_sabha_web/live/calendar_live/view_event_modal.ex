@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
 
   def render(assigns) do
     ~H"""
@@ -15,6 +15,22 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
           <h3 class="font-bold text-lg">{@selected_event.occassion}</h3>
 
           <div class="space-y-4 mt-4">
+            <div class="flex items-start gap-2">
+              <.icon name="hero-user" class="mt-1 size-4 shrink-0" />
+              <div>
+                <p class="text-sm font-medium">Organizer</p>
+                <p class="text-sm text-base-content/70">
+                  <%= if @selected_event.registrant_full_name && (CalendarHelpers.is_admin?(@current_scope) or @selected_event.is_public) do %>
+                    {@selected_event.registrant_full_name}
+                  <% else %>
+                    <span class="flex items-center gap-1">
+                      <.icon name="hero-check-badge" class="size-4 bg-info" /> Gurdwara Singh Sabha
+                    </span>
+                  <% end %>
+                </p>
+              </div>
+            </div>
+
             <div class="flex items-start gap-2">
               <.icon name="hero-tag" class="mt-1 size-4 shrink-0" />
               <div>
@@ -45,7 +61,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
               </div>
             </div>
 
-            <%= if @selected_event.note do %>
+            <%= if @selected_event.note && CalendarHelpers.is_admin?(@current_scope) do %>
               <div class="flex items-start gap-2">
                 <.icon name="hero-document-text" class="mt-1 size-4 shrink-0" />
                 <div>
@@ -57,25 +73,27 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
               </div>
             <% end %>
 
-            <div class="modal-action">
-              <button
-                type="button"
-                class="btn"
-                phx-click="edit_event"
-                phx-value-event-id={@selected_event.id}
-              >
-                Edit
-              </button>
+            <%= if CalendarHelpers.is_admin?(@current_scope) do %>
+              <div class="modal-action">
+                <button
+                  type="button"
+                  class="btn"
+                  phx-click="edit_event"
+                  phx-value-event-id={@selected_event.id}
+                >
+                  Edit
+                </button>
 
-              <button
-                type="button"
-                class="btn btn-error"
-                phx-click="delete_event"
-                phx-value-event-id={@selected_event.id}
-              >
-                Delete
-              </button>
-            </div>
+                <button
+                  type="button"
+                  class="btn btn-error"
+                  phx-click="delete_event"
+                  phx-value-event-id={@selected_event.id}
+                >
+                  Delete
+                </button>
+              </div>
+            <% end %>
           </div>
         <% else %>
           <p>No event selected</p>
