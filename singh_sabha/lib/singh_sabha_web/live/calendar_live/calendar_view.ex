@@ -61,21 +61,30 @@ defmodule SinghSabhaWeb.CalendarLive do
             <div class="space-y-2 lg:space-y-0 lg:space-x-2">
               <div class="join w-full lg:w-auto">
                 <button
-                  class="btn join-item flex-1 lg:flex-none"
+                  class={[
+                    "btn join-item flex-1 lg:flex-none",
+                    @view_mode == :month && "btn-active"
+                  ]}
                   phx-click="change_view"
                   phx-value-view="month"
                 >
                   Month
                 </button>
                 <button
-                  class="btn join-item flex-1 lg:flex-none"
+                  class={[
+                    "btn join-item flex-1 lg:flex-none",
+                    @view_mode == :week && "btn-active"
+                  ]}
                   phx-click="change_view"
                   phx-value-view="week"
                 >
                   Week
                 </button>
                 <button
-                  class="btn join-item flex-1 lg:flex-none"
+                  class={[
+                    "btn join-item flex-1 lg:flex-none",
+                    @view_mode == :day && "btn-active"
+                  ]}
                   phx-click="change_view"
                   phx-value-view="day"
                 >
