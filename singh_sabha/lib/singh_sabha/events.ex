@@ -18,6 +18,20 @@ defmodule SinghSabha.Events do
   end
 
   @doc """
+  Returns the list of public events.
+  """
+  def list_public_events do
+    from(e in Event,
+      where: e.is_verified == true and e.is_deposit_paid == true
+    )
+    |> Repo.all()
+    |> Repo.preload(:event_type)
+    |> Enum.map(fn e ->
+      %{e | registrant_email: nil, registrant_phone_number: nil}
+    end)
+  end
+
+  @doc """
   Gets a single event.
 
   Raises if the Event does not exist.
@@ -64,6 +78,16 @@ defmodule SinghSabha.Events do
   """
   def list_event_types do
     Repo.all(EventType)
+  end
+
+  @doc """
+  Returns the list of public event types.
+  """
+  def list_public_event_types do
+    from(et in EventType,
+      where: et.is_requestable == true
+    )
+    |> Repo.all()
   end
 
   @doc """
