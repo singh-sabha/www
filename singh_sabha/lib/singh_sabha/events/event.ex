@@ -36,6 +36,9 @@ defmodule SinghSabha.Events.Event do
     ])
     |> validate_required([:type, :start, :end, :occassion])
     |> validate_event_period()
+    |> validate_phone_number()
+    |> validate_email()
+    |> validate_full_name()
     |> foreign_key_constraint(:type)
   end
 
@@ -45,6 +48,44 @@ defmodule SinghSabha.Events.Event do
 
     if start_time && end_time && DateTime.compare(end_time, start_time) == :lt do
       add_error(changeset, :end, "must be after the start time")
+    else
+      changeset
+    end
+  end
+
+  def validate_phone_number(changeset) do
+    phone = get_change(changeset, :registrant_phone_number)
+
+    if phone && phone != "" do
+      changeset
+      |> validate_format(:registrant_phone_number, ~r/^\d+$/, message: "must contain only digits")
+      |> validate_length(:registrant_phone_number, min: 10, max: 15)
+    else
+      changeset
+    end
+  end
+
+  def validate_email(changeset) do
+    email = get_change(changeset, :registrant_email)
+
+    if email && email != "" do
+      changeset
+      |> validate_format(:registrant_email, ~r/^[^\s]+@[^\s]+$/, message: "must be a valid email")
+      |> validate_length(:registrant_email, max: 160)
+    else
+      changeset
+    end
+  end
+
+  def validate_full_name(changeset) do
+    name = get_change(changeset, :registrant_full_name)
+
+    if name && name != "" do
+      changeset
+      |> validate_length(:registrant_full_name, min: 2, max: 100)
+      |> validate_format(:registrant_full_name, ~r/^[a-zA-Z\s\-'\.]+$/,
+        message: "must contain only letters, spaces, hyphens, apostrophes, and periods"
+      )
     else
       changeset
     end
