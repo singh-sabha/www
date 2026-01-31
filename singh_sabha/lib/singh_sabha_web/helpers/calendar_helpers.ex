@@ -1,26 +1,4 @@
 defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
-  def format_time(datetime) do
-    hour = datetime.hour
-    minute = String.pad_leading("#{datetime.minute}", 2, "0")
-    period = if hour < 12, do: "AM", else: "PM"
-    display_hour = if hour == 0, do: 12, else: if(hour > 12, do: hour - 12, else: hour)
-    "#{display_hour}:#{minute} #{period}"
-  end
-
-  def format_hour(hour) do
-    period = if hour < 12, do: "AM", else: "PM"
-    display_hour = if hour == 0, do: 12, else: if(hour > 12, do: hour - 12, else: hour)
-    "#{display_hour} #{period}"
-  end
-
-  def format_date(datetime) do
-    Calendar.strftime(datetime, "%b %-d, %Y")
-  end
-
-  def format_datetime(datetime) do
-    Calendar.strftime(datetime, "%b %-d, %Y %-I:%M %p")
-  end
-
   def partition_events(events) do
     Enum.split_with(events, fn event ->
       start_date = DateTime.to_date(event.start)

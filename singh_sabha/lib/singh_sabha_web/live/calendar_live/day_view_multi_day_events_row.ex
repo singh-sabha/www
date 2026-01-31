@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
   use Phoenix.Component
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{TimezoneHelpers, EventTypeHelpers}
 
   def row(assigns) do
     day_start = assigns.current_date
@@ -68,7 +68,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
         <span class="truncate">
           Day {@event_current_day} of {@event_total_days} • {@event.occassion}
         </span>
-        <span class="ml-2">{CalendarHelpers.format_time(@event.start)}</span>
+        <span class="ml-2">{TimezoneHelpers.format_time(@event.start)}</span>
       </div>
     </div>
     """

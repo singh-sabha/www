@@ -1,4 +1,5 @@
 defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
+  alias SinghSabhaWeb.Helpers.TimezoneHelpers
   use SinghSabhaWeb, :live_component
 
   alias SinghSabha.Events.Event
@@ -110,7 +111,9 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
   end
 
   def handle_event("create_event", %{"create_event" => params}, socket) do
-    case Events.create_event(params) do
+    updated_params = TimezoneHelpers.convert_datetime_params(params)
+
+    case Events.create_event(updated_params) do
       {:ok, event} ->
         Phoenix.PubSub.broadcast(
           SinghSabha.PubSub,

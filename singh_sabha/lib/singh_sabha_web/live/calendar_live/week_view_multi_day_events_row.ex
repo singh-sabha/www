@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
   use Phoenix.Component
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{TimezoneHelpers, EventTypeHelpers}
 
   def row(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
@@ -135,7 +135,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
       <%= if @starts do %>
         <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
           <span class="truncate">{@event.occassion}</span>
-          <span>{CalendarHelpers.format_time(@event.start)}</span>
+          <span>{TimezoneHelpers.format_time(@event.start)}</span>
         </div>
       <% end %>
     </div>

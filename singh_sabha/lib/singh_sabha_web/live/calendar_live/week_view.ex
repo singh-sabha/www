@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
   use Phoenix.Component
 
   alias SinghSabhaWeb.CalendarLive.Components.{WeekViewMultiDayEventsRow, Timeline}
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers, EventTypeHelpers}
 
   def view(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
@@ -58,7 +58,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
                 <%= if index != 0 do %>
                   <div class="absolute -top-3 right-2 flex h-6 items-center">
                     <span class="text-xs text-base-content/50">
-                      {CalendarHelpers.format_hour(hour)}
+                      {TimezoneHelpers.format_hour(hour)}
                     </span>
                   </div>
                 <% end %>
@@ -149,7 +149,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
             phx-value-event-id={event.id}
           >
             <div class="font-medium truncate">{event.occassion}</div>
-            {CalendarHelpers.format_time(event.start)} - {CalendarHelpers.format_time(event.end)}
+            {TimezoneHelpers.format_time(event.start)} - {TimezoneHelpers.format_time(event.end)}
           </div>
         </div>
       <% end %>

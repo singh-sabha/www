@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers, EventTypeHelpers}
   alias SinghSabhaWeb.CalendarLive.Components.{DayViewMultiDayEventsRow, Timeline}
 
   def view(assigns) do
@@ -71,7 +71,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                   <%= if index != 0 do %>
                     <div class="absolute -top-3 right-2 flex h-6 items-center">
                       <span class="text-xs text-base-content/50">
-                        {CalendarHelpers.format_hour(hour)}
+                        {TimezoneHelpers.format_hour(hour)}
                       </span>
                     </div>
                   <% end %>
@@ -115,7 +115,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                       phx-value-event-id={event.id}
                     >
                       <div class="font-medium truncate">{event.occassion}</div>
-                      {CalendarHelpers.format_time(event.start)} - {CalendarHelpers.format_time(
+                      {TimezoneHelpers.format_time(event.start)} - {TimezoneHelpers.format_time(
                         event.end
                       )}
                     </div>
@@ -184,13 +184,13 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
 
                     <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-calendar" class="h-3.5 w-3.5" />
-                      <span class="text-sm">{CalendarHelpers.format_date(event.start)}</span>
+                      <span class="text-sm">{TimezoneHelpers.format_date(event.start)}</span>
                     </div>
 
                     <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-clock" class="h-3.5 w-3.5" />
                       <span class="text-sm">
-                        {CalendarHelpers.format_time(event.start)} - {CalendarHelpers.format_time(
+                        {TimezoneHelpers.format_time(event.start)} - {TimezoneHelpers.format_time(
                           event.end
                         )}
                       </span>

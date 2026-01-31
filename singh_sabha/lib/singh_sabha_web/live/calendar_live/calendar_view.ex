@@ -184,7 +184,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_event("change_view_to_today", _, socket) do
-    today = DateTime.to_date(DateTime.now!("America/Vancouver"))
+    today = DateTime.to_date(DateTime.now!(TimezoneHelpers.local()))
     {:noreply, socket |> assign(:current_date, today) |> load_events()}
   end
 
@@ -264,7 +264,11 @@ defmodule SinghSabhaWeb.CalendarLive do
       |> then(fn socket ->
         if socket.assigns.selected_event &&
              socket.assigns.selected_event.id == updated_event.id do
-          assign(socket, :selected_event, Events.get_event!(updated_event.id))
+          assign(
+            socket,
+            :selected_event,
+            Events.get_event!(updated_event.id) |> TimezoneHelpers.convert_event_to_local()
+          )
         else
           socket
         end
@@ -278,7 +282,17 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp load_events(socket) do
-    assign(socket, :events, Events.list_events())
+    events =
+      Events.list_events()
+      |> Enum.map(fn event ->
+        %{
+          event
+          | start: TimezoneHelpers.utc_to_local(event.start),
+            end: TimezoneHelpers.utc_to_local(event.end)
+        }
+      end)
+
+    assign(socket, :events, events)
   end
 
   defp load_event_types(socket) do

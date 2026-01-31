@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.MonthView do
   use Phoenix.Component
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{EventTypeHelpers, TimezoneHelpers}
 
   def view(assigns) do
     max_visible_events = 4
@@ -136,7 +136,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
                 <%= if segment.starts? do %>
                   <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
                     <span class="truncate">{segment.event.occassion}</span>
-                    <span>{CalendarHelpers.format_time(segment.event.start)}</span>
+                    <span>{TimezoneHelpers.format_time(segment.event.start)}</span>
                   </div>
                 <% end %>
               </div>

@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.CalendarHelpers
+  alias SinghSabhaWeb.Helpers.TimezoneHelpers
 
   def render(assigns) do
     ~H"""
@@ -30,7 +30,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
               <div>
                 <p class="text-sm font-medium">Start Date</p>
                 <p class="text-sm text-base-content/70">
-                  {CalendarHelpers.format_datetime(@selected_event.start)}
+                  {TimezoneHelpers.format_datetime(@selected_event.start)}
                 </p>
               </div>
             </div>
@@ -40,7 +40,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
               <div>
                 <p class="text-sm font-medium">End Date</p>
                 <p class="text-sm text-base-content/70">
-                  {CalendarHelpers.format_datetime(@selected_event.end)}
+                  {TimezoneHelpers.format_datetime(@selected_event.end)}
                 </p>
               </div>
             </div>
