@@ -183,6 +183,20 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                     <p class="line-clamp-2 text-sm font-semibold">{event.occassion}</p>
 
                     <div class="flex items-center gap-1.5 text-base-content/70">
+                      <.icon name="hero-user" class="h-3.5 w-3.5" />
+                      <span class="text-sm">
+                        <%= if event.registrant_full_name && (CalendarHelpers.is_admin?(@current_scope) or event.is_public) do %>
+                          {event.registrant_full_name}
+                        <% else %>
+                          <span class="flex items-center gap-1">
+                            <.icon name="hero-check-badge" class="h-3.5 w-3.5 bg-info" />
+                            Gurdwara Singh Sabha
+                          </span>
+                        <% end %>
+                      </span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-calendar" class="h-3.5 w-3.5" />
                       <span class="text-sm">{TimezoneHelpers.format_date(event.start)}</span>
                     </div>
