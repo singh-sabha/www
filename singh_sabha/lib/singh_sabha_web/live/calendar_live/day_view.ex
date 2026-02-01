@@ -154,6 +154,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
           first-day-of-week="0"
           show-outside-days="true"
           locale="en-CA"
+          value={Date.to_iso8601(@current_date)}
         >
           <svg
             aria-label="Previous"

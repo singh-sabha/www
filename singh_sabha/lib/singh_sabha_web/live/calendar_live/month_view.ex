@@ -88,11 +88,12 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       !@saturday? && "border-r"
     ]}>
       <button
-        phx-click="select_date"
+        phx-click="change_view_to_date"
         phx-value-date={Date.to_iso8601(@date)}
         class={[
-          "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0 mb-1",
-          "hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500",
+          "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0 mb-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-base-content/10 cursor-pointer",
+          !@today? &&
+            "hover:bg-base-content/10",
           !@current_month? && "opacity-20",
           @today? && "bg-black text-white"
         ]}

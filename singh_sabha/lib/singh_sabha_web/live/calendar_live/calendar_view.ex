@@ -204,6 +204,20 @@ defmodule SinghSabhaWeb.CalendarLive do
     {:noreply, socket |> assign(:current_date, socket.assigns.current_time)}
   end
 
+  def handle_event("change_view_to_date", %{"date" => date}, socket) do
+    case Date.from_iso8601(date) do
+      {:ok, parsed_date} ->
+        {:noreply,
+         socket
+         |> assign(:current_date, parsed_date)
+         |> assign(:view_mode, :day)
+         |> load_events()}
+
+      {:error, _} ->
+        {:noreply, socket}
+    end
+  end
+
   def handle_event("date-selected", %{"date" => date}, socket) do
     case Date.from_iso8601(date) do
       {:ok, date} ->
