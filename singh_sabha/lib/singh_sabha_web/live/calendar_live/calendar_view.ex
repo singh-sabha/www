@@ -60,7 +60,7 @@ defmodule SinghSabhaWeb.CalendarLive do
               </div>
             </div>
 
-            <div class="space-y-2 lg:space-y-0 lg:space-x-2">
+            <div class="space-y-2 lg:space-y-0 lg:space-x-2 lg:flex lg:items-center">
               <div class="join w-full lg:w-auto">
                 <button
                   class={[
@@ -70,7 +70,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                   phx-click="change_view"
                   phx-value-view="month"
                 >
-                  Month
+                  <.icon name="hero-calendar-days" class="size-4" />
                 </button>
                 <button
                   class={[
@@ -80,7 +80,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                   phx-click="change_view"
                   phx-value-view="week"
                 >
-                  Week
+                  <.icon name="hero-calendar-date-range" class="size-4" />
                 </button>
                 <button
                   class={[
@@ -90,13 +90,15 @@ defmodule SinghSabhaWeb.CalendarLive do
                   phx-click="change_view"
                   phx-value-view="day"
                 >
-                  Day
+                  <.icon name="hero-calendar" class="size-4" />
                 </button>
               </div>
 
               <button class="btn w-full lg:w-auto" onclick="create_event_modal.showModal()">
-                <.icon name="hero-plus-circle" />
-                {if CalendarHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
+                <span class="flex items-center gap-1">
+                  <.icon name="hero-plus-circle" class="size-4" />
+                  {if CalendarHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
+                </span>
               </button>
             </div>
           </div>
