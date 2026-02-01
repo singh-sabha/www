@@ -201,8 +201,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_event("change_view_to_today", _, socket) do
-    today = DateTime.to_date(DateTime.now!(TimezoneHelpers.local()))
-    {:noreply, socket |> assign(:current_date, today) |> load_events()}
+    {:noreply, socket |> assign(:current_date, socket.assigns.current_time)}
   end
 
   def handle_event("date-selected", %{"date" => date}, socket) do
