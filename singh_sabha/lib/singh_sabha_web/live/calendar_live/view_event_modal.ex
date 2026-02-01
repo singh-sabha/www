@@ -81,7 +81,9 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                   phx-click="edit_event"
                   phx-value-event-id={@selected_event.id}
                 >
-                  Edit
+                  <span class="flex items-center gap-1">
+                    <.icon name="hero-pencil-square" class="size-4" /> Edit
+                  </span>
                 </button>
 
                 <button
@@ -90,7 +92,9 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                   phx-click="delete_event"
                   phx-value-event-id={@selected_event.id}
                 >
-                  Delete
+                  <span class="flex items-center gap-1">
+                    <.icon name="hero-trash" class="size-4" /> Delete
+                  </span>
                 </button>
               </div>
             <% end %>
