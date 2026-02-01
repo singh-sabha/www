@@ -34,6 +34,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
           <.day_cell
             date={date}
             current_date={@current_date}
+            current_time={@current_time}
             events={@events}
             event_positions={@event_positions}
             max_visible_events={@max_visible_events}
@@ -77,7 +78,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       |> assign(:saturday?, Date.day_of_week(assigns.date) == 6)
       |> assign(:sunday?, Date.day_of_week(assigns.date) == 7)
       |> assign(:current_month?, assigns.date.month == assigns.current_date.month)
-      |> assign(:today?, assigns.date == assigns.current_date)
+      |> assign(:today?, assigns.date == DateTime.to_date(assigns.current_time))
       |> assign(:segments, segments)
       |> assign(:overflow, overflow)
 

@@ -108,6 +108,7 @@ defmodule SinghSabhaWeb.CalendarLive do
           <%= if @view_mode == :month do %>
             <MonthView.view
               current_date={@current_date}
+              current_time={@current_time}
               events={@events}
             />
           <% end %>
