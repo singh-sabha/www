@@ -1,0 +1,46 @@
+<h1 class="heading">Event Booking Update</h1>
+
+<p class="text">
+  Hi {@event.registrant_full_name}, we regret to inform you that we are unable to approve your event request at this time.
+</p>
+
+<div class="card">
+  <p class="card-title">
+    {@event.occassion}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Type:</span>
+    {@event.event_type.display_name}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Date:</span>
+    {format_date_range(@event.start, @event.end)}
+  </p>
+</div>
+
+<div style="background-color: #fef2f2; border-left: 4px solid #f87171; border-radius: 0.375rem; padding: 1rem; margin-bottom: 1.5rem;">
+  <p style="color: #b91c1c; font-size: 0.875rem; font-weight: 500; margin: 0;">
+    Reason for denial: {@denial_reason}
+  </p>
+</div>
+
+<p class="text">
+  If you would like to discuss this further or have any questions, please don't hesitate to reach out to us.
+</p>
+
+<p class="text italic" style="color: #6b7280; font-size: 0.875rem; margin-top: 1.5rem;">
+  Please note: This inbox is not monitored. If you have questions, contact our support team directly.
+</p>
+
+<div class="footer">
+  <img
+    src="https://singhsabha.net/assets/singhsabha-logo.png"
+    alt="Singh Sabha Logo"
+    class="logo"
+  />
+  <p>
+    <a href="https://singhsabha.net/" target="_blank">SinghSabha.net</a>, serving the Sikh community with devotion and compassion.
+  </p>
+</div>

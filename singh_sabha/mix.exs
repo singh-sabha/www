@@ -60,6 +60,7 @@ defmodule SinghSabha.MixProject do
        compile: false,
        depth: 1},
       {:swoosh, "~> 1.16"},
+      {:phoenix_swoosh, "~> 1.0"},
       {:req, "~> 0.5"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
@@ -67,7 +68,8 @@ defmodule SinghSabha.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:tzdata, "~> 1.1"}
+      {:tzdata, "~> 1.1"},
+      {:resend, "~> 0.4.0"}
     ]
   end
 

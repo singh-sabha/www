@@ -1,0 +1,32 @@
+<h1 class="heading">Weekly Events Schedule</h1>
+
+<p class="text">
+  Here's the schedule of all events for this week, organized by day.
+</p>
+
+<%= for {day_name, day_events} <- @events_by_day do %>
+  <div class="card">
+    <p class="card-title">{day_name}</p>
+    <%= for event <- day_events do %>
+      <p class="card-text">
+        <span class="label">{Calendar.strftime(event.start, "%I:%M %p")}:</span>
+        {event.occassion}
+      </p>
+    <% end %>
+  </div>
+<% end %>
+
+<p class="text">
+  Please review this week's scheduled events.
+</p>
+
+<div class="footer">
+  <img
+    src="https://singhsabha.net/assets/singhsabha-logo.png"
+    alt="Singh Sabha Logo"
+    class="logo"
+  />
+  <p>
+    <a href="https://singhsabha.net/" target="_blank">SinghSabha.net</a>, serving the Sikh community with devotion and compassion.
+  </p>
+</div>

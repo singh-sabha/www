@@ -1,0 +1,53 @@
+<h1 class="heading">Event Booking Confirmation</h1>
+
+<p class="text">
+  Hi {@event.registrant_full_name}, we've received your event request.
+</p>
+
+<div class="card">
+  <p class="card-title">
+    {@event.occassion}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Type:</span>
+    {@event.event_type.display_name}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Date:</span>
+    {format_date_range(@event.start, @event.end)}
+  </p>
+</div>
+
+<div class="card">
+  <p class="card-title">Reference Number</p>
+
+  <p class="card-text">
+    <span class="label">Event ID:</span>
+    {@event.id}
+  </p>
+
+  <p class="small-text">
+    Please include this reference number in any communications about your event.
+  </p>
+</div>
+
+<p class="text">
+  We'll review your request, find an available time slot, and get back to you soon.
+</p>
+
+<p class="text italic" style="color: #6b7280; font-size: 0.875rem;">
+  Please note: This inbox is not monitored. If you have questions, contact our support team directly.
+</p>
+
+<div class="footer">
+  <img
+    src="https://singhsabha.net/assets/singhsabha-logo.png"
+    alt="Singh Sabha Logo"
+    class="logo"
+  />
+  <p>
+    <a href="https://singhsabha.net/" target="_blank">SinghSabha.net</a>, serving the Sikh community with devotion and compassion.
+  </p>
+</div>

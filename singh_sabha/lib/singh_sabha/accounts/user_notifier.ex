@@ -1,41 +1,23 @@
 defmodule SinghSabha.Accounts.UserNotifier do
-  import Swoosh.Email
+  use Phoenix.Swoosh,
+    view: SinghSabhaWeb.EmailView,
+    layout: {SinghSabhaWeb.LayoutView, :email}
 
   alias SinghSabha.Mailer
   alias SinghSabha.Accounts.User
 
-  # Delivers the email using the application mailer.
-  defp deliver(recipient, subject, body) do
-    email =
-      new()
-      |> to(recipient)
-      |> from({"SinghSabha", "contact@example.com"})
-      |> subject(subject)
-      |> text_body(body)
-
-    with {:ok, _metadata} <- Mailer.deliver(email) do
-      {:ok, email}
-    end
-  end
+  @from {"Gurdwara Singh Sabha of Victoria", "no-reply@singhsabha.net"}
 
   @doc """
   Deliver instructions to update a user email.
   """
   def deliver_update_email_instructions(user, url) do
-    deliver(user.email, "Update email instructions", """
-
-    ==============================
-
-    Hi #{user.email},
-
-    You can change your email by visiting the URL below:
-
-    #{url}
-
-    If you didn't request this change, please ignore this.
-
-    ==============================
-    """)
+    new()
+    |> to(user.email)
+    |> from(@from)
+    |> subject("Update Email Instructions")
+    |> render_body("update_email_instructions.html", %{user: user, url: url})
+    |> Mailer.deliver()
   end
 
   @doc """
@@ -49,36 +31,20 @@ defmodule SinghSabha.Accounts.UserNotifier do
   end
 
   defp deliver_magic_link_instructions(user, url) do
-    deliver(user.email, "Log in instructions", """
-
-    ==============================
-
-    Hi #{user.email},
-
-    You can log into your account by visiting the URL below:
-
-    #{url}
-
-    If you didn't request this email, please ignore this.
-
-    ==============================
-    """)
+    new()
+    |> to(user.email)
+    |> from(@from)
+    |> subject("Log In Instructions")
+    |> render_body("magic_link_instructions.html", %{user: user, url: url})
+    |> Mailer.deliver()
   end
 
   defp deliver_confirmation_instructions(user, url) do
-    deliver(user.email, "Confirmation instructions", """
-
-    ==============================
-
-    Hi #{user.email},
-
-    You can confirm your account by visiting the URL below:
-
-    #{url}
-
-    If you didn't create an account with us, please ignore this.
-
-    ==============================
-    """)
+    new()
+    |> to(user.email)
+    |> from(@from)
+    |> subject("Confirmation Instructions")
+    |> render_body("confirmation_instructions.html", %{user: user, url: url})
+    |> Mailer.deliver()
   end
 end

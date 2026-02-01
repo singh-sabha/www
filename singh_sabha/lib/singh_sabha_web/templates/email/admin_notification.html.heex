@@ -1,0 +1,69 @@
+<h1 class="heading">Event Booking Request</h1>
+
+<p class="text">
+  A new event booking request has been submitted and requires your review.
+</p>
+
+<div class="card">
+  <p class="card-title">
+    {@event.occassion}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Event ID:</span>
+    {@event.id}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Date:</span>
+    {format_date_range(@event.start, @event.end)}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Public:</span>
+    {if @event.is_public, do: "Yes", else: "No"}
+  </p>
+</div>
+
+<div class="card">
+  <p class="card-title">Registrant Details</p>
+
+  <p class="card-text">
+    <span class="label">Name:</span>
+    {@event.registrant_full_name}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Email:</span>
+    {@event.registrant_email}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Phone:</span>
+    {@event.registrant_phone_number}
+  </p>
+</div>
+
+<%= if @event.note do %>
+  <div class="card">
+    <p class="card-title">Additional Notes</p>
+    <p class="card-text">
+      {@event.note}
+    </p>
+  </div>
+<% end %>
+
+<p class="text">
+  Please review this event request and take appropriate action.
+</p>
+
+<div class="footer">
+  <img
+    src="https://singhsabha.net/assets/singhsabha-logo.png"
+    alt="Singh Sabha Logo"
+    class="logo"
+  />
+  <p>
+    <a href="https://singhsabha.net/" target="_blank">SinghSabha.net</a>, serving the Sikh community with devotion and compassion.
+  </p>
+</div>
