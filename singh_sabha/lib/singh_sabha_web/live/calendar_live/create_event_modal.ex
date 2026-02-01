@@ -129,13 +129,26 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
   end
 
   def update(assigns, socket) do
+    # This gets populated when a user clicks on a gutter in week/day views
+    init_params =
+      case Map.has_key?(assigns, :start_datetime) do
+        true ->
+          %{
+            "start" => assigns.start_datetime,
+            "end" => assigns.end_datetime
+          }
+
+        false ->
+          %{}
+      end
+
     {:ok,
      socket
      |> assign(assigns)
      |> assign(
        form:
          to_form(
-           Events.change_event(%Event{}),
+           Events.change_event(%Event{}, init_params),
            as: :create_event
          )
      )}

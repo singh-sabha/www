@@ -227,6 +227,36 @@ defmodule SinghSabhaWeb.CalendarLive do
      |> push_event("open-modal", %{id: "view_event_modal"})}
   end
 
+  def handle_event("create_event", %{"date" => date, "time" => start_time}, socket) do
+    start_time =
+      if String.contains?(start_time, ".") do
+        String.to_float(start_time)
+      else
+        String.to_integer(start_time) / 1
+      end
+
+    time_to_string = fn time ->
+      hour = trunc(time)
+      minute = if rem(trunc(time * 2), 2) == 1, do: 30, else: 0
+
+      "#{String.pad_leading(Integer.to_string(hour), 2, "0")}:#{String.pad_leading(Integer.to_string(minute), 2, "0")}:00"
+    end
+
+    end_time = start_time + 0.5
+
+    # Create event modal requires UTC hence the "Z"
+    {:ok, start_datetime} = NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(start_time)}Z")
+    {:ok, end_datetime} = NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(end_time)}Z")
+
+    send_update(SinghSabhaWeb.CalendarLive.CreateEventModal,
+      id: "create_event_modal",
+      start_datetime: start_datetime,
+      end_datetime: end_datetime
+    )
+
+    {:noreply, push_event(socket, "open-modal", %{id: "create_event_modal"})}
+  end
+
   def handle_event("edit_event", %{"event-id" => event_id}, socket) do
     event =
       Enum.find(socket.assigns.events, fn event ->

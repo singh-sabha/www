@@ -83,13 +83,30 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
               <div class="relative">
                 <%= for {hour, index} <- Enum.with_index(@hours) do %>
                   <% is_working = CalendarHelpers.working_hour?(@current_date, hour, @working_hours) %>
+
                   <div class={["relative h-[96px]", !is_working && "bg-calendar-disabled-hour"]}>
                     <%= if index != 0 do %>
                       <div class="pointer-events-none absolute inset-x-0 top-0 border-b border-base-300">
                       </div>
                     <% end %>
 
+                    <div
+                      class="absolute inset-x-0 top-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
+                      phx-click="create_event"
+                      phx-value-date={@current_date}
+                      phx-value-time={hour}
+                    >
+                    </div>
+
                     <div class="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed border-base-300">
+                    </div>
+
+                    <div
+                      class="absolute inset-x-0 bottom-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
+                      phx-click="create_event"
+                      phx-value-date={@current_date}
+                      phx-value-time={hour + 0.5}
+                    >
                     </div>
                   </div>
                 <% end %>
@@ -105,10 +122,10 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                       @hours
                     ) %>
                   <% colour = EventTypeHelpers.event_type_to_colour(event.event_type.display_name) %>
-                  <div class="absolute p-1" style={style}>
+                  <div class="absolute p-1 pointer-events-none" style={style}>
                     <div
                       class={[
-                        "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer",
+                        "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
                         EventTypeHelpers.badge_colour(colour)
                       ]}
                       phx-click="view_event"
