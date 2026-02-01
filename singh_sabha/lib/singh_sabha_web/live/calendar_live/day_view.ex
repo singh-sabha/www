@@ -149,7 +149,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
       <div class="hidden lg:block border-l border-t border-base-300 flex flex-col">
         <calendar-date
           id="day-view-mini-calendar"
-          phx-hook="CalendarDate"
+          phx-hook=".CalendarDate"
           class="cally border-b border-base-300"
           first-day-of-week="0"
           show-outside-days="true"
@@ -239,6 +239,17 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
         </div>
       </div>
     </div>
+
+    <script :type={Phoenix.LiveView.ColocatedHook} name=".CalendarDate">
+      export default {
+        mounted() {
+          this.el.addEventListener("change", (event) => {
+            const selectedDate = event.target.value;
+            this.pushEvent("date-selected", { date: selectedDate });
+          });
+        },
+      };
+    </script>
     """
   end
 

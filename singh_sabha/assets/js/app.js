@@ -31,15 +31,6 @@ const csrfToken = document
 
 let Hooks = {};
 
-Hooks.CalendarDate = {
-  mounted() {
-    this.el.addEventListener("change", (event) => {
-      const selectedDate = event.target.value;
-      this.pushEvent("date-selected", { date: selectedDate });
-    });
-  },
-};
-
 Hooks.ModalManager = {
   mounted() {
     this.handleEvent("open-modal", ({ id }) => {
