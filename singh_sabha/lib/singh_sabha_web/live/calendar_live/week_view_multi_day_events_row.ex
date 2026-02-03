@@ -124,6 +124,8 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
       class={[
         "h-6.5 text-xs font-medium flex items-center border -mx-px cursor-pointer",
         EventTypeHelpers.badge_colour(@colour),
+        (!@event.is_verified || !@event.is_deposit_paid) && @starts &&
+          "bg-event-pending",
         @starts && "rounded-l-md ml-1",
         @ends && "rounded-r-md mr-1",
         !@starts && "rounded-l-none border-l-0",

@@ -162,6 +162,8 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
           <div
             class={[
               "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
+              (!event.is_verified || !event.is_deposit_paid) &&
+                "bg-event-pending",
               EventTypeHelpers.badge_colour(colour)
             ]}
             phx-click="view_event"
