@@ -42,21 +42,13 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
             </div>
 
             <div class="flex items-start gap-2">
-              <.icon name="hero-calendar" class="mt-1 size-4 shrink-0" />
-              <div>
-                <p class="text-sm font-medium">Start Date</p>
-                <p class="text-sm text-base-content/70">
-                  {TimezoneHelpers.format_datetime(@selected_event.start)}
-                </p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-2">
               <.icon name="hero-clock" class="mt-1 size-4 shrink-0" />
               <div>
-                <p class="text-sm font-medium">End Date</p>
+                <p class="text-sm font-medium">Time</p>
                 <p class="text-sm text-base-content/70">
-                  {TimezoneHelpers.format_datetime(@selected_event.end)}
+                  {TimezoneHelpers.format_datetime(@selected_event.start)} - {TimezoneHelpers.format_datetime(
+                    @selected_event.end
+                  )}
                 </p>
               </div>
             </div>
