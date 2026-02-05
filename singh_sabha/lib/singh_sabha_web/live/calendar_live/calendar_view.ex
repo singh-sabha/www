@@ -274,10 +274,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_event("edit_event", %{"event-id" => event_id}, socket) do
-    event =
-      Enum.find(socket.assigns.events, fn event ->
-        event.id == String.to_integer(event_id)
-      end)
+    event = find_event(event_id, socket.assigns.events)
 
     {:noreply,
      socket
@@ -286,10 +283,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_event("delete_event", %{"event-id" => event_id}, socket) do
-    event =
-      Enum.find(socket.assigns.events, fn event ->
-        event.id == String.to_integer(event_id)
-      end)
+    event = find_event(event_id, socket.assigns.events)
 
     case Events.delete_event(event) do
       {:ok, _} ->
@@ -378,4 +372,10 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp period_label(date, :day), do: Calendar.strftime(date, "%A, %B %d, %Y")
+
+  defp find_event(event_id, events) do
+    Enum.find(events, fn event ->
+      event.id == String.to_integer(event_id)
+    end)
+  end
 end
