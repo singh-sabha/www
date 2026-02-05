@@ -25,6 +25,9 @@ config :singh_sabha, SinghSabhaWeb.Endpoint,
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
 
+config :stripity_stripe,
+  api_key: System.get_env("STRIPE_SECRET_KEY")
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

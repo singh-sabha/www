@@ -69,7 +69,8 @@ defmodule SinghSabha.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:tzdata, "~> 1.1"},
-      {:resend, "~> 0.4.0"}
+      {:resend, "~> 0.4.0"},
+      {:stripity_stripe, "~> 3.2"}
     ]
   end
 
