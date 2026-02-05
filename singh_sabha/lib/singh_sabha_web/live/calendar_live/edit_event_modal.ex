@@ -53,7 +53,7 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
             <.input
               field={@form[:type]}
               type="select"
-              label="Select an event type"
+              label="Type"
               options={Enum.map(@event_types, &{&1.display_name, &1.id})}
               required
             />
