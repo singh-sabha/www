@@ -42,12 +42,22 @@ defmodule SinghSabha.Events do
   end
 
   @doc """
+  Gets a single event.
+  """
+  def get_event(id) do
+    Repo.get(Event, id)
+    |> Repo.preload(:event_type)
+  end
+
+  @doc """
   Creates a event.
   """
   def create_event(attrs \\ %{}) do
-    %Event{}
-    |> Event.changeset(attrs)
-    |> Repo.insert()
+    case Event.changeset(%Event{}, attrs)
+         |> Repo.insert() do
+      {:ok, event} -> {:ok, Repo.preload(event, :event_type)}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
