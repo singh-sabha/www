@@ -49,4 +49,15 @@ defmodule SinghSabhaWeb.Helpers.EventTypeHelpers do
   def dot_colour(:orange), do: "bg-orange-600"
   def dot_colour(:purple), do: "bg-purple-600"
   def dot_colour(:yellow), do: "bg-yellow-600"
+
+  def event_status_colour(is_verified, is_deposit_paid) do
+    cond do
+      # Pending approval
+      !is_verified -> "bg-event-unverified"
+      # Awaiting payment
+      is_verified && !is_deposit_paid -> "bg-event-unpaid"
+      # Fully confirmed
+      true -> "bg-event-confirmed"
+    end
+  end
 end

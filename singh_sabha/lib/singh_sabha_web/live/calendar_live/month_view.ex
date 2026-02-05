@@ -125,8 +125,11 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
                 class={[
                   "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
                   EventTypeHelpers.badge_colour(colour),
-                  segment.starts? && (!segment.event.is_verified || !segment.event.is_deposit_paid) &&
-                    "bg-event-pending",
+                  segment.starts? &&
+                    EventTypeHelpers.event_status_colour(
+                      segment.event.is_verified,
+                      segment.event.is_deposit_paid
+                    ),
                   segment.starts? && "rounded-l-md",
                   segment.ends? && "rounded-r-md",
                   !segment.starts? && "rounded-l-none border-l-0",

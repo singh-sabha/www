@@ -58,8 +58,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
 
     <div class={[
       "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
-      (!@event.is_verified || !@event.is_deposit_paid) &&
-        "bg-event-pending",
+      EventTypeHelpers.event_status_colour(@event.is_verified, @event.is_deposit_paid),
       EventTypeHelpers.badge_colour(colour)
     ]}>
       <div
