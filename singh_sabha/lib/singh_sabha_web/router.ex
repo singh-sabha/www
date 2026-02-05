@@ -21,7 +21,11 @@ defmodule SinghSabhaWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
     live "/calendar", CalendarLive
+
+    live "/payment/success", PaymentsLive.Success
+    live "/payment/cancel", PaymentsLive.Cancel
   end
 
   # Other scopes may use custom stacks.
