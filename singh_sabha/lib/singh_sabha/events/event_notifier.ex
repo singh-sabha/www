@@ -1,9 +1,10 @@
-defmodule SinghSabha.EventEmail do
+defmodule SinghSabha.Events.EventNotifier do
   use Phoenix.Swoosh,
     view: SinghSabhaWeb.EmailView,
     layout: {SinghSabhaWeb.LayoutView, :email}
 
   alias SinghSabha.Mailer
+  alias SinghSabha.Payments
 
   @from {"Gurdwara Singh Sabha of Victoria", "no-reply@singhsabha.net"}
 
@@ -16,13 +17,15 @@ defmodule SinghSabha.EventEmail do
     |> Mailer.deliver()
   end
 
-  def event_approved(event, payment_url) do
-    new()
-    |> to(event.registrant_email)
-    |> from(@from)
-    |> subject("Event Approved: #{event.occassion}")
-    |> render_body("event_approved.html", %{event: event, payment_url: payment_url})
-    |> Mailer.deliver()
+  def event_approved(event) do
+    with {:ok, session} <- Payments.create_checkout_session(event) do
+      new()
+      |> to(event.registrant_email)
+      |> from(@from)
+      |> subject("Event Approved: #{event.occassion}")
+      |> render_body("event_approved.html", %{event: event, payment_url: session.url})
+      |> Mailer.deliver()
+    end
   end
 
   def event_denied(event, denial_reason) do
