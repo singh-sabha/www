@@ -5,6 +5,8 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
 
+  alias SinghSabha.Events.EventNotifier
+
   alias SinghSabhaWeb.CalendarLive.{
     MonthView,
     WeekView,
@@ -299,6 +301,40 @@ defmodule SinghSabhaWeb.CalendarLive do
          |> put_flash(:error, "Failed to delete event. Please try again.")
          |> push_event("close-modal", %{id: "view_event_modal"})}
     end
+  end
+
+  def handle_event("approve_event", %{"event-id" => event_id}, socket) do
+    event = find_event(event_id, socket.assigns.events)
+
+    case(Events.update_event(event, %{"is_verified" => true})) do
+      {:ok, event} ->
+        Phoenix.PubSub.broadcast(
+          SinghSabha.PubSub,
+          "events",
+          {:event_updated, event}
+        )
+
+        EventNotifier.event_approved(event)
+
+        {:noreply,
+         socket
+         |> put_flash(:success, "Event Approved! Email sent to user.")
+         |> push_event("close-modal", %{id: "view_event_modal"})}
+
+      {:error, _} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Failed to approve event. Please try again.")
+         |> push_event("close-modal", %{id: "view_event_modal"})}
+    end
+
+    {:noreply, socket}
+  end
+
+  def handle_event("reject_event", %{"event-id" => event_id}, socket) do
+    event = find_event(event_id, socket.assigns.events)
+
+    {:noreply, socket}
   end
 
   def handle_info(:tick, socket) do

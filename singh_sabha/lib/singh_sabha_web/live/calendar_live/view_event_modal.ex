@@ -15,6 +15,14 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
           <h3 class="font-bold text-lg">{@selected_event.occassion}</h3>
 
           <div class="space-y-4 mt-4">
+            <%= if @selected_event.is_verified && !@selected_event.is_deposit_paid do %>
+              <div class="alert alert-warning mt-4">
+                <.icon name="hero-currency-dollar" class="size-5" />
+                <span>
+                  Awaiting payment from organizer. Payment link sent to {@selected_event.registrant_email}
+                </span>
+              </div>
+            <% end %>
             <div class="flex items-start gap-2">
               <.icon name="hero-user" class="mt-1 size-4 shrink-0" />
               <div>
@@ -67,27 +75,51 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
 
             <%= if CalendarHelpers.is_admin?(@current_scope) do %>
               <div class="modal-action">
-                <button
-                  type="button"
-                  class="btn"
-                  phx-click="edit_event"
-                  phx-value-event-id={@selected_event.id}
-                >
-                  <span class="flex items-center gap-1">
-                    <.icon name="hero-pencil-square" class="size-4" /> Edit
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  class="btn btn-error"
-                  phx-click="delete_event"
-                  phx-value-event-id={@selected_event.id}
-                >
-                  <span class="flex items-center gap-1">
-                    <.icon name="hero-trash" class="size-4" /> Delete
-                  </span>
-                </button>
+                <%= if !@selected_event.is_verified do %>
+                  <button
+                    type="button"
+                    class="btn btn-success"
+                    phx-click="approve_event"
+                    phx-value-event-id={@selected_event.id}
+                  >
+                    <span class="flex items-center gap-1">
+                      <.icon name="hero-check-circle" class="size-4" /> Approve
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-error"
+                    phx-click="delete_event"
+                    phx-value-event-id={@selected_event.id}
+                  >
+                    <span class="flex items-center gap-1">
+                      <.icon name="hero-x-circle" class="size-4" /> Reject
+                    </span>
+                  </button>
+                <% else %>
+                  <%= if @selected_event.is_deposit_paid do %>
+                    <button
+                      type="button"
+                      class="btn"
+                      phx-click="edit_event"
+                      phx-value-event-id={@selected_event.id}
+                    >
+                      <span class="flex items-center gap-1">
+                        <.icon name="hero-pencil-square" class="size-4" /> Edit
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-error"
+                      phx-click="delete_event"
+                      phx-value-event-id={@selected_event.id}
+                    >
+                      <span class="flex items-center gap-1">
+                        <.icon name="hero-trash" class="size-4" /> Delete
+                      </span>
+                    </button>
+                  <% end %>
+                <% end %>
               </div>
             <% end %>
           </div>
