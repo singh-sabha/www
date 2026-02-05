@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
-  alias SinghSabha.Events.Event
+  alias SinghSabha.Events.{Event, EventNotifier}
   alias SinghSabha.Events
 
   def render(assigns) do
@@ -165,7 +165,16 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
   end
 
   def handle_event("create_event", %{"create_event" => params}, socket) do
-    updated_params = TimezoneHelpers.convert_datetime_params(params)
+    updated_params =
+      params
+      |> then(fn p ->
+        if CalendarHelpers.is_admin?(socket.assigns) do
+          Map.merge(p, %{"is_deposit_paid" => true, "is_verified" => true})
+        else
+          p
+        end
+      end)
+      |> TimezoneHelpers.convert_datetime_params()
 
     case Events.create_event(updated_params) do
       {:ok, event} ->
@@ -175,11 +184,17 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           {:event_created, event}
         )
 
-        success_message =
+        {_notification_result, success_message} =
           if CalendarHelpers.is_admin?(socket.assigns) do
-            "Event created successfully"
+            {
+              EventNotifier.admin_notification(event, []),
+              "Event created successfully"
+            }
           else
-            "Event booking submitted and confirmation email sent successfully!"
+            {
+              EventNotifier.event_confirmation(event),
+              "Event booking submitted and confirmation email sent successfully!"
+            }
           end
 
         {:noreply,
