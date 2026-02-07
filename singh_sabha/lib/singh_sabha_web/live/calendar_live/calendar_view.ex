@@ -1,4 +1,5 @@
 defmodule SinghSabhaWeb.CalendarLive do
+  alias SinghSabhaWeb.CalendarLive.RejectEventModal
   use SinghSabhaWeb, :live_view
 
   on_mount {SinghSabhaWeb.UserAuth, :mount_current_scope}
@@ -150,6 +151,11 @@ defmodule SinghSabhaWeb.CalendarLive do
       <.live_component
         module={EditEventModal}
         id="edit_event_modal"
+        selected_event={@selected_event}
+      />
+      <.live_component
+        module={RejectEventModal}
+        id="reject_event_modal"
         selected_event={@selected_event}
       />
 
@@ -306,7 +312,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   def handle_event("approve_event", %{"event-id" => event_id}, socket) do
     event = find_event(event_id, socket.assigns.events)
 
-    case(Events.update_event(event, %{"is_verified" => true})) do
+    case Events.update_event(event, %{"is_verified" => true}) do
       {:ok, event} ->
         Phoenix.PubSub.broadcast(
           SinghSabha.PubSub,
@@ -334,7 +340,29 @@ defmodule SinghSabhaWeb.CalendarLive do
   def handle_event("reject_event", %{"event-id" => event_id}, socket) do
     event = find_event(event_id, socket.assigns.events)
 
-    {:noreply, socket}
+    {:noreply,
+     socket
+     |> assign(:selected_event, event)
+     |> push_event("open-modal", %{id: "reject_event_modal"})}
+  end
+
+  def handle_info({:reject_event, event, reason}, socket) do
+    case Events.delete_event(event) do
+      {:ok, _} ->
+        Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
+
+        EventNotifier.event_denied(event, reason)
+
+        {:noreply,
+         socket
+         |> push_event("close-modal", %{id: "reject_event_modal"})}
+
+      {:error, _} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Failed to delete event. Please try again.")
+         |> push_event("close-modal", %{id: "reject_event_modal"})}
+    end
   end
 
   def handle_info(:tick, socket) do
@@ -368,7 +396,10 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_info({:event_deleted, _event}, socket) do
-    {:noreply, load_events(socket)}
+    {:noreply,
+     socket
+     |> assign(:selected_event, nil)
+     |> load_events()}
   end
 
   defp load_events(socket) do

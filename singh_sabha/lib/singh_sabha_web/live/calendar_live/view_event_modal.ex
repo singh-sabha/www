@@ -89,7 +89,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                   <button
                     type="button"
                     class="btn btn-error"
-                    phx-click="delete_event"
+                    phx-click="reject_event"
                     phx-value-event-id={@selected_event.id}
                   >
                     <span class="flex items-center gap-1">
