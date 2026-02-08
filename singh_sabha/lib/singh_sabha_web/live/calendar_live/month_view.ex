@@ -1,6 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.MonthView do
   use Phoenix.Component
 
+  alias SinghSabhaWeb.Helpers.CalendarHelpers
   alias SinghSabhaWeb.Helpers.{EventTypeHelpers, TimezoneHelpers}
 
   def view(assigns) do
@@ -35,6 +36,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
             date={date}
             current_date={@current_date}
             current_time={@current_time}
+            current_scope={@current_scope}
             events={@events}
             event_positions={@event_positions}
             max_visible_events={@max_visible_events}
@@ -125,7 +127,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
                 class={[
                   "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
                   EventTypeHelpers.badge_colour(colour),
-                  segment.starts? &&
+                  CalendarHelpers.is_admin?(@current_scope) && segment.starts? &&
                     EventTypeHelpers.event_status_colour(
                       segment.event.is_verified,
                       segment.event.is_deposit_paid

@@ -33,6 +33,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
       <div class="shrink-0">
         <WeekViewMultiDayEventsRow.row
           current_date={@current_date}
+          current_scope={@current_scope}
           multi_day_events={@multi_day_events}
         />
         <div class="relative z-20 flex border-b border-base-300">
@@ -74,6 +75,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
                   hours={@hours}
                   events={@single_day_events}
                   working_hours={@working_hours}
+                  current_scope={@current_scope}
                 />
               <% end %>
             </div>
@@ -162,7 +164,8 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
           <div
             class={[
               "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
-              EventTypeHelpers.event_status_colour(event.is_verified, event.is_deposit_paid),
+              CalendarHelpers.is_admin?(@current_scope) &&
+                EventTypeHelpers.event_status_colour(event.is_verified, event.is_deposit_paid),
               EventTypeHelpers.badge_colour(colour)
             ]}
             phx-click="view_event"

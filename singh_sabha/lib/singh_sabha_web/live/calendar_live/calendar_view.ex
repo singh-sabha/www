@@ -115,6 +115,7 @@ defmodule SinghSabhaWeb.CalendarLive do
             <MonthView.view
               current_date={@current_date}
               current_time={@current_time}
+              current_scope={@current_scope}
               events={@events}
             />
           <% end %>
@@ -122,6 +123,7 @@ defmodule SinghSabhaWeb.CalendarLive do
             <WeekView.view
               current_date={@current_date}
               current_time={@current_time}
+              current_scope={@current_scope}
               events={@events}
               working_hours={@working_hours}
               visible_hours={@visible_hours}
@@ -131,6 +133,7 @@ defmodule SinghSabhaWeb.CalendarLive do
             <DayView.view
               current_date={@current_date}
               current_time={@current_time}
+              current_scope={@current_scope}
               events={@events}
               working_hours={@working_hours}
               visible_hours={@visible_hours}
