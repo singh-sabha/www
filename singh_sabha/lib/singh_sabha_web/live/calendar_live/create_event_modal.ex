@@ -184,17 +184,18 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           {:event_created, event}
         )
 
-        {_notification_result, success_message} =
+        unless CalendarHelpers.is_admin?(socket.assigns) do
+          event
+          |> EventNotifier.event_confirmation()
+          # TODO: add table for admin mailing list
+          |> EventNotifier.admin_notification([])
+        end
+
+        success_message =
           if CalendarHelpers.is_admin?(socket.assigns) do
-            {
-              EventNotifier.admin_notification(event, []),
-              "Event created successfully"
-            }
+            "Event created successfully"
           else
-            {
-              EventNotifier.event_confirmation(event),
-              "Event booking submitted and confirmation email sent successfully!"
-            }
+            "Event booking submitted and confirmation email sent successfully!"
           end
 
         {:noreply,
