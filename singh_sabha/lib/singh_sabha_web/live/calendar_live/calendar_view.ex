@@ -140,18 +140,20 @@ defmodule SinghSabhaWeb.CalendarLive do
       </div>
 
       <.live_component
-        module={ViewEventModal}
-        id="view_event_modal"
-        selected_event={@selected_event}
-        current_scope={@current_scope}
-      />
-      <.live_component
         module={CreateEventModal}
         id="create_event_modal"
         event_types={@event_types}
         current_scope={@current_scope}
       />
       <.live_component
+        :if={@selected_event}
+        module={ViewEventModal}
+        id="view_event_modal"
+        selected_event={@selected_event}
+        current_scope={@current_scope}
+      />
+      <.live_component
+        :if={@selected_event}
         module={EditEventModal}
         id="edit_event_modal"
         selected_event={@selected_event}
@@ -243,10 +245,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_event("view_event", %{"event-id" => event_id}, socket) do
-    event =
-      Enum.find(socket.assigns.events, fn event ->
-        event.id == String.to_integer(event_id)
-      end)
+    event = find_event(event_id, socket.assigns.events)
 
     {:noreply,
      socket

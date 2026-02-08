@@ -22,71 +22,67 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
           Make changes to the event parameters. Click save when you're done.
         </p>
 
-        <%= if @form do %>
-          <.form
-            for={@form}
-            phx-target={@myself}
-            phx-change="validate_event"
-            phx-submit="update_event"
-            class="space-y-4 mt-4"
-          >
+        <.form
+          for={@form}
+          phx-target={@myself}
+          phx-change="validate_event"
+          phx-submit="update_event"
+          class="space-y-4 mt-4"
+        >
+          <.input
+            field={@form[:occassion]}
+            type="text"
+            placeholder="Add the occassion"
+            label="Occassion"
+            required
+          />
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-0">
             <.input
-              field={@form[:occassion]}
-              type="text"
-              placeholder="Add the occassion"
-              label="Occassion"
-              required
-            />
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-0">
-              <.input
-                field={@form[:start]}
-                type="datetime-local"
-                label="Start Time"
-                required
-              />
-
-              <.input
-                field={@form[:end]}
-                type="datetime-local"
-                label="End Time"
-                required
-              />
-            </div>
-
-            <.input
-              field={@form[:type]}
-              type="select"
-              label="Type"
-              options={Enum.map(@event_types, &{&1.display_name, &1.id})}
+              field={@form[:start]}
+              type="datetime-local"
+              label="Start Time"
               required
             />
 
             <.input
-              field={@form[:note]}
-              type="textarea"
-              label="Notes"
-              placeholder="Add any notes or requests, for example, requesting an evening or afternoon Langar"
-              rows="4"
+              field={@form[:end]}
+              type="datetime-local"
+              label="End Time"
+              required
             />
+          </div>
 
-            <.input
-              field={@form[:is_public]}
-              type="checkbox"
-              label="Public event"
-              class="checkbox"
-            />
+          <.input
+            field={@form[:type]}
+            type="select"
+            label="Type"
+            options={Enum.map(@event_types, &{&1.display_name, &1.id})}
+            required
+          />
 
-            <div class="modal-action">
-              <button type="button" class="btn" onclick="edit_event_modal.close()">
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
-            </div>
-          </.form>
-        <% else %>
-          <p>No event selected</p>
-        <% end %>
+          <.input
+            field={@form[:note]}
+            type="textarea"
+            label="Notes"
+            placeholder="Add any notes or requests, for example, requesting an evening or afternoon Langar"
+            rows="4"
+          />
+
+          <.input
+            field={@form[:is_public]}
+            type="checkbox"
+            label="Public event"
+            class="checkbox"
+          />
+
+          <div class="modal-action">
+            <button type="button" class="btn" onclick="edit_event_modal.close()">
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </.form>
       </div>
 
       <form method="dialog" class="modal-backdrop">
