@@ -11,6 +11,10 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
       phx-mounted={JS.ignore_attributes(["open"])}
     >
       <div class="modal-box">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+
         <%= if @selected_event do %>
           <h3 class="font-bold text-lg">{@selected_event.occassion}</h3>
 
@@ -82,9 +86,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                     phx-click="approve_event"
                     phx-value-event-id={@selected_event.id}
                   >
-                    <span class="flex items-center gap-1">
-                      <.icon name="hero-check-circle" class="size-4" /> Approve
-                    </span>
+                    Approve
                   </button>
                   <button
                     type="button"
@@ -92,9 +94,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                     phx-click="reject_event"
                     phx-value-event-id={@selected_event.id}
                   >
-                    <span class="flex items-center gap-1">
-                      <.icon name="hero-x-circle" class="size-4" /> Reject
-                    </span>
+                    Reject
                   </button>
                 <% else %>
                   <%= if @selected_event.is_deposit_paid do %>
@@ -104,9 +104,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                       phx-click="edit_event"
                       phx-value-event-id={@selected_event.id}
                     >
-                      <span class="flex items-center gap-1">
-                        <.icon name="hero-pencil-square" class="size-4" /> Edit
-                      </span>
+                      Edit
                     </button>
                     <button
                       type="button"
@@ -114,9 +112,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                       phx-click="delete_event"
                       phx-value-event-id={@selected_event.id}
                     >
-                      <span class="flex items-center gap-1">
-                        <.icon name="hero-trash" class="size-4" /> Delete
-                      </span>
+                      Delete
                     </button>
                   <% end %>
                 <% end %>

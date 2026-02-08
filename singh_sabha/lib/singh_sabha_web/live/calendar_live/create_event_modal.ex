@@ -113,11 +113,11 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           </div>
 
           <div class="modal-action">
-            <button type="submit" class="btn btn-primary">
-              {if CalendarHelpers.is_admin?(assigns), do: "Create Event", else: "Submit"}
-            </button>
             <button type="button" class="btn" onclick="create_event_modal.close()">
               Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              {if CalendarHelpers.is_admin?(assigns), do: "Create Event", else: "Submit"}
             </button>
           </div>
         </.form>

@@ -13,6 +13,10 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
       phx-mounted={JS.ignore_attributes(["open"])}
     >
       <div class="modal-box">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+
         <h3 class="font-bold text-lg">Edit Event</h3>
         <p class="text-base-content/70 text-sm">
           Make changes to the event parameters. Click save when you're done.
@@ -74,10 +78,10 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
             />
 
             <div class="modal-action">
-              <button type="submit" class="btn btn-primary">Save Event</button>
               <button type="button" class="btn" onclick="edit_event_modal.close()">
                 Cancel
               </button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
           </.form>
         <% else %>

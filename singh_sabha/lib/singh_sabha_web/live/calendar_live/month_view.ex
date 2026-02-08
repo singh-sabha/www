@@ -95,7 +95,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
           !@today? &&
             "hover:bg-base-content/10",
           !@current_month? && "opacity-20",
-          @today? && "bg-black text-white"
+          @today? && "bg-primary text-primary-content"
         ]}
       >
         {@date.day}

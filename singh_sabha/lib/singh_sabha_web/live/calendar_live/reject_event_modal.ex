@@ -9,6 +9,10 @@ defmodule SinghSabhaWeb.CalendarLive.RejectEventModal do
       phx-mounted={JS.ignore_attributes(["open"])}
     >
       <div class="modal-box">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+
         <h3 class="font-bold text-lg">Reject Event</h3>
         <p class="text-base-content/70 text-sm">
           Enter an appropriate message for denying the event.
@@ -28,7 +32,7 @@ defmodule SinghSabhaWeb.CalendarLive.RejectEventModal do
             <button type="button" class="btn" onclick="reject_event_modal.close()">
               Cancel
             </button>
-            <button type="submit" class="btn">
+            <button type="submit" class="btn btn-primary">
               Submit
             </button>
           </div>

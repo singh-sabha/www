@@ -31,7 +31,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                 class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
                 phx-click="change_view_to_today"
               >
-                <p class="flex h-6 w-full items-center justify-center bg-black text-center text-xs font-semibold text-white">
+                <p class="flex h-6 w-full items-center justify-center bg-primary text-center text-xs font-semibold text-primary-content">
                   {String.upcase(CalendarHelpers.get_month_label(@current_time, :abbreviation))}
                 </p>
                 <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
@@ -43,7 +43,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                   <span class="text-lg font-semibold">
                     {CalendarHelpers.get_month_label(@current_date, :full)} {@current_date.year}
                   </span>
-                  <div class="badge badge-outline badge-primary">
+                  <div class="badge badge-primary">
                     <% period_events_total =
                       CalendarHelpers.get_total_events(@events, @current_date, @view_mode) %>
                     {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
@@ -97,7 +97,10 @@ defmodule SinghSabhaWeb.CalendarLive do
                 </button>
               </div>
 
-              <button class="btn w-full lg:w-auto" onclick="create_event_modal.showModal()">
+              <button
+                class="btn btn-primary w-full lg:w-auto"
+                onclick="create_event_modal.showModal()"
+              >
                 <span class="flex items-center gap-1">
                   <.icon name="hero-plus-circle" class="size-4" />
                   {if CalendarHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
