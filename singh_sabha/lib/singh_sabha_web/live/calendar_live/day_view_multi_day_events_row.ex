@@ -62,7 +62,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
       "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
       CalendarHelpers.is_admin?(@current_scope) &&
         EventTypeHelpers.event_status_colour(@event.is_verified, @event.is_deposit_paid),
-      EventTypeHelpers.badge_colour(colour)
+      EventTypeHelpers.card_colour(colour)
     ]}>
       <div
         class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap cursor-pointer"
@@ -70,9 +70,13 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
         phx-value-event-id={@event.id}
       >
         <span class="truncate">
-          Day {@event_current_day} of {@event_total_days} • {@event.occassion}
+          <span class="opacity-70 text-xs">Day {@event_current_day} of {@event_total_days} •</span>
+          <span class={EventTypeHelpers.text_colour(colour)}>{@event.occassion}</span>
         </span>
-        <span class="ml-2">{TimezoneHelpers.format_time(@event.start)}</span>
+
+        <span class={["ml-2", EventTypeHelpers.text_colour(colour)]}>
+          {TimezoneHelpers.format_time(@event.start)}
+        </span>
       </div>
     </div>
     """
