@@ -12,6 +12,7 @@ defmodule SinghSabhaWeb.CalendarLive do
     MonthView,
     WeekView,
     DayView,
+    AgendaView,
     CreateEventModal,
     EditEventModal,
     ViewEventModal
@@ -68,6 +69,16 @@ defmodule SinghSabhaWeb.CalendarLive do
                 <button
                   class={[
                     "btn join-item flex-1 lg:flex-none",
+                    @view_mode == :agenda && "btn-active"
+                  ]}
+                  phx-click="change_view"
+                  phx-value-view="agenda"
+                >
+                  <.icon name="hero-list-bullet" class="size-4" />
+                </button>
+                <button
+                  class={[
+                    "btn join-item flex-1 lg:flex-none",
                     @view_mode == :month && "btn-active"
                   ]}
                   phx-click="change_view"
@@ -111,6 +122,15 @@ defmodule SinghSabhaWeb.CalendarLive do
         </div>
 
         <div class="flex-1 min-h-0 overflow-auto">
+          <%= if @view_mode == :agenda do %>
+            <AgendaView.view
+              current_date={@current_date}
+              current_time={@current_time}
+              current_scope={@current_scope}
+              events={@events}
+            />
+          <% end %>
+
           <%= if @view_mode == :month do %>
             <MonthView.view
               current_date={@current_date}
@@ -434,6 +454,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   defp shift_date(date, :month, offset), do: Date.add(date, offset * 30)
   defp shift_date(date, :week, offset), do: Date.add(date, offset * 7)
   defp shift_date(date, :day, offset), do: Date.add(date, offset)
+  defp shift_date(date, :agenda, offset), do: Date.add(date, offset * 30)
 
   defp period_label(date, :month), do: Calendar.strftime(date, "%B %Y")
 
@@ -444,6 +465,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp period_label(date, :day), do: Calendar.strftime(date, "%A, %B %d, %Y")
+  defp period_label(date, :agenda), do: Calendar.strftime(date, "%A, %B %d, %Y")
 
   defp find_event(event_id, events) do
     Enum.find(events, fn event ->

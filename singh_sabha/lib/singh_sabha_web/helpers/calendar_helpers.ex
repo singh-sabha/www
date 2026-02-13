@@ -10,6 +10,13 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
   def get_month_label(date, :abbreviation), do: Calendar.strftime(date, "%b")
   def get_month_label(date, :full), do: Calendar.strftime(date, "%B")
 
+  def get_total_events(events, date, :agenda) do
+    Enum.count(events, fn event ->
+      event_start = DateTime.to_date(event.start)
+      event_start.year == date.year && event_start.month == date.month
+    end)
+  end
+
   def get_total_events(events, date, :day) do
     Enum.count(events, fn event ->
       start_date = DateTime.to_date(event.start)
