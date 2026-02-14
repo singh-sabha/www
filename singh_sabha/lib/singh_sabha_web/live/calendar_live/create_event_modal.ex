@@ -187,8 +187,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         unless CalendarHelpers.is_admin?(socket.assigns) do
           event
           |> EventNotifier.event_confirmation()
-          # TODO: add table for admin mailing list
-          |> EventNotifier.admin_notification([])
+          |> EventNotifier.admin_notification()
         end
 
         success_message =

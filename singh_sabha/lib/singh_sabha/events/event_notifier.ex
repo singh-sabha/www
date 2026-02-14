@@ -3,8 +3,7 @@ defmodule SinghSabha.Events.EventNotifier do
     view: SinghSabhaWeb.EmailView,
     layout: {SinghSabhaWeb.LayoutView, :email}
 
-  alias SinghSabha.Mailer
-  alias SinghSabha.Payments
+  alias SinghSabha.{MailingLists, Mailer, Payments}
 
   @from {"Gurdwara Singh Sabha of Victoria", "no-reply@singhsabha.net"}
 
@@ -37,13 +36,23 @@ defmodule SinghSabha.Events.EventNotifier do
     |> Mailer.deliver()
   end
 
-  def admin_notification(event, admin_emails) do
-    new()
-    |> to(admin_emails)
-    |> from(@from)
-    |> subject("New event booking: #{event.occassion}")
-    |> render_body("admin_notification.html", %{event: event})
-    |> Mailer.deliver()
+  def admin_notification(event) do
+    admin_emails =
+      MailingLists.list_subscribers()
+      |> Enum.map(& &1.email)
+
+    case admin_emails do
+      [] ->
+        {:ok, :no_subscribers}
+
+      emails ->
+        new()
+        |> to(emails)
+        |> from(@from)
+        |> subject("New event booking: #{event.occassion}")
+        |> render_body("admin_notification.html", %{event: event})
+        |> Mailer.deliver()
+    end
   end
 
   def admin_upcoming_events(events_by_day, admin_emails) do
