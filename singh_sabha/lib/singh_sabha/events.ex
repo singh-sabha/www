@@ -12,7 +12,9 @@ defmodule SinghSabha.Events do
   Returns the list of events.
   """
   def list_events do
-    Event
+    from(e in Event,
+      order_by: e.start
+    )
     |> Repo.all()
     |> Repo.preload(:event_type)
   end
@@ -22,7 +24,8 @@ defmodule SinghSabha.Events do
   """
   def list_public_events do
     from(e in Event,
-      where: e.is_verified == true and e.is_deposit_paid == true
+      where: e.is_verified == true and e.is_deposit_paid == true,
+      order_by: e.start
     )
     |> Repo.all()
     |> Repo.preload(:event_type)
