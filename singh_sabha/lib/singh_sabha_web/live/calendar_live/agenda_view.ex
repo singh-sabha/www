@@ -2,7 +2,12 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{
+    CalendarHelpers,
+    TimezoneHelpers,
+    EventTypeHelpers,
+    UserHelpers
+  }
 
   def view(assigns) do
     {single_day_events, multi_day_events} = CalendarHelpers.partition_events(assigns.events)
@@ -90,7 +95,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
       class={[
         "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
         EventTypeHelpers.card_colour(colour),
-        CalendarHelpers.is_admin?(@current_scope) &&
+        UserHelpers.is_admin?(@current_scope) &&
           EventTypeHelpers.event_status_colour(
             @event.is_verified,
             @event.is_deposit_paid
@@ -118,7 +123,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
         <div class="flex items-center gap-1.5">
           <.icon name="hero-user" class="size-3 shrink-0 opacity-70" />
           <p class="text-xs">
-            <%= if @event.registrant_full_name && (CalendarHelpers.is_admin?(@current_scope) or @event.is_public) do %>
+            <%= if @event.registrant_full_name && (UserHelpers.is_admin?(@current_scope) or @event.is_public) do %>
               {@event.registrant_full_name}
             <% else %>
               <span class="flex items-center gap-1">
@@ -140,7 +145,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
           <p class="text-xs">{@event.event_type.display_name}</p>
         </div>
 
-        <%= if CalendarHelpers.is_admin?(@current_scope) do %>
+        <%= if UserHelpers.is_admin?(@current_scope) do %>
           <div class="mt-1 flex items-center gap-1.5">
             <%= cond do %>
               <% !@event.is_verified -> %>

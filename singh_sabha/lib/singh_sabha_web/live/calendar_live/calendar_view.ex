@@ -3,7 +3,11 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   on_mount {SinghSabhaWeb.UserAuth, :mount_current_scope}
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
+  alias SinghSabhaWeb.Helpers.{
+    CalendarHelpers,
+    TimezoneHelpers,
+    UserHelpers
+  }
 
   alias SinghSabha.Events.EventNotifier
 
@@ -113,7 +117,7 @@ defmodule SinghSabhaWeb.CalendarLive do
               >
                 <span class="flex items-center gap-1">
                   <.icon name="hero-plus-circle" class="size-4" />
-                  {if CalendarHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
+                  {if UserHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
                 </span>
               </button>
             </div>

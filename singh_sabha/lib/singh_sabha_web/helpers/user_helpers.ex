@@ -16,4 +16,8 @@ defmodule SinghSabhaWeb.Helpers.UserHelpers do
     {color1, color2} = Enum.at(colors, rem(hash, length(colors)))
     "#{color1}, #{color2}"
   end
+
+  def is_admin?(%SinghSabha.Accounts.Scope{user: user}), do: user.is_admin
+  def is_admin?(%{current_scope: scope}), do: is_admin?(scope)
+  def is_admin?(_), do: false
 end

@@ -1,8 +1,11 @@
 defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
   use Phoenix.Component
 
-  alias SinghSabhaWeb.Helpers.CalendarHelpers
-  alias SinghSabhaWeb.Helpers.{TimezoneHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{
+    TimezoneHelpers,
+    EventTypeHelpers,
+    UserHelpers
+  }
 
   def row(assigns) do
     day_start = assigns.current_date
@@ -60,7 +63,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
 
     <div class={[
       "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
-      CalendarHelpers.is_admin?(@current_scope) &&
+      UserHelpers.is_admin?(@current_scope) &&
         EventTypeHelpers.event_status_colour(@event.is_verified, @event.is_deposit_paid),
       EventTypeHelpers.card_colour(colour)
     ]}>

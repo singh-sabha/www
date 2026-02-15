@@ -113,8 +113,4 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
 
     "top: #{top}%; height: #{height}%; width: #{width}%; left: #{left}%;"
   end
-
-  def is_admin?(%SinghSabha.Accounts.Scope{user: user}), do: user.is_admin
-  def is_admin?(%{current_scope: scope}), do: is_admin?(scope)
-  def is_admin?(_), do: false
 end

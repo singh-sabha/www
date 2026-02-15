@@ -1,7 +1,11 @@
 defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers, TimezoneHelpers}
+  alias SinghSabhaWeb.Helpers.{
+    EventTypeHelpers,
+    TimezoneHelpers,
+    UserHelpers
+  }
 
   def render(assigns) do
     ~H"""
@@ -31,7 +35,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
             <div>
               <p class="text-sm font-medium">Organizer</p>
               <p class="text-sm text-base-content/70">
-                <%= if @selected_event.registrant_full_name && (CalendarHelpers.is_admin?(@current_scope) or @selected_event.is_public) do %>
+                <%= if @selected_event.registrant_full_name && (UserHelpers.is_admin?(@current_scope) or @selected_event.is_public) do %>
                   {@selected_event.registrant_full_name}
                 <% else %>
                   <span class="flex items-center gap-1">
@@ -64,7 +68,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
             </div>
           </div>
 
-          <%= if @selected_event.note && CalendarHelpers.is_admin?(@current_scope) do %>
+          <%= if @selected_event.note && UserHelpers.is_admin?(@current_scope) do %>
             <div class="flex items-start gap-2">
               <.icon name="hero-document-text" class="mt-1 size-4 shrink-0" />
               <div>
@@ -76,7 +80,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
             </div>
           <% end %>
 
-          <%= if CalendarHelpers.is_admin?(@current_scope) do %>
+          <%= if UserHelpers.is_admin?(@current_scope) do %>
             <div class="modal-action">
               <%= if !@selected_event.is_verified do %>
                 <button
