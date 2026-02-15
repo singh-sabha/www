@@ -1,5 +1,4 @@
 defmodule SinghSabhaWeb.CalendarLive do
-  alias SinghSabhaWeb.CalendarLive.RejectEventModal
   use SinghSabhaWeb, :live_view
 
   on_mount {SinghSabhaWeb.UserAuth, :mount_current_scope}
@@ -15,14 +14,14 @@ defmodule SinghSabhaWeb.CalendarLive do
     AgendaView,
     CreateEventModal,
     EditEventModal,
-    ViewEventModal
+    ViewEventModal,
+    RejectEventModal
   }
 
   alias SinghSabha.Events
 
   def render(assigns) do
     ~H"""
-    <div id="success">{Phoenix.Flash.get(@flash, :success)}</div>
     <div class="p-4 h-screen">
       <div class="border border-base-300 rounded-md h-full flex flex-col">
         <div class="p-4 space-y-4 lg:space-y-0 shrink-0">
@@ -50,13 +49,13 @@ defmodule SinghSabhaWeb.CalendarLive do
                     {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
                   </div>
                 </div>
-                <div class="space-x-4">
+                <div class="flex items-center gap-2">
                   <button phx-click="prev_period" class="btn btn-sm btn-square">
                     <.icon name="hero-chevron-left" />
                   </button>
-                  <span class="text-sm text-base-content/50">
+                  <p class="text-sm text-base-content/50">
                     {period_label(@current_date, @view_mode)}
-                  </span>
+                  </p>
                   <button phx-click="next_period" class="btn btn-sm btn-square">
                     <.icon name="hero-chevron-right" />
                   </button>
@@ -358,8 +357,6 @@ defmodule SinghSabhaWeb.CalendarLive do
          |> put_flash(:error, "Failed to approve event. Please try again.")
          |> push_event("close-modal", %{id: "view_event_modal"})}
     end
-
-    {:noreply, socket}
   end
 
   def handle_event("reject_event", %{"event-id" => event_id}, socket) do
