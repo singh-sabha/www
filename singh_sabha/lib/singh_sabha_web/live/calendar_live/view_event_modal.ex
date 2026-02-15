@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers}
+  alias SinghSabhaWeb.Helpers.{CalendarHelpers, EventTypeHelpers, TimezoneHelpers}
 
   def render(assigns) do
     ~H"""
@@ -19,7 +19,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
 
         <div class="space-y-4 mt-4">
           <%= if @selected_event.is_verified && !@selected_event.is_deposit_paid do %>
-            <div class="alert alert-warning mt-4">
+            <div class={["mt-4 alert", EventTypeHelpers.badge_colour(:yellow)]}>
               <.icon name="hero-currency-dollar" class="size-5" />
               <span>
                 Awaiting payment from organizer. Payment link sent to {@selected_event.registrant_email}
@@ -81,7 +81,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
               <%= if !@selected_event.is_verified do %>
                 <button
                   type="button"
-                  class="btn btn-success"
+                  class="btn"
                   phx-click="approve_event"
                   phx-value-event-id={@selected_event.id}
                 >
@@ -89,7 +89,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                 </button>
                 <button
                   type="button"
-                  class="btn btn-error"
+                  class="btn"
                   phx-click="reject_event"
                   phx-value-event-id={@selected_event.id}
                 >
@@ -107,7 +107,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
                   </button>
                   <button
                     type="button"
-                    class="btn btn-error"
+                    class="btn"
                     phx-click="delete_event"
                     phx-value-event-id={@selected_event.id}
                   >
