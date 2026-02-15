@@ -104,3 +104,10 @@ if (process.env.NODE_ENV === "development") {
     },
   );
 }
+
+window.addEventListener("scroll-to-content", () => {
+  window.scrollTo({
+    top: window.innerHeight,
+    behavior: "smooth",
+  });
+});

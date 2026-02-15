@@ -20,7 +20,10 @@ defmodule SinghSabhaWeb.Router do
   scope "/", SinghSabhaWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live_session :full_width,
+      root_layout: {SinghSabhaWeb.Layouts, :root_full} do
+      live "/", HomeLive
+    end
 
     live "/calendar", CalendarLive
 

@@ -2,6 +2,8 @@
    https://tailwindcss.com/docs/configuration */
 
 @import "tailwindcss" source(none);
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;700&display=swap");
+
 @source "../css";
 @source "../js";
 @source "../../lib/singh_sabha_web";
@@ -86,4 +88,8 @@
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.font-gurmukhi {
+  font-family: "Noto Sans Gurmukhi", sans-serif;
 }
