@@ -22,7 +22,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   def render(assigns) do
     ~H"""
-    <div class="p-4 h-screen">
+    <div class="h-[calc(100vh-8.1rem)]">
       <div class="border border-base-300 rounded-md h-full flex flex-col">
         <div class="p-4 space-y-4 lg:space-y-0 shrink-0">
           <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
