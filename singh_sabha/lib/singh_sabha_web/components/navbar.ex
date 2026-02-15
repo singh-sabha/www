@@ -1,10 +1,10 @@
 defmodule SinghSabhaWeb.Components.Navbar do
-  alias SinghSabhaWeb.Helpers.UserHelpers
   use Phoenix.Component
   use SinghSabhaWeb, :verified_routes
 
   import SinghSabhaWeb.CoreComponents
-  import SinghSabhaWeb.Helpers.UserHelpers
+
+  alias SinghSabhaWeb.Helpers.UserHelpers
 
   attr :current_scope, :any, required: true
 
@@ -24,7 +24,7 @@ defmodule SinghSabhaWeb.Components.Navbar do
             <li><.link navigate={~p"/about"}>About</.link></li>
           </ul>
         </div>
-        <.link navigate={~p"/"} class="btn btn-ghost text-xl">
+        <.link navigate={~p"/"} class="btn btn-ghost text-xl hidden lg:flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
