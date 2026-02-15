@@ -60,7 +60,7 @@ defmodule SinghSabhaWeb.Components.Footer do
       <nav class="md:place-self-center md:justify-self-end">
         <div class="grid grid-flow-col gap-4">
           <a
-            href="https://youtube.com/@singhsabhavictoria"
+            href="https://www.youtube.com/@GurdwaraSinghSabhaVictoria"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="YouTube"
@@ -77,7 +77,7 @@ defmodule SinghSabhaWeb.Components.Footer do
             </svg>
           </a>
           <a
-            href="https://facebook.com/singhsabhavictoria"
+            href="https://www.facebook.com/SinghSabhaYYJ"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
@@ -94,7 +94,7 @@ defmodule SinghSabhaWeb.Components.Footer do
             </svg>
           </a>
           <a
-            href="https://wa.me/12504752280"
+            href="https://chat.whatsapp.com/EHUVUDyJ2AT9ftM3k48BBN"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp"
