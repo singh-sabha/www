@@ -6,7 +6,7 @@ defmodule SinghSabhaWeb.Components.Footer do
 
   def footer(assigns) do
     ~H"""
-    <footer class="footer sm:footer-horizontal bg-base-200 text-base-content p-10">
+    <footer class="footer sm:footer-horizontal bg-base-200 text-base-content p-10 border-t border-base-300">
       <nav>
         <h6 class="footer-title">Services</h6>
         <.link navigate={~p"/calendar"} class="link link-hover">Calendar</.link>
