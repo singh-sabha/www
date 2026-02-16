@@ -217,7 +217,7 @@ defmodule SinghSabhaWeb.CalendarLive do
       |> assign(:current_time, now)
       |> assign(:selected_date, today)
       |> assign(:working_hours, %{start: 4, end: 20})
-      |> assign(:visible_hours, :working_hours)
+      |> assign(:visible_hours, :all_hours)
       |> assign(:selected_event, nil)
       |> load_events()
       |> load_event_types()
