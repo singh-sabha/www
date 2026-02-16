@@ -107,6 +107,34 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
       tabindex="0"
     >
       <div class="flex flex-1 flex-col gap-2">
+        <%= if UserHelpers.is_admin?(@current_scope) do %>
+          <div class="mb-1 flex items-center gap-1.5">
+            <%= cond do %>
+              <% !@event.is_verified -> %>
+                <span class={[
+                  "badge badge-sm gap-1",
+                  EventTypeHelpers.badge_colour(:red)
+                ]}>
+                  <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
+                </span>
+              <% @event.is_verified && !@event.is_deposit_paid -> %>
+                <span class={[
+                  "badge badge-sm gap-1",
+                  EventTypeHelpers.badge_colour(:yellow)
+                ]}>
+                  <.icon name="hero-banknotes" class="size-3" /> Awaiting Payment
+                </span>
+              <% true -> %>
+                <span class={[
+                  "badge badge-sm gap-1",
+                  EventTypeHelpers.badge_colour(:green)
+                ]}>
+                  <.icon name="hero-check-circle" class="size-3" /> Confirmed
+                </span>
+            <% end %>
+          </div>
+        <% end %>
+
         <div class="flex items-center gap-1.5">
           <p class="font-medium">
             <%= if @event_current_day && @event_total_days do %>
@@ -144,34 +172,6 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
           <.icon name="hero-tag" class="size-3 shrink-0 opacity-70" />
           <p class="text-xs">{@event.event_type.display_name}</p>
         </div>
-
-        <%= if UserHelpers.is_admin?(@current_scope) do %>
-          <div class="mt-1 flex items-center gap-1.5">
-            <%= cond do %>
-              <% !@event.is_verified -> %>
-                <span class={[
-                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-                  EventTypeHelpers.badge_colour(:red)
-                ]}>
-                  <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
-                </span>
-              <% @event.is_verified && !@event.is_deposit_paid -> %>
-                <span class={[
-                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-                  EventTypeHelpers.badge_colour(:yellow)
-                ]}>
-                  <.icon name="hero-banknotes" class="size-3" /> Awaiting Payment
-                </span>
-              <% true -> %>
-                <span class={[
-                  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium",
-                  EventTypeHelpers.badge_colour(:green)
-                ]}>
-                  <.icon name="hero-check-circle" class="size-3" /> Confirmed
-                </span>
-            <% end %>
-          </div>
-        <% end %>
       </div>
     </div>
     """
