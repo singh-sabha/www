@@ -98,7 +98,7 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:event_types, Events.list_event_types())
+     |> assign(:event_types, Events.list_event_types(:all))
      |> assign(
        :form,
        to_form(

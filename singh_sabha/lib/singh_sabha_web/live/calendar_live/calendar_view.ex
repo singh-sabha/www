@@ -431,8 +431,8 @@ defmodule SinghSabhaWeb.CalendarLive do
   defp load_events(socket) do
     events =
       case socket.assigns.current_scope do
-        nil -> Events.list_public_events()
-        _ -> Events.list_events()
+        nil -> Events.list_events(:public)
+        _ -> Events.list_events(:all)
       end
       |> Enum.map(fn event ->
         %{
@@ -447,8 +447,8 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   defp load_event_types(socket) do
     case socket.assigns.current_scope do
-      nil -> assign(socket, :event_types, Events.list_public_event_types())
-      _ -> assign(socket, :event_types, Events.list_event_types())
+      nil -> assign(socket, :event_types, Events.list_event_types(:public))
+      _ -> assign(socket, :event_types, Events.list_event_types(:all))
     end
   end
 

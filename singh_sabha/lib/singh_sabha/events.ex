@@ -11,27 +11,47 @@ defmodule SinghSabha.Events do
   @doc """
   Returns the list of events.
   """
-  def list_events do
+  def list_events(:all) do
     from(e in Event,
-      order_by: e.start
+      order_by: e.start,
+      preload: [:event_type]
     )
     |> Repo.all()
-    |> Repo.preload(:event_type)
   end
 
-  @doc """
-  Returns the list of public events.
-  """
-  def list_public_events do
+  def list_events(:public) do
     from(e in Event,
-      where: e.is_verified == true and e.is_deposit_paid == true,
-      order_by: e.start
+      where:
+        e.is_verified and
+          e.is_deposit_paid and
+          e.is_public,
+      order_by: e.start,
+      preload: [:event_type]
     )
     |> Repo.all()
-    |> Repo.preload(:event_type)
     |> Enum.map(fn e ->
       %{e | registrant_email: nil, registrant_phone_number: nil}
     end)
+  end
+
+  @doc """
+  Returns the list of public events for the given week.
+  """
+  def list_events_between_dates(:public, start_date, end_date) do
+    start_dt = DateTime.new!(start_date, ~T[00:00:00], "Etc/UTC")
+    end_dt = DateTime.new!(end_date, ~T[23:59:59], "Etc/UTC")
+
+    from(e in Event,
+      where:
+        e.is_verified and
+          e.is_deposit_paid and
+          e.is_public and
+          e.start >= ^start_dt and
+          e.start <= ^end_dt,
+      order_by: e.start,
+      preload: [:event_type]
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -89,14 +109,11 @@ defmodule SinghSabha.Events do
   @doc """
   Returns the list of event types.
   """
-  def list_event_types do
+  def list_event_types(:all) do
     Repo.all(EventType)
   end
 
-  @doc """
-  Returns the list of public event types.
-  """
-  def list_public_event_types do
+  def list_event_types(:public) do
     from(et in EventType,
       where: et.is_requestable == true
     )
