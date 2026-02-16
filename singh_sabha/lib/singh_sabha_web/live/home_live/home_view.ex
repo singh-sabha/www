@@ -13,7 +13,7 @@ defmodule SinghSabhaWeb.HomeLive do
     week_end = Date.add(week_start, 6)
 
     upcoming =
-      Events.list_events_between_dates(:public, week_start, week_end)
+      Events.list_events_between_dates(:public, today, week_end)
       |> Enum.map(fn event ->
         %{
           event
