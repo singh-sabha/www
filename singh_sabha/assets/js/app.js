@@ -43,6 +43,45 @@ Hooks.ModalManager = {
   },
 };
 
+Hooks.AutoCarousel = {
+  mounted() {
+    this.index = 0;
+    this.items = this.el.querySelectorAll(".carousel-item");
+    this.total = this.items.length;
+
+    if (this.total <= 1) return;
+
+    this.start();
+
+    this.el.addEventListener("mouseenter", () => clearInterval(this.timer));
+    this.el.addEventListener("mouseleave", () => this.start());
+  },
+
+  start() {
+    this.timer = setInterval(() => {
+      this.index = (this.index + 1) % this.total;
+      const target = this.items[this.index];
+      target.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }, 4000);
+  },
+
+  destroyed() {
+    clearInterval(this.timer);
+  },
+
+  updated() {
+    clearInterval(this.timer);
+    this.index = 0;
+    this.items = this.el.querySelectorAll(".carousel-item");
+    this.total = this.items.length;
+    if (this.total > 1) this.start();
+  },
+};
+
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: { _csrf_token: csrfToken },
