@@ -1,32 +1,57 @@
 defmodule SinghSabhaWeb.HomeLive do
-  alias SinghSabhaWeb.HomeLive.UpcomingEventsSection
   use SinghSabhaWeb, :live_view
+
+  on_mount {SinghSabhaWeb.UserAuth, :mount_current_scope}
 
   alias SinghSabha.Events
   alias SinghSabhaWeb.Helpers.TimezoneHelpers
-  alias SinghSabhaWeb.HomeLive.HeroSection
+
+  alias SinghSabhaWeb.HomeLive.{
+    UpcomingEventsSection,
+    HeroSection,
+    ServicesSection
+  }
+
+  alias SinghSabhaWeb.CalendarLive.CreateEventModal
 
   def render(assigns) do
     ~H"""
     <HeroSection.section />
-    <div class="border-t border-base-300 border-b">
-      <div class="container mx-auto px-4 py-8 border-t border-base-300">
+
+    <div class="border-t border-b border-base-300">
+      <div class="container mx-auto px-4 py-8">
+        <ServicesSection.section event_types={@event_types} />
+      </div>
+    </div>
+
+    <div class="">
+      <div class="container mx-auto px-4 py-8">
         <UpcomingEventsSection.section
           upcoming={@upcoming}
           current_time={@current_time}
         />
       </div>
     </div>
+
+    <.live_component
+      module={CreateEventModal}
+      id="create_event_modal"
+      event_types={
+        if Map.has_key?(assigns, :selected_event_type), do: [@selected_event_type], else: @event_types
+      }
+      current_scope={@current_scope}
+    />
+
+    <div phx-hook="ModalManager" id="modal-manager"></div>
     """
   end
 
   def mount(_params, _session, socket) do
     now = DateTime.now!(TimezoneHelpers.local())
-    today = DateTime.to_date(now)
-    week_start = Date.beginning_of_week(today, :sunday)
-    week_end = Date.add(week_start, 6)
 
     if connected?(socket) do
+      Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
+
       seconds_until_next_minute = 60 - now.second
 
       milliseconds_until_next_minute =
@@ -34,6 +59,48 @@ defmodule SinghSabhaWeb.HomeLive do
 
       Process.send_after(self(), :tick, milliseconds_until_next_minute)
     end
+
+    socket =
+      socket
+      |> assign(:current_time, now)
+      |> load_upcoming_events
+      |> load_event_types
+
+    {:ok, socket}
+  end
+
+  def handle_info(:tick, socket) do
+    Process.send_after(self(), :tick, 30_000)
+
+    {:noreply, assign(socket, :current_time, DateTime.now!(TimezoneHelpers.local()))}
+  end
+
+  def handle_info({:event_created, _event}, socket) do
+    {:noreply, load_upcoming_events(socket)}
+  end
+
+  def handle_info({:event_updated, _event}, socket) do
+    {:noreply, load_upcoming_events(socket)}
+  end
+
+  def handle_info({:event_deleted, _event}, socket) do
+    {:noreply, load_upcoming_events(socket)}
+  end
+
+  def handle_event("create_event", %{"event-id" => event_id}, socket) do
+    event_type = Enum.find(socket.assigns.event_types, &(&1.id == String.to_integer(event_id)))
+
+    {:noreply,
+     socket
+     |> assign(:selected_event_type, event_type)
+     |> push_event("open-modal", %{id: "create_event_modal"})}
+  end
+
+  defp load_upcoming_events(socket) do
+    today = DateTime.to_date(socket.assigns.current_time)
+
+    week_start = Date.beginning_of_week(today, :sunday)
+    week_end = Date.add(week_start, 6)
 
     upcoming =
       Events.list_events_between_dates(:public, today, week_end)
@@ -45,15 +112,10 @@ defmodule SinghSabhaWeb.HomeLive do
         }
       end)
 
-    {:ok,
-     socket
-     |> assign(:current_time, now)
-     |> assign(:upcoming, upcoming)}
+    assign(socket, :upcoming, upcoming)
   end
 
-  def handle_info(:tick, socket) do
-    Process.send_after(self(), :tick, 30_000)
-
-    {:noreply, assign(socket, :current_time, DateTime.now!(TimezoneHelpers.local()))}
+  defp load_event_types(socket) do
+    assign(socket, :event_types, Events.list_event_types(:public))
   end
 end
