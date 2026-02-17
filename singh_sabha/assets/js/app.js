@@ -46,6 +46,7 @@ Hooks.ModalManager = {
 Hooks.AutoCarousel = {
   mounted() {
     this.index = 0;
+    this.container = this.el;
     this.items = this.el.querySelectorAll(".carousel-item");
     this.total = this.items.length;
 
@@ -58,13 +59,16 @@ Hooks.AutoCarousel = {
   },
 
   start() {
+    clearInterval(this.timer);
+
     this.timer = setInterval(() => {
       this.index = (this.index + 1) % this.total;
-      const target = this.items[this.index];
-      target.scrollIntoView({
+
+      const width = this.container.clientWidth;
+
+      this.container.scrollTo({
+        left: width * this.index,
         behavior: "smooth",
-        inline: "center",
-        block: "nearest",
       });
     }, 4000);
   },
@@ -78,6 +82,7 @@ Hooks.AutoCarousel = {
     this.index = 0;
     this.items = this.el.querySelectorAll(".carousel-item");
     this.total = this.items.length;
+
     if (this.total > 1) this.start();
   },
 };
