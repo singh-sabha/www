@@ -186,9 +186,8 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         )
 
         unless UserHelpers.is_admin?(socket.assigns) do
-          event
-          |> EventNotifier.event_confirmation()
-          |> EventNotifier.admin_notification()
+          EventNotifier.event_confirmation(event)
+          EventNotifier.admin_notification(event)
         end
 
         success_message =
