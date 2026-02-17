@@ -1,6 +1,9 @@
 defmodule SinghSabhaWeb.CalendarLive.RejectEventModal do
   use SinghSabhaWeb, :live_component
 
+  attr :id, :string, required: true
+  attr :selected_event, :map, default: nil
+
   def render(assigns) do
     ~H"""
     <dialog

@@ -7,6 +7,11 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
     UserHelpers
   }
 
+  attr :current_date, :any, required: true
+  attr :current_time, :any, required: true
+  attr :current_scope, :map, default: nil
+  attr :events, :list, required: true
+
   def view(assigns) do
     max_visible_events = 4
     {dates, first_display, last_display} = month_dates(assigns.current_date)
@@ -69,6 +74,14 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
 
     {days, first_display, last_display}
   end
+
+  attr :date, :any, required: true
+  attr :current_date, :any, required: true
+  attr :current_time, :any, required: true
+  attr :current_scope, :map, default: nil
+  attr :events, :list, required: true
+  attr :event_positions, :map, required: true
+  attr :max_visible_events, :integer, required: true
 
   defp day_cell(assigns) do
     {segments, overflow} =

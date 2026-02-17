@@ -3,6 +3,9 @@ defmodule SinghSabhaWeb.CalendarLive.Components.Timeline do
 
   alias SinghSabhaWeb.Helpers.TimezoneHelpers
 
+  attr :current_time, :any, required: true
+  attr :hours, :list, required: true
+
   def view(assigns) do
     now = assigns.current_time
     current_hour = now.hour

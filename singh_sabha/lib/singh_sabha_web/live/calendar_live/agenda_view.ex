@@ -9,6 +9,11 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
     UserHelpers
   }
 
+  attr :current_date, :any, required: true
+  attr :current_time, :any, required: true
+  attr :current_scope, :map, default: nil
+  attr :events, :list, required: true
+
   def view(assigns) do
     {single_day_events, multi_day_events} = CalendarHelpers.partition_events(assigns.events)
 

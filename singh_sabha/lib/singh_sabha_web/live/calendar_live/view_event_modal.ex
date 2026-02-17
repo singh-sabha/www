@@ -7,6 +7,10 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
     UserHelpers
   }
 
+  attr :id, :string, required: true
+  attr :selected_event, :map, default: nil
+  attr :current_scope, :map, default: nil
+
   def render(assigns) do
     ~H"""
     <dialog

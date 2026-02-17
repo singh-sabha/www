@@ -7,6 +7,10 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
     UserHelpers
   }
 
+  attr :current_date, :any, required: true
+  attr :multi_day_events, :list, required: true
+  attr :current_scope, :map, default: nil
+
   def row(assigns) do
     day_start = assigns.current_date
     day_end = assigns.current_date
@@ -56,6 +60,11 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
     <% end %>
     """
   end
+
+  attr :event, :map, required: true
+  attr :event_current_day, :integer, required: true
+  attr :event_total_days, :integer, required: true
+  attr :current_scope, :map, default: nil
 
   defp multi_day_event_badge(assigns) do
     ~H"""

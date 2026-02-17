@@ -6,6 +6,12 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
   alias SinghSabha.Events.{Event, EventNotifier}
   alias SinghSabha.Events
 
+  attr :id, :string, required: true
+  attr :event_types, :list, required: true
+  attr :current_scope, :map, default: nil
+  attr :start_datetime, :string, default: nil
+  attr :end_datetime, :string, default: nil
+
   def render(assigns) do
     ~H"""
     <dialog

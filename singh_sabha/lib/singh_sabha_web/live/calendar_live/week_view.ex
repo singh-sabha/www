@@ -5,6 +5,13 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
   alias SinghSabhaWeb.CalendarLive.Components.{WeekViewMultiDayEventsRow, Timeline}
   alias SinghSabhaWeb.Helpers.{CalendarHelpers, TimezoneHelpers, EventTypeHelpers}
 
+  attr :current_date, :any, required: true
+  attr :current_time, :any, required: true
+  attr :current_scope, :map, default: nil
+  attr :events, :list, required: true
+  attr :working_hours, :map, required: true
+  attr :visible_hours, :atom, required: true
+
   def view(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
 
@@ -88,6 +95,12 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
     </div>
     """
   end
+
+  attr :day, :any, required: true
+  attr :hours, :list, required: true
+  attr :events, :list, required: true
+  attr :working_hours, :map, required: true
+  attr :current_scope, :map, default: nil
 
   defp day_column(assigns) do
     day_events =

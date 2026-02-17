@@ -7,6 +7,10 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
     UserHelpers
   }
 
+  attr :current_date, :any, required: true
+  attr :multi_day_events, :list, required: true
+  attr :current_scope, :map, default: nil
+
   def row(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
     week_end = Date.end_of_week(assigns.current_date, :sunday)
@@ -122,6 +126,12 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
       end
     end)
   end
+
+  attr :event, :map, required: true
+  attr :colour, :string, required: true
+  attr :starts, :boolean, required: true
+  attr :ends, :boolean, required: true
+  attr :current_scope, :map, default: nil
 
   defp multi_day_event_badge(assigns) do
     ~H"""

@@ -5,6 +5,9 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
   alias SinghSabha.Events.Event
   alias SinghSabha.Events
 
+  attr :id, :string, required: true
+  attr :selected_event, :map, default: nil
+
   def render(assigns) do
     ~H"""
     <dialog
