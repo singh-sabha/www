@@ -9,7 +9,11 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
     ~H"""
     <section class="space-y-4">
       <h3 class="text-lg font-semibold flex justify-center items-center">Our Services</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 container mx-auto px-4">
+      <p class="text-sm opacity-60 text-center">
+        Explore or book any of the various services we offer.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 container mx-auto pt-8">
         <%= for event_type <- @event_types do %>
           <.event_type_card event_type={event_type} />
         <% end %>

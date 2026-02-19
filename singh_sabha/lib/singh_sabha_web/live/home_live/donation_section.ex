@@ -17,9 +17,10 @@ defmodule SinghSabhaWeb.HomeLive.DonationsSection do
         <h3 class="text-lg font-semibold">Support Our Mission</h3>
       </div>
       <p class="text-sm opacity-60 text-center">
-        Your generous donations help us maintain and improve our services.
+        Your generous donations help us maintain and improve our services. We appreciate any contribution you can make.
       </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto px-4">
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 container mx-auto pt-8 ">
         <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
           <div class="flex items-center gap-2">
             <.icon name="hero-envelope" class="size-4 opacity-70" />

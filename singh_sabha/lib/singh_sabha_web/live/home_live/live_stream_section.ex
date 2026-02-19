@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  @channel_id "UCtMxxM3Lr4qf8_EzrQORhQg"
+  @channel_id "UCNYMuETXWtm6Nh1R4wGESIQ"
 
   attr :live_stream, :map, default: nil
 
@@ -17,10 +17,14 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
           <h3 class="text-lg font-semibold">Live Stream</h3>
         <% end %>
       </div>
+      <p class="text-sm opacity-60 text-center">
+        Join us virtually for our live services and events.
+      </p>
+
       <%= if @live_stream do %>
         <.live_stream_card live_stream={@live_stream} />
       <% else %>
-        <div class="flex flex-col items-center justify-center gap-2 rounded-box py-12">
+        <div class="flex flex-col items-center justify-center gap-2 rounded-box pt-8">
           <.icon name="hero-video-camera-slash" class="size-10 opacity-70" />
           <p class="text-sm opacity-60">No live stream currently</p>
           <p class="text-sm">
@@ -44,7 +48,7 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
 
   defp live_stream_card(assigns) do
     ~H"""
-    <div class="mx-auto overflow-hidden rounded-box border border-base-300">
+    <div class="mx-auto overflow-hidden rounded-box border border-base-300 pt-8">
       <div class="p-4 flex items-center justify-center">
         <p class="font-semibold">{@live_stream.title}</p>
       </div>

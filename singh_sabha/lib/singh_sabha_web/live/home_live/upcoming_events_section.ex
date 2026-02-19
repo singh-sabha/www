@@ -16,10 +16,13 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
           <span class="badge badge-primary">{length(@upcoming)} events</span>
         <% end %>
       </div>
+      <p class="text-sm opacity-60 text-center">
+        Join us for this week's upcoming events.
+      </p>
 
       <%= if length(@upcoming) > 0 do %>
         <div
-          class="carousel w-full rounded-box snap-x snap-mandatory overflow-x-hidden"
+          class="carousel w-full rounded-box snap-x snap-mandatory overflow-x-hidden pt-8"
           phx-hook="AutoCarousel"
           id="auto-carousel"
         >
@@ -33,7 +36,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
           <% end %>
         </div>
       <% else %>
-        <div class="flex flex-col items-center justify-center gap-2 rounded-box py-12">
+        <div class="flex flex-col items-center justify-center gap-2 rounded-box pt-8">
           <.icon name="hero-calendar-days" class="size-10 opacity-70" />
           <p class="text-sm opacity-60">No upcoming events this week</p>
         </div>
