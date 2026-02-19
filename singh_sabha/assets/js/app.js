@@ -155,3 +155,10 @@ window.addEventListener("scroll-to-content", () => {
     behavior: "smooth",
   });
 });
+
+window.addEventListener("phx:copy", (e) => {
+  navigator.clipboard.writeText(e.detail.text);
+  const btn = e.target;
+  btn.dataset.copied = "true";
+  setTimeout(() => delete btn.dataset.copied, 2000);
+});

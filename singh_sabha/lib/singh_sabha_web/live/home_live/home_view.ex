@@ -10,7 +10,8 @@ defmodule SinghSabhaWeb.HomeLive do
     UpcomingEventsSection,
     HeroSection,
     ServicesSection,
-    LiveStreamSection
+    LiveStreamSection,
+    DonationsSection
   }
 
   alias SinghSabhaWeb.CalendarLive.CreateEventModal
@@ -37,6 +38,12 @@ defmodule SinghSabhaWeb.HomeLive do
     <div class="border-t border-base-300">
       <div class="container mx-auto px-4 py-8">
         <LiveStreamSection.section live_stream={@live_stream} />
+      </div>
+    </div>
+
+    <div class="border-t border-base-300">
+      <div class="container mx-auto px-4 py-8">
+        <DonationsSection.section />
       </div>
     </div>
 
