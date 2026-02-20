@@ -198,14 +198,15 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
 
         success_message =
           if UserHelpers.is_admin?(socket.assigns) do
-            "Event created successfully"
+            "Event created successfully!"
           else
             "Event booking submitted and confirmation email sent successfully!"
           end
 
+        send(self(), {:put_flash, :success, success_message})
+
         {:noreply,
          socket
-         |> put_flash(:success, success_message)
          |> push_event("close-modal", %{id: "create_event_modal"})}
 
       {:error, %Ecto.Changeset{} = changeset} ->

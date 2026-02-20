@@ -131,12 +131,15 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
           {:event_updated, event}
         )
 
+        send(self(), {:put_flash, :success, "Event updated!"})
+
         {:noreply,
          socket
-         |> put_flash(:success, "Event updated")
          |> push_event("close-modal", %{id: "edit_event_modal"})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        send(self(), {:put_flash, :error, "Error when updating event. Please try again."})
+
         {:noreply,
          assign(
            socket,

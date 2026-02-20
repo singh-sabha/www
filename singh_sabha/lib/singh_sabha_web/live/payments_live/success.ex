@@ -14,7 +14,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Success do
       nil ->
         {:noreply,
          socket
-         |> put_flash(:error, "Event not found")
+         |> put_flash(:warning, "Event not found.")
          |> push_navigate(to: ~p"/")}
 
       event ->
@@ -36,14 +36,14 @@ defmodule SinghSabhaWeb.PaymentsLive.Success do
             else
               {:noreply,
                socket
-               |> put_flash(:error, "Payment was not completed")
+               |> put_flash(:warning, "Payment was not completed.")
                |> push_navigate(to: ~p"/")}
             end
 
           {:error, _error} ->
             {:noreply,
              socket
-             |> put_flash(:error, "Could not verify payment session")
+             |> put_flash(:error, "Could not verify payment session.")
              |> push_navigate(to: ~p"/")}
         end
     end

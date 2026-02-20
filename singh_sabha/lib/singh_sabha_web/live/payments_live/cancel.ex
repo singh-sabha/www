@@ -12,7 +12,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Cancel do
       nil ->
         {:noreply,
          socket
-         |> put_flash(:error, "Event not found")
+         |> put_flash(:warning, "Event not found.")
          |> push_navigate(to: ~p"/")}
 
       event ->
@@ -23,7 +23,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Cancel do
         {:noreply,
          socket
          |> assign(:event, event)
-         |> put_flash(:info, "Event booking cancelled")}
+         |> put_flash(:success, "Event booking cancelled.")}
     end
   end
 
