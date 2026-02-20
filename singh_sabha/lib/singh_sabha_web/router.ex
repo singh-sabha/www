@@ -21,16 +21,18 @@ defmodule SinghSabhaWeb.Router do
     pipe_through :browser
 
     live_session :full_width,
-      root_layout: {SinghSabhaWeb.Layouts, :root_full} do
+      root_layout: {SinghSabhaWeb.Layouts, :root_full},
+      on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
       live "/", HomeLive
     end
 
-    live "/calendar", CalendarLive
-
-    live "/payment/success", PaymentsLive.Success
-    live "/payment/cancel", PaymentsLive.Cancel
-
-    live "/about", AboutLive
+    live_session :default,
+      on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
+      live "/calendar", CalendarLive
+      live "/payment/success", PaymentsLive.Success
+      live "/payment/cancel", PaymentsLive.Cancel
+      live "/about", AboutLive
+    end
   end
 
   # Other scopes may use custom stacks.

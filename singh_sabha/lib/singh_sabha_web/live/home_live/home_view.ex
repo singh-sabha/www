@@ -1,8 +1,6 @@
 defmodule SinghSabhaWeb.HomeLive do
   use SinghSabhaWeb, :live_view
 
-  on_mount {SinghSabhaWeb.UserAuth, :mount_current_scope}
-
   alias SinghSabha.Events
   alias SinghSabhaWeb.Helpers.TimezoneHelpers
 

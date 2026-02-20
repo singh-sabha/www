@@ -1,8 +1,6 @@
 defmodule SinghSabhaWeb.CalendarLive do
   use SinghSabhaWeb, :live_view
 
-  on_mount {SinghSabhaWeb.UserAuth, :mount_current_scope}
-
   alias SinghSabhaWeb.Helpers.{
     CalendarHelpers,
     TimezoneHelpers,
