@@ -73,6 +73,7 @@ defmodule SinghSabhaWeb.Router do
     pipe_through [:browser]
 
     live_session :current_user,
+      root_layout: {SinghSabhaWeb.Layouts, :root_empty},
       on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
