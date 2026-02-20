@@ -2,6 +2,7 @@ defmodule SinghSabhaWeb.UserLive.Login do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Accounts
+  alias SinghSabhaWeb.Helpers.EventTypeHelpers
 
   @impl true
   def render(assigns) do
@@ -25,7 +26,7 @@ defmodule SinghSabhaWeb.UserLive.Login do
           </.header>
         </div>
 
-        <div :if={local_mail_adapter?()} class="alert alert-info">
+        <div :if={local_mail_adapter?()} class={["alert", EventTypeHelpers.badge_colour(:blue)]}>
           <.icon name="hero-information-circle" class="size-6 shrink-0" />
           <div>
             <p>You are running the local mail adapter.</p>
@@ -52,11 +53,11 @@ defmodule SinghSabhaWeb.UserLive.Login do
             phx-mounted={JS.focus()}
           />
           <.button class="btn btn-primary w-full">
-            Log in with email <span aria-hidden="true">→</span>
+            Log in with email <.icon name="hero-arrow-right" />
           </.button>
         </.form>
 
-        <div class="divider">or</div>
+        <div class="divider text-sm text-base-content/70">or</div>
 
         <.form
           :let={f}
@@ -81,7 +82,7 @@ defmodule SinghSabhaWeb.UserLive.Login do
             autocomplete="current-password"
           />
           <.button class="btn btn-primary w-full" name={@form[:remember_me].name} value="true">
-            Log in and stay logged in <span aria-hidden="true">→</span>
+            Log in and stay logged in <.icon name="hero-arrow-right" />
           </.button>
           <.button class="btn btn-primary btn-soft w-full mt-2">
             Log in only this time
