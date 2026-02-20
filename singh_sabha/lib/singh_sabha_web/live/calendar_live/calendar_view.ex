@@ -220,8 +220,8 @@ defmodule SinghSabhaWeb.CalendarLive do
       |> assign(:working_hours, %{start: 4, end: 20})
       |> assign(:visible_hours, :all_hours)
       |> assign(:selected_event, nil)
-      |> load_events
-      |> load_event_types
+      |> load_events()
+      |> load_event_types()
 
     {:ok, socket}
   end
