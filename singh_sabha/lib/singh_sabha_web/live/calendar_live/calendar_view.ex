@@ -24,172 +24,174 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   def render(assigns) do
     ~H"""
-    <div class="h-[calc(100vh-8.1rem)]">
-      <div class="border border-base-300 rounded-md h-full flex flex-col">
-        <div class="p-4 space-y-4 lg:space-y-0 shrink-0">
-          <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
-            <div class="flex gap-4 items-start">
-              <button
-                class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
-                phx-click="change_view_to_today"
-              >
-                <p class="flex h-6 w-full items-center justify-center bg-primary text-center text-xs font-semibold text-primary-content">
-                  {String.upcase(CalendarHelpers.get_month_label(@current_time, :abbreviation))}
-                </p>
-                <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
-                  {@current_time.day}
-                </p>
-              </button>
-              <div class="space-y-1">
-                <div class="flex items-center space-x-2">
-                  <span class="text-lg font-semibold">
-                    {CalendarHelpers.get_month_label(@current_date, :full)} {@current_date.year}
-                  </span>
-                  <div class="badge badge-primary">
-                    <% period_events_total =
-                      CalendarHelpers.get_total_events(@events, @current_date, @view_mode) %>
-                    {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
+      <div class="h-[calc(100vh-8.1rem)]">
+        <div class="border border-base-300 rounded-md h-full flex flex-col">
+          <div class="p-4 space-y-4 lg:space-y-0 shrink-0">
+            <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
+              <div class="flex gap-4 items-start">
+                <button
+                  class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
+                  phx-click="change_view_to_today"
+                >
+                  <p class="flex h-6 w-full items-center justify-center bg-primary text-center text-xs font-semibold text-primary-content">
+                    {String.upcase(CalendarHelpers.get_month_label(@current_time, :abbreviation))}
+                  </p>
+                  <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
+                    {@current_time.day}
+                  </p>
+                </button>
+                <div class="space-y-1">
+                  <div class="flex items-center space-x-2">
+                    <span class="text-lg font-semibold">
+                      {CalendarHelpers.get_month_label(@current_date, :full)} {@current_date.year}
+                    </span>
+                    <div class="badge badge-primary">
+                      <% period_events_total =
+                        CalendarHelpers.get_total_events(@events, @current_date, @view_mode) %>
+                      {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button phx-click="prev_period" class="btn btn-sm btn-square">
+                      <.icon name="hero-chevron-left" />
+                    </button>
+                    <p class="text-sm text-base-content/50">
+                      {period_label(@current_date, @view_mode)}
+                    </p>
+                    <button phx-click="next_period" class="btn btn-sm btn-square">
+                      <.icon name="hero-chevron-right" />
+                    </button>
                   </div>
                 </div>
-                <div class="flex items-center gap-2">
-                  <button phx-click="prev_period" class="btn btn-sm btn-square">
-                    <.icon name="hero-chevron-left" />
+              </div>
+
+              <div class="space-y-2 lg:space-y-0 lg:space-x-2 lg:flex lg:items-center">
+                <div class="join w-full lg:w-auto">
+                  <button
+                    class={[
+                      "btn join-item flex-1 lg:flex-none",
+                      @view_mode == :agenda && "btn-active"
+                    ]}
+                    phx-click="change_view"
+                    phx-value-view="agenda"
+                  >
+                    <.icon name="hero-list-bullet" class="size-4" />
                   </button>
-                  <p class="text-sm text-base-content/50">
-                    {period_label(@current_date, @view_mode)}
-                  </p>
-                  <button phx-click="next_period" class="btn btn-sm btn-square">
-                    <.icon name="hero-chevron-right" />
+                  <button
+                    class={[
+                      "btn join-item flex-1 lg:flex-none",
+                      @view_mode == :month && "btn-active"
+                    ]}
+                    phx-click="change_view"
+                    phx-value-view="month"
+                  >
+                    <.icon name="hero-calendar-days" class="size-4" />
+                  </button>
+                  <button
+                    class={[
+                      "btn join-item flex-1 lg:flex-none",
+                      @view_mode == :week && "btn-active"
+                    ]}
+                    phx-click="change_view"
+                    phx-value-view="week"
+                  >
+                    <.icon name="hero-calendar-date-range" class="size-4" />
+                  </button>
+                  <button
+                    class={[
+                      "btn join-item flex-1 lg:flex-none",
+                      @view_mode == :day && "btn-active"
+                    ]}
+                    phx-click="change_view"
+                    phx-value-view="day"
+                  >
+                    <.icon name="hero-calendar" class="size-4" />
                   </button>
                 </div>
+
+                <button
+                  class="btn btn-primary w-full lg:w-auto"
+                  onclick="create_event_modal.showModal()"
+                >
+                  <span class="flex items-center gap-1">
+                    <.icon name="hero-plus-circle" class="size-4" />
+                    {if UserHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
+                  </span>
+                </button>
               </div>
             </div>
+          </div>
 
-            <div class="space-y-2 lg:space-y-0 lg:space-x-2 lg:flex lg:items-center">
-              <div class="join w-full lg:w-auto">
-                <button
-                  class={[
-                    "btn join-item flex-1 lg:flex-none",
-                    @view_mode == :agenda && "btn-active"
-                  ]}
-                  phx-click="change_view"
-                  phx-value-view="agenda"
-                >
-                  <.icon name="hero-list-bullet" class="size-4" />
-                </button>
-                <button
-                  class={[
-                    "btn join-item flex-1 lg:flex-none",
-                    @view_mode == :month && "btn-active"
-                  ]}
-                  phx-click="change_view"
-                  phx-value-view="month"
-                >
-                  <.icon name="hero-calendar-days" class="size-4" />
-                </button>
-                <button
-                  class={[
-                    "btn join-item flex-1 lg:flex-none",
-                    @view_mode == :week && "btn-active"
-                  ]}
-                  phx-click="change_view"
-                  phx-value-view="week"
-                >
-                  <.icon name="hero-calendar-date-range" class="size-4" />
-                </button>
-                <button
-                  class={[
-                    "btn join-item flex-1 lg:flex-none",
-                    @view_mode == :day && "btn-active"
-                  ]}
-                  phx-click="change_view"
-                  phx-value-view="day"
-                >
-                  <.icon name="hero-calendar" class="size-4" />
-                </button>
-              </div>
+          <div class="flex-1 min-h-0 overflow-auto">
+            <%= if @view_mode == :agenda do %>
+              <AgendaView.view
+                current_date={@current_date}
+                current_time={@current_time}
+                current_scope={@current_scope}
+                events={@events}
+              />
+            <% end %>
 
-              <button
-                class="btn btn-primary w-full lg:w-auto"
-                onclick="create_event_modal.showModal()"
-              >
-                <span class="flex items-center gap-1">
-                  <.icon name="hero-plus-circle" class="size-4" />
-                  {if UserHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
-                </span>
-              </button>
-            </div>
+            <%= if @view_mode == :month do %>
+              <MonthView.view
+                current_date={@current_date}
+                current_time={@current_time}
+                current_scope={@current_scope}
+                events={@events}
+              />
+            <% end %>
+            <%= if @view_mode == :week do %>
+              <WeekView.view
+                current_date={@current_date}
+                current_time={@current_time}
+                current_scope={@current_scope}
+                events={@events}
+                working_hours={@working_hours}
+                visible_hours={@visible_hours}
+              />
+            <% end %>
+            <%= if @view_mode == :day do %>
+              <DayView.view
+                current_date={@current_date}
+                current_time={@current_time}
+                current_scope={@current_scope}
+                events={@events}
+                working_hours={@working_hours}
+                visible_hours={@visible_hours}
+              />
+            <% end %>
           </div>
         </div>
 
-        <div class="flex-1 min-h-0 overflow-auto">
-          <%= if @view_mode == :agenda do %>
-            <AgendaView.view
-              current_date={@current_date}
-              current_time={@current_time}
-              current_scope={@current_scope}
-              events={@events}
-            />
-          <% end %>
+        <.live_component
+          module={CreateEventModal}
+          id="create_event_modal"
+          event_types={@event_types}
+          current_scope={@current_scope}
+        />
+        <.live_component
+          :if={@selected_event}
+          module={ViewEventModal}
+          id="view_event_modal"
+          selected_event={@selected_event}
+          current_scope={@current_scope}
+        />
+        <.live_component
+          :if={@selected_event}
+          module={EditEventModal}
+          id="edit_event_modal"
+          selected_event={@selected_event}
+        />
+        <.live_component
+          module={RejectEventModal}
+          id="reject_event_modal"
+          selected_event={@selected_event}
+        />
 
-          <%= if @view_mode == :month do %>
-            <MonthView.view
-              current_date={@current_date}
-              current_time={@current_time}
-              current_scope={@current_scope}
-              events={@events}
-            />
-          <% end %>
-          <%= if @view_mode == :week do %>
-            <WeekView.view
-              current_date={@current_date}
-              current_time={@current_time}
-              current_scope={@current_scope}
-              events={@events}
-              working_hours={@working_hours}
-              visible_hours={@visible_hours}
-            />
-          <% end %>
-          <%= if @view_mode == :day do %>
-            <DayView.view
-              current_date={@current_date}
-              current_time={@current_time}
-              current_scope={@current_scope}
-              events={@events}
-              working_hours={@working_hours}
-              visible_hours={@visible_hours}
-            />
-          <% end %>
-        </div>
+        <div phx-hook="ModalManager" id="modal-manager"></div>
       </div>
-
-      <.live_component
-        module={CreateEventModal}
-        id="create_event_modal"
-        event_types={@event_types}
-        current_scope={@current_scope}
-      />
-      <.live_component
-        :if={@selected_event}
-        module={ViewEventModal}
-        id="view_event_modal"
-        selected_event={@selected_event}
-        current_scope={@current_scope}
-      />
-      <.live_component
-        :if={@selected_event}
-        module={EditEventModal}
-        id="edit_event_modal"
-        selected_event={@selected_event}
-      />
-      <.live_component
-        module={RejectEventModal}
-        id="reject_event_modal"
-        selected_event={@selected_event}
-      />
-
-      <div phx-hook="ModalManager" id="modal-manager"></div>
-    </div>
+    </Layouts.app>
     """
   end
 
@@ -369,6 +371,10 @@ defmodule SinghSabhaWeb.CalendarLive do
      socket
      |> assign(:selected_event, event)
      |> push_event("open-modal", %{id: "reject_event_modal"})}
+  end
+
+  def handle_info({:put_flash, kind, message}, socket) do
+    {:noreply, put_flash(socket, kind, message)}
   end
 
   def handle_info({:reject_event, event, reason}, socket) do

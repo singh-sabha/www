@@ -51,21 +51,23 @@ defmodule SinghSabhaWeb.PaymentsLive.Success do
 
   def render(assigns) do
     ~H"""
-    <div class="max-w-2xl mx-auto mt-8 p-6">
-      <div class="alert alert-success">
-        <.icon name="hero-check-circle" class="size-6" />
-        <div>
-          <h3 class="font-bold">Payment Successful!</h3>
-          <p>Your event booking has been confirmed.</p>
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
+      <div class="max-w-2xl mx-auto mt-8 p-6">
+        <div class="alert alert-success">
+          <.icon name="hero-check-circle" class="size-6" />
+          <div>
+            <h3 class="font-bold">Payment Successful!</h3>
+            <p>Your event booking has been confirmed.</p>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <.link navigate={~p"/"} class="btn btn-primary">
+            Return to Calendar
+          </.link>
         </div>
       </div>
-
-      <div class="mt-6">
-        <.link navigate={~p"/"} class="btn btn-primary">
-          Return to Calendar
-        </.link>
-      </div>
-    </div>
+    </Layouts.app>
     """
   end
 end

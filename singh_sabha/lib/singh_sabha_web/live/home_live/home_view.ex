@@ -18,43 +18,35 @@ defmodule SinghSabhaWeb.HomeLive do
 
   def render(assigns) do
     ~H"""
-    <HeroSection.section />
+    <Layouts.app flash={@flash} current_scope={@current_scope}>
+      <HeroSection.section />
 
-    <div class="border-t border-b border-base-300">
-      <div class="container mx-auto px-4 py-8">
+      <.section_wrapper>
         <ServicesSection.section event_types={@event_types} />
-      </div>
-    </div>
-
-    <div class="container mx-auto px-4 py-8">
-      <UpcomingEventsSection.section
-        upcoming={@upcoming}
-        current_time={@current_time}
-      />
-    </div>
-
-    <div class="border-t border-base-300">
-      <div class="container mx-auto px-4 py-8">
+      </.section_wrapper>
+      <.section_wrapper>
+        <UpcomingEventsSection.section upcoming={@upcoming} current_time={@current_time} />
+      </.section_wrapper>
+      <.section_wrapper>
         <LiveStreamSection.section live_stream={@live_stream} />
-      </div>
-    </div>
-
-    <div class="border-t border-base-300">
-      <div class="container mx-auto px-4 py-8">
+      </.section_wrapper>
+      <.section_wrapper>
         <DonationsSection.section />
-      </div>
-    </div>
+      </.section_wrapper>
 
-    <.live_component
-      module={CreateEventModal}
-      id="create_event_modal"
-      event_types={
-        if Map.has_key?(assigns, :selected_event_type), do: [@selected_event_type], else: @event_types
-      }
-      current_scope={@current_scope}
-    />
+      <.live_component
+        module={CreateEventModal}
+        id="create_event_modal"
+        event_types={
+          if Map.has_key?(assigns, :selected_event_type),
+            do: [@selected_event_type],
+            else: @event_types
+        }
+        current_scope={@current_scope}
+      />
 
-    <div phx-hook="ModalManager" id="modal-manager"></div>
+      <div phx-hook="ModalManager" id="modal-manager"></div>
+    </Layouts.app>
     """
   end
 
@@ -88,6 +80,18 @@ defmodule SinghSabhaWeb.HomeLive do
       |> load_event_types()
 
     {:ok, socket}
+  end
+
+  slot :inner_block, required: true
+
+  defp section_wrapper(assigns) do
+    ~H"""
+    <div class="border-t border-base-300">
+      <div class="container mx-auto px-4 py-8">
+        {render_slot(@inner_block)}
+      </div>
+    </div>
+    """
   end
 
   def handle_info(:refresh_live_stream, socket) do
