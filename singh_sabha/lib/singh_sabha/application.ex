@@ -12,6 +12,7 @@ defmodule SinghSabha.Application do
       SinghSabha.Repo,
       {DNSCluster, query: Application.get_env(:singh_sabha, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: SinghSabha.PubSub},
+      SinghSabhaWeb.Presence,
       # Start a worker by calling: SinghSabha.Worker.start_link(arg)
       # {SinghSabha.Worker, arg},
       # Start to serve requests, typically the last entry
