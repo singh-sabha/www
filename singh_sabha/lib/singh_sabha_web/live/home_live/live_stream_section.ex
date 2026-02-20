@@ -8,7 +8,7 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
 
   def section(assigns) do
     ~H"""
-    <section class="space-y-4">
+    <section class="space-y-4" id="live-stream">
       <div class="flex justify-center items-center gap-2">
         <%= if @live_stream do %>
           <span class="h-3 w-3 bg-red-500 rounded-full animate-pulse inline-block"></span>

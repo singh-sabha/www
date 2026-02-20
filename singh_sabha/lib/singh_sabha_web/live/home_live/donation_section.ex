@@ -12,7 +12,7 @@ defmodule SinghSabhaWeb.HomeLive.DonationsSection do
       |> assign(:stripe_url, @stripe_url)
 
     ~H"""
-    <section class="space-y-4">
+    <section class="space-y-4" id="donations">
       <div class="flex justify-center items-center gap-2">
         <h3 class="text-lg font-semibold">Support Our Mission</h3>
       </div>

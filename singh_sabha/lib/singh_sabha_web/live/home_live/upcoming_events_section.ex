@@ -9,7 +9,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
 
   def section(assigns) do
     ~H"""
-    <section class="space-y-4">
+    <section class="space-y-4" id="upcoming-events">
       <div class="flex justify-center items-center gap-2">
         <h3 class="text-lg font-semibold">Upcoming This Week</h3>
         <%= if length(@upcoming) > 0 do %>

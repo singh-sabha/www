@@ -7,7 +7,7 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
 
   def section(assigns) do
     ~H"""
-    <section class="space-y-4">
+    <section class="space-y-4" id="services">
       <h3 class="text-lg font-semibold flex justify-center items-center">Our Services</h3>
       <p class="text-sm opacity-60 text-center">
         Explore or book any of the various services we offer.
