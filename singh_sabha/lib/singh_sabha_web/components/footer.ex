@@ -10,14 +10,10 @@ defmodule SinghSabhaWeb.Components.Footer do
       <nav>
         <h6 class="footer-title">Services</h6>
         <.link navigate={~p"/calendar"} class="link link-hover">Calendar</.link>
-        <a class="link link-hover">Community</a>
-        <a class="link link-hover">Resources</a>
       </nav>
       <nav>
         <h6 class="footer-title">Gurdwara</h6>
-        <.link navigate={~p"/about"} class="link link-hover">About us</.link>
-        <.link navigate={~p"/contact"} class="link link-hover">Contact</.link>
-        <a class="link link-hover">News</a>
+        <.link navigate={~p"/about"} class="link link-hover">About</.link>
       </nav>
       <nav>
         <h6 class="footer-title">Contact</h6>
