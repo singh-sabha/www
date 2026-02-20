@@ -29,6 +29,8 @@ defmodule SinghSabhaWeb.Router do
 
     live "/payment/success", PaymentsLive.Success
     live "/payment/cancel", PaymentsLive.Cancel
+
+    live "/about", AboutLive
   end
 
   # Other scopes may use custom stacks.
