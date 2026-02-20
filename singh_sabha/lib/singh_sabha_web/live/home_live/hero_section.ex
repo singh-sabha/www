@@ -32,10 +32,16 @@ defmodule SinghSabhaWeb.HomeLive.HeroSection do
             </p>
           </div>
           <div class="flex flex-wrap justify-center gap-4">
-            <.link href="#services" class="btn btn-primary">
+            <.link
+              phx-click={JS.dispatch("scroll-to-content", to: "#services")}
+              class="btn btn-primary"
+            >
               <.icon name="hero-hand-raised" class="mr-2 h-5 w-5" /> Our Services
             </.link>
-            <.link href="#donations" class="btn">
+            <.link
+              phx-click={JS.dispatch("scroll-to-content", to: "#donations")}
+              class="btn"
+            >
               <.icon name="hero-currency-dollar" class="mr-2 h-5 w-5" /> Donate
             </.link>
           </div>
