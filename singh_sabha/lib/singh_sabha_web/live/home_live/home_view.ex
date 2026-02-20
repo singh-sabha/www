@@ -83,6 +83,7 @@ defmodule SinghSabhaWeb.HomeLive do
 
     socket =
       socket
+      |> assign(:page_title, "Home")
       |> assign(:current_time, now)
       |> assign(:live_stream, live_stream)
       |> load_upcoming_events

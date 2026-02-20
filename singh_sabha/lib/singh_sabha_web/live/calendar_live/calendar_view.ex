@@ -212,6 +212,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
     socket =
       socket
+      |> assign(:page_title, "Calendar")
       |> assign(:view_mode, :month)
       |> assign(:current_date, today)
       |> assign(:current_time, now)

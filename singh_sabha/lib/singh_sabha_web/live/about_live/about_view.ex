@@ -5,7 +5,7 @@ defmodule SinghSabhaWeb.AboutLive do
   def render(assigns) do
     ~H"""
     <div class="space-y-6">
-      <h1 class="text-2xl font-bold">About Us</h1>
+      <h1 class="text-2xl font-bold">About</h1>
 
       <.section_card title="Gurdwara Singh Sabha Victoria">
         <p class="text-sm text-base-content/70">
@@ -108,6 +108,12 @@ defmodule SinghSabhaWeb.AboutLive do
       </.section_card>
     </div>
     """
+  end
+
+  def mount(_params, _session, socket) do
+    {:ok,
+     socket
+     |> assign(:page_title, "About")}
   end
 
   attr :title, :string, required: true
