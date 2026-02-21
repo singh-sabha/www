@@ -36,7 +36,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
             />
           <% end %>
         <% else %>
-          <div class="flex flex-col items-center justify-center gap-2 py-20 text-base-content/50">
+          <div class="flex flex-col items-center justify-center gap-2 py-20 text-base-content/70">
             <.icon name="hero-calendar-days" class="size-10" />
             <p class="text-sm md:text-base">No events scheduled for the selected month</p>
           </div>

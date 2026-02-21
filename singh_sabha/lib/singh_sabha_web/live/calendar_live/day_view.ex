@@ -251,7 +251,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
               </div>
             </div>
           <% else %>
-            <p class="p-4 text-center text-sm italic opacity-60">
+            <p class="p-4 text-center text-sm italic text-base-content/70">
               No events at the moment
             </p>
           <% end %>
