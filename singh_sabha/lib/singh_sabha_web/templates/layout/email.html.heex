@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
-        background-color: #ffffff;
+        background-color: oklch(100% 0 0);
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         margin: 0;
         padding: 0;
+        color: oklch(0% 0 0);
       }
       .container {
         max-width: 576px;
@@ -18,30 +19,30 @@
       .heading {
         font-size: 1.5rem;
         font-weight: bold;
-        color: #1f2937;
+        color: oklch(0% 0 0);
         margin: 2rem 0;
       }
       .text {
-        color: #374151;
+        color: oklch(0% 0 0);
         font-size: 1rem;
         margin-bottom: 1.5rem;
         line-height: 1.5;
       }
       .card {
-        background-color: #f3f4f6;
-        border-radius: 0.375rem;
+        background-color: oklch(97% 0 0);
+        border-radius: 0.5rem;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
-        border: 1px solid #e5e7eb;
+        border: 1px solid oklch(94% 0 0);
       }
       .card-title {
         font-size: 1.125rem;
         font-weight: 600;
-        color: #1f2937;
+        color: oklch(0% 0 0);
         margin-bottom: 1rem;
       }
       .card-text {
-        color: #374151;
+        color: oklch(0% 0 0);
         font-size: 0.875rem;
         margin-bottom: 0.5rem;
       }
@@ -49,7 +50,7 @@
         font-weight: 500;
       }
       .small-text {
-        color: #6b7280;
+        color: oklch(26.861% 0 0);
         font-size: 0.75rem;
         margin-top: 0.5rem;
       }
@@ -60,32 +61,66 @@
         display: block;
         width: 100%;
         box-sizing: border-box;
-        background-color: #2563eb;
-        color: white !important;
+        background-color: oklch(15.906% 0 0);
+        color: oklch(100% 0 0) !important;
         font-weight: bold;
         padding: 0.75rem 1.5rem;
-        border-radius: 0.375rem;
+        border-radius: 0.25rem;
         text-decoration: none;
         text-align: center;
         margin: 1rem 0;
       }
       .footer {
-        color: #6b7280;
+        background-color: oklch(97% 0 0);
+        border-top: 1px solid oklch(94% 0 0);
+        border-radius: 0.5rem;
+        color: oklch(0% 0 0);
         font-size: 0.75rem;
         line-height: 1.75;
+        padding: 1rem 1.5rem;
+        margin-top: 2rem;
+      }
       }
       .logo {
         height: 4rem;
         width: 4rem;
         margin-bottom: 0.5rem;
       }
+      .muted {
+        color: oklch(26.861% 0 0);
+      }
+      .warning-box {
+        background-color: oklch(88.37% 0.135 79.94);
+        border-left: 4px solid oklch(79% 0.15 79.94);
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin: 1.5rem 0;
+      }
+      .warning-text {
+        color: oklch(55% 0.15 79.94);
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin: 0;
+      }
+      .error-box {
+        background-color: oklch(78.66% 0.15 28.47);
+        border-left: 4px solid oklch(65% 0.18 28.47);
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin: 1.5rem 0;
+      }
+      .error-text {
+        color: oklch(44% 0.18 28.47);
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin: 0;
+      }
       a {
-        color: #2563eb;
+        color: oklch(15.906% 0 0);
         text-decoration: underline;
       }
     </style>
   </head>
-
   <body>
     <div class="container">
       {@inner_content}
