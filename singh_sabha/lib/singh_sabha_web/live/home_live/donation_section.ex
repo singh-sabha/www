@@ -37,7 +37,7 @@ defmodule SinghSabhaWeb.HomeLive.DonationsSection do
               readonly
             />
             <button
-              class="btn btn-sm"
+              class="btn btn-square btn-sm"
               phx-click={JS.dispatch("phx:copy", detail: %{text: @etransfer_email})}
             >
               <.icon name="hero-clipboard" class="size-4 [[data-copied]_&]:hidden" />
