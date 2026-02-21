@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.PaymentsLive.Cancel do
   use SinghSabhaWeb, :live_view
-
   alias SinghSabha.Events
+  alias SinghSabhaWeb.Helpers.EventTypeHelpers
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -12,12 +12,10 @@ defmodule SinghSabhaWeb.PaymentsLive.Cancel do
       nil ->
         {:noreply,
          socket
-         |> put_flash(:warning, "Event not found.")
-         |> push_navigate(to: ~p"/")}
+         |> put_flash(:warning, "Event not found.")}
 
       event ->
         {:ok, _} = Events.delete_event(event)
-
         Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
 
         {:noreply,
@@ -29,9 +27,9 @@ defmodule SinghSabhaWeb.PaymentsLive.Cancel do
 
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div class="max-w-2xl mx-auto mt-8 p-6">
-        <div class="alert alert-info">
+    <Layouts.app flash={@flash}>
+      <div class="max-w-2xl mx-auto mt-8 p-6 space-y-4">
+        <div class={["alert", EventTypeHelpers.badge_colour(:red)]}>
           <.icon name="hero-information-circle" class="size-6" />
           <div>
             <h3 class="font-bold">Booking Cancelled</h3>
@@ -39,11 +37,23 @@ defmodule SinghSabhaWeb.PaymentsLive.Cancel do
           </div>
         </div>
 
-        <div class="mt-6">
-          <.link navigate={~p"/"} class="btn btn-primary">
-            Return to Calendar
-          </.link>
+        <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
+          <div class="flex items-center gap-2">
+            <.icon name="hero-exclamation-triangle" class="size-4" />
+            <h4 class="font-semibold">Did you cancel by mistake?</h4>
+          </div>
+          <p class="text-sm text-base-content/70">
+            Your booking has been permanently removed. If this was unintentional, you'll need to submit a new booking request from the calendar.
+            If you need any assistance, reach us at
+            <a href="mailto:singhsabhayyj@gmail.com" class="link link-primary font-medium">
+              singhsabhayyj@gmail.com
+            </a>
+          </p>
         </div>
+
+        <.link navigate={~p"/calendar"} class="btn btn-primary">
+          <.icon name="hero-arrow-left" /> Return to Calendar
+        </.link>
       </div>
     </Layouts.app>
     """

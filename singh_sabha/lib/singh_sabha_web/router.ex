@@ -29,9 +29,13 @@ defmodule SinghSabhaWeb.Router do
     live_session :default,
       on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
       live "/calendar", CalendarLive
+      live "/about", AboutLive
+    end
+
+    live_session :empty,
+      root_layout: {SinghSabhaWeb.Layouts, :root_empty} do
       live "/payment/success", PaymentsLive.Success
       live "/payment/cancel", PaymentsLive.Cancel
-      live "/about", AboutLive
     end
   end
 
