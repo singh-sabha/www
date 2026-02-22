@@ -207,8 +207,14 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
           <%= if length(current_events) > 0 do %>
             <div class="flex items-start gap-2 px-4 pt-4">
               <span class="relative mt-[5px] flex h-2.5 w-2.5">
-                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+                <span class={[
+                  "absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75",
+                  EventTypeHelpers.dot_colour(:red)
+                ]} />
+                <span class={[
+                  "relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500",
+                  EventTypeHelpers.dot_colour(:red)
+                ]} />
               </span>
               <p class="text-sm font-semibold">Happening Now</p>
             </div>

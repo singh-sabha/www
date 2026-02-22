@@ -2,6 +2,8 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
+  alias SinghSabhaWeb.Helpers.EventTypeHelpers
+
   @channel_id "UCtMxxM3Lr4qf8_EzrQORhQg"
 
   attr :live_stream, :map, default: nil
@@ -11,7 +13,11 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
     <section class="space-y-4" id="live-stream">
       <div class="flex justify-center items-center gap-2">
         <%= if @live_stream do %>
-          <span class="h-3 w-3 bg-red-500 rounded-full animate-pulse inline-block"></span>
+          <span class={[
+            "h-3 w-3 rounded-full animate-pulse inline-block",
+            EventTypeHelpers.dot_colour(:red)
+          ]}>
+          </span>
           <h3 class="text-lg font-semibold">Currently Live</h3>
         <% else %>
           <h3 class="text-lg font-semibold">Live Stream</h3>
