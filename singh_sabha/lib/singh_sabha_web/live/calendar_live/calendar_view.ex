@@ -1,5 +1,8 @@
 defmodule SinghSabhaWeb.CalendarLive do
+  alias SinghSabhaWeb.Helpers.EventTypeHelpers
   use SinghSabhaWeb, :live_view
+
+  alias SinghSabhaWeb.Presence
 
   alias SinghSabhaWeb.Helpers.{
     CalendarHelpers,
@@ -29,7 +32,7 @@ defmodule SinghSabhaWeb.CalendarLive do
         <div class="border border-base-300 rounded-md h-full flex flex-col">
           <div class="p-4 space-y-4 lg:space-y-0 shrink-0">
             <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
-              <div class="flex gap-4 items-start">
+              <div class="flex space-x-4 items-start">
                 <button
                   class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
                   phx-click="change_view_to_today"
@@ -41,6 +44,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                     {@current_time.day}
                   </p>
                 </button>
+
                 <div class="space-y-1">
                   <div class="flex items-center space-x-2">
                     <span class="text-lg font-semibold">
@@ -50,6 +54,14 @@ defmodule SinghSabhaWeb.CalendarLive do
                       <% period_events_total =
                         CalendarHelpers.get_total_events(@events, @current_date, @view_mode) %>
                       {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
+                    </div>
+                    <div class="badge badge-soft gap-1 lg:hidden">
+                      <span class={[
+                        "size-1.5 rounded-full inline-block",
+                        EventTypeHelpers.dot_colour(:green)
+                      ]}>
+                      </span>
+                      {length(@live_users)} online
                     </div>
                   </div>
                   <div class="flex items-center gap-2">
@@ -66,7 +78,31 @@ defmodule SinghSabhaWeb.CalendarLive do
                 </div>
               </div>
 
-              <div class="space-y-2 lg:space-y-0 lg:space-x-2 lg:flex lg:items-center">
+              <div class="hidden lg:flex items-center gap-2">
+                <div class="flex -space-x-2">
+                  <%= for user <- Enum.take(@live_users, 5) do %>
+                    <div
+                      tabindex="0"
+                      class="avatar tooltip tooltip-bottom"
+                      data-tip={"User #{user.user_id}"}
+                    >
+                      <div
+                        class="size-8 rounded-full flex items-center justify-center border-2 border-base-100"
+                        style={"background: linear-gradient(135deg, #{UserHelpers.generate_gradient_colours(user.user_id)})"}
+                      >
+                      </div>
+                    </div>
+                  <% end %>
+                  <%= if length(@live_users) > 5 do %>
+                    <div class="size-8 rounded-full bg-base-300 flex items-center justify-center text-xs font-bold border-2 border-base-100">
+                      +{length(@live_users) - 5}
+                    </div>
+                  <% end %>
+                </div>
+                <span class="text-sm text-base-content/50">{length(@live_users)} online</span>
+              </div>
+
+              <div class="space-y-2 lg:space-y-0 lg:space-x-4 lg:flex lg:items-center">
                 <div class="join w-full lg:w-auto">
                   <button
                     class={[
@@ -201,6 +237,21 @@ defmodule SinghSabhaWeb.CalendarLive do
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
+      Phoenix.PubSub.subscribe(SinghSabha.PubSub, "calendar:presence")
+
+      current_user = socket.assigns.current_scope
+
+      user_id =
+        case current_user do
+          nil -> UserHelpers.generate_user_id()
+          _ -> current_user.user.id
+        end
+
+      {:ok, _} =
+        Presence.track(self(), "calendar:presence", user_id, %{
+          online_at: System.system_time(:second),
+          user_id: user_id
+        })
 
       seconds_until_next_minute = 60 - now.second
 
@@ -213,6 +264,7 @@ defmodule SinghSabhaWeb.CalendarLive do
     socket =
       socket
       |> assign(:page_title, "Calendar")
+      |> assign(:live_users, get_presence_users())
       |> assign(:view_mode, :month)
       |> assign(:current_date, today)
       |> assign(:current_time, now)
@@ -402,6 +454,10 @@ defmodule SinghSabhaWeb.CalendarLive do
     {:noreply, assign(socket, :current_time, DateTime.now!(TimezoneHelpers.local()))}
   end
 
+  def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
+    {:noreply, assign(socket, :live_users, get_presence_users())}
+  end
+
   def handle_info({:event_created, _event}, socket) do
     {:noreply, load_events(socket)}
   end
@@ -431,6 +487,12 @@ defmodule SinghSabhaWeb.CalendarLive do
      socket
      |> assign(:selected_event, nil)
      |> load_events()}
+  end
+
+  defp get_presence_users do
+    Presence.list("calendar:presence")
+    |> Map.values()
+    |> Enum.map(fn %{metas: [meta | _]} -> meta end)
   end
 
   defp load_events(socket) do
