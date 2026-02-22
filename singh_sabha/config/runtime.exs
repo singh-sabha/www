@@ -29,6 +29,7 @@ config :stripity_stripe,
   api_key: System.get_env("STRIPE_SECRET_KEY")
 
 config :singh_sabha,
+  n8n_secret: System.get_env("N8N_SECRET"),
   youtube_api_key: System.get_env("YOUTUBE_API_KEY")
 
 if config_env() == :prod do

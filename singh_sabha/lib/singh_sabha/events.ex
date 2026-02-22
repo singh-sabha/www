@@ -130,6 +130,13 @@ defmodule SinghSabha.Events do
   end
 
   @doc """
+  Gets a single event_type.
+  """
+  def get_event_type(id) do
+    Repo.get(EventType, id)
+  end
+
+  @doc """
   Creates an event type.
   """
   def create_event_type(attrs \\ %{}) do
