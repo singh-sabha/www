@@ -101,7 +101,10 @@ defmodule SinghSabhaWeb.UserLive.Login do
 
     form = to_form(%{"email" => email}, as: "user")
 
-    {:ok, assign(socket, form: form, trigger_submit: false)}
+    {:ok,
+     socket
+     |> assign(:page_title, "Login")
+     |> assign(form: form, trigger_submit: false)}
   end
 
   @impl true

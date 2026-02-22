@@ -108,6 +108,7 @@ defmodule SinghSabhaWeb.UserLive.Settings do
 
     socket =
       socket
+      |> assign(:page_title, "Settings")
       |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
