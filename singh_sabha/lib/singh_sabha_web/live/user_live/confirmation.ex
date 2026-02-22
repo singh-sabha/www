@@ -64,7 +64,11 @@ defmodule SinghSabhaWeb.UserLive.Confirmation do
           <% end %>
         </.form>
 
-        <p :if={!@user.confirmed_at} class="alert alert-outline mt-8">
+        <p
+          :if={!@user.confirmed_at}
+          class="flex items-center gap-2 rounded-md border border-base-300 p-4 text-sm text-base-content/70 mt-4"
+        >
+          <.icon name="hero-light-bulb" class="size-4 shrink-0" />
           Tip: If you prefer passwords, you can enable them in the user settings.
         </p>
       </div>
