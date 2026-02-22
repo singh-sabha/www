@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :singh_sabha, SinghSabha.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "singhsabha_user",
+  password: "password",
   hostname: "localhost",
-  database: "singh_sabha_dev",
+  database: "singhsabha",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
