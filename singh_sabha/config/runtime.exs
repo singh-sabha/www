@@ -68,6 +68,7 @@ if config_env() == :prod do
 
   config :singh_sabha, SinghSabhaWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
+    check_origin: ["https://singhsabha.net", "https://www.singhsabha.net"],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
