@@ -52,7 +52,7 @@ defmodule SinghSabhaWeb.Components.Navbar do
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
               <div
                 class="w-10 h-10 rounded-full flex items-center justify-center"
-                style={"background: linear-gradient(135deg, #{UserHelpers.generate_gradient_colours(@current_scope.user.email)})"}
+                style={"background: linear-gradient(135deg, #{UserHelpers.generate_gradient_colours(@current_scope.user.id)})"}
               >
               </div>
             </div>
