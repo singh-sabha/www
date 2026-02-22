@@ -42,13 +42,13 @@ defmodule SinghSabhaWeb.Helpers.EventTypeHelpers do
       "dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300"
   end
 
-  def dot_colour(:gray), do: "fill-neutral-600"
-  def dot_colour(:green), do: "fill-green-600"
-  def dot_colour(:blue), do: "fill-blue-600"
-  def dot_colour(:red), do: "fill-red-600"
-  def dot_colour(:orange), do: "fill-orange-600"
-  def dot_colour(:purple), do: "fill-purple-600"
-  def dot_colour(:yellow), do: "fill-yellow-600"
+  def dot_colour(:gray), do: "bg-neutral-600"
+  def dot_colour(:green), do: "bg-green-600"
+  def dot_colour(:blue), do: "bg-blue-600"
+  def dot_colour(:red), do: "bg-red-600"
+  def dot_colour(:orange), do: "bg-orange-600"
+  def dot_colour(:purple), do: "bg-purple-600"
+  def dot_colour(:yellow), do: "bg-yellow-600"
 
   def card_colour(:blue) do
     "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950"

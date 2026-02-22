@@ -135,7 +135,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
               segment.ends? && "lg:pr-1"
             ]}>
               <div class={[
-                "w-2 h-2 rounded-full lg:hidden",
+                "block w-2 h-2 rounded-full lg:hidden",
                 EventTypeHelpers.dot_colour(colour)
               ]}>
               </div>
