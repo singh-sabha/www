@@ -85,7 +85,11 @@ defmodule SinghSabhaWeb.CalendarLive do
                     <div
                       tabindex="0"
                       class="avatar tooltip tooltip-bottom"
-                      data-tip={"User #{user.user_id}"}
+                      data-tip={
+                        if @current_scope && user.user_id == @current_scope.user.id,
+                          do: "You",
+                          else: "User #{user.user_id}"
+                      }
                     >
                       <div
                         class="size-8 rounded-full flex items-center justify-center border-2 border-base-100"
