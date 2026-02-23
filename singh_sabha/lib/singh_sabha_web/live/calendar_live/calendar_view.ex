@@ -34,28 +34,28 @@ defmodule SinghSabhaWeb.CalendarLive do
             <div class="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-center">
               <div class="flex space-x-4 items-start">
                 <button
-                  class="flex size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
+                  class="flex size-15 lg:size-16 flex-col overflow-hidden rounded-lg border border-base-300 cursor-pointer shrink-0"
                   phx-click="change_view_to_today"
                 >
                   <p class="flex h-6 w-full items-center justify-center bg-primary text-center text-xs font-semibold text-primary-content">
                     {String.upcase(CalendarHelpers.get_month_label(@current_time, :abbreviation))}
                   </p>
-                  <p class="flex flex-1 w-full items-center justify-center text-lg font-bold">
+                  <p class="flex flex-1 w-full items-center justify-center text-md lg:text-lg font-bold">
                     {@current_time.day}
                   </p>
                 </button>
 
-                <div class="space-y-1">
-                  <div class="flex items-center space-x-2">
-                    <span class="text-lg font-semibold">
+                <div class="space-y-1 min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="text-md lg:text-lg font-semibold shrink-0">
                       {CalendarHelpers.get_month_label(@current_date, :full)} {@current_date.year}
                     </span>
-                    <div class="badge badge-primary">
+                    <div class="badge badge-sm lg:badge-md badge-primary text-[10px] lg:text-md shrink-0">
                       <% period_events_total =
                         CalendarHelpers.get_total_events(@events, @current_date, @view_mode) %>
                       {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
                     </div>
-                    <div class="badge badge-soft gap-1 lg:hidden">
+                    <div class="badge badge-sm badge-soft gap-1 lg:hidden text-[10px] lg:text-md  shrink-0">
                       <span class={[
                         "size-1.5 rounded-full inline-block",
                         EventTypeHelpers.dot_colour(:green)
@@ -64,14 +64,15 @@ defmodule SinghSabhaWeb.CalendarLive do
                       {length(@live_users)} online
                     </div>
                   </div>
+
                   <div class="flex items-center gap-2">
-                    <button phx-click="prev_period" class="btn btn-sm btn-square">
+                    <button phx-click="prev_period" class="btn btn-sm btn-square shrink-0">
                       <.icon name="hero-chevron-left" />
                     </button>
-                    <p class="text-sm text-base-content/50">
+                    <p class="text-sm text-base-content/50 truncate flex-1 lg:flex-none text-center lg:text-left">
                       {period_label(@current_date, @view_mode)}
                     </p>
-                    <button phx-click="next_period" class="btn btn-sm btn-square">
+                    <button phx-click="next_period" class="btn btn-sm btn-square shrink-0">
                       <.icon name="hero-chevron-right" />
                     </button>
                   </div>
