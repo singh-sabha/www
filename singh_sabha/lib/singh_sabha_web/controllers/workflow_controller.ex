@@ -106,7 +106,7 @@ defmodule SinghSabhaWeb.WorkflowController do
           occassion: event_data["occassion"],
           note: event_data["note"],
           is_verified: true,
-          is_public: event_data["is_public"],
+          is_public: true,
           is_deposit_paid: true,
           metadata: %{created_by: "n8n"}
         })
