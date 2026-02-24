@@ -102,13 +102,11 @@ defmodule SinghSabhaWeb.WorkflowController do
           type: event_data["type"],
           start: DateTime.shift_zone!(start_local, "Etc/UTC"),
           end: DateTime.shift_zone!(end_local, "Etc/UTC"),
-          all_day: event_data["all_day"],
           occassion: event_data["occassion"],
           note: event_data["note"],
           is_verified: true,
           is_public: true,
-          is_deposit_paid: true,
-          metadata: %{created_by: "n8n"}
+          is_deposit_paid: true
         })
 
       case result do
