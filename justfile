@@ -31,3 +31,6 @@ seed-database:
 
 stop-database:
    docker stop singhsabha-db
+
+connect-database:
+    docker exec -it singhsabha-db psql -U singhsabha_user -d singhsabha
