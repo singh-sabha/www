@@ -1,4 +1,4 @@
-start-database:
+start-db:
     #!/usr/bin/env bash
     set -euo pipefail
 
@@ -20,7 +20,7 @@ start-database:
     done
     echo "Ready: postgresql://singhsabha_user:password@localhost:5432/singhsabha"
 
-seed-database:
+seed-db:
     #!/usr/bin/env bash
     set -euo pipefail
 
@@ -29,8 +29,8 @@ seed-database:
     mix ecto.migrate
     mix run priv/repo/seeds.exs
 
-stop-database:
+stop-db:
    docker stop singhsabha-db
 
-connect-database:
+connect-db:
     docker exec -it singhsabha-db psql -U singhsabha_user -d singhsabha
