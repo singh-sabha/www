@@ -7,6 +7,8 @@ defmodule SinghSabha.Application do
 
   @impl true
   def start(_type, _args) do
+    SinghSabha.Release.migrate()
+
     children = [
       SinghSabhaWeb.Telemetry,
       SinghSabha.Repo,
