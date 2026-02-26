@@ -253,7 +253,7 @@ defmodule SinghSabhaWeb.CalendarLive do
         end
 
       {:ok, _} =
-        Presence.track(self(), "calendar:presence", profile[:id], %{
+        Presence.track(self(), "calendar:presence", profile[:user_id], %{
           online_at: System.system_time(:second),
           user_id: profile[:user_id],
           display_name: profile[:display_name]
