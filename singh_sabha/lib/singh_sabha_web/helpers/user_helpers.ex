@@ -39,9 +39,18 @@ defmodule SinghSabhaWeb.Helpers.UserHelpers do
     "#{color1}, #{color2}"
   end
 
-  def generate_user_id do
-    symbols = ~c"0123456789abcdefghiklmnopqrstuvwxyz"
-    for _ <- 1..10, into: "", do: <<Enum.random(symbols)>>
+  def generate_guest_name do
+    adjectives = ~w(
+    Calm Swift Brave Quiet Bold Wise Kind Brave Pure Firm
+    Bright Clear Sharp Warm Soft Noble Keen Proud Free Bold
+  )
+
+    nouns = ~w(
+    Kirpan Khanda Dastar Langar Sangat Simran Seva Ardas
+    Granth Amrit Khalsa Waheguru Chardi Kala Nishan Sarbloh
+  )
+
+    "#{Enum.random(adjectives)} #{Enum.random(nouns)}"
   end
 
   def is_admin?(%SinghSabha.Accounts.Scope{user: user}), do: user.is_admin

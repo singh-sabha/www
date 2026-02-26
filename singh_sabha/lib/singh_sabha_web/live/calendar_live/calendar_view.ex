@@ -85,11 +85,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                     <div
                       tabindex="0"
                       class="avatar tooltip tooltip-bottom"
-                      data-tip={
-                        if @current_scope && user.user_id == @current_scope.user.id,
-                          do: "You",
-                          else: "User #{user.user_id}"
-                      }
+                      data-tip={user.display_name}
                     >
                       <div
                         class="size-8 rounded-full flex items-center justify-center border-2 border-base-100"
@@ -244,18 +240,23 @@ defmodule SinghSabhaWeb.CalendarLive do
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "calendar:presence")
 
-      current_user = socket.assigns.current_scope
+      profile =
+        case socket.assigns.current_scope do
+          nil ->
+            [
+              display_name: UserHelpers.generate_guest_name(),
+              user_id: "guest:#{Ecto.UUID.generate()}"
+            ]
 
-      user_id =
-        case current_user do
-          nil -> UserHelpers.generate_user_id()
-          _ -> current_user.user.id
+          user ->
+            [display_name: user.user.full_name, user_id: "user:#{user.user.id}"]
         end
 
       {:ok, _} =
-        Presence.track(self(), "calendar:presence", user_id, %{
+        Presence.track(self(), "calendar:presence", profile[:id], %{
           online_at: System.system_time(:second),
-          user_id: user_id
+          user_id: profile[:user_id],
+          display_name: profile[:display_name]
         })
 
       seconds_until_next_minute = 60 - now.second
@@ -460,6 +461,12 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
+    if timer = socket.assigns[:presence_timer], do: Process.cancel_timer(timer)
+    timer = Process.send_after(self(), :update_presence, 150)
+    {:noreply, assign(socket, :presence_timer, timer)}
+  end
+
+  def handle_info(:update_presence, socket) do
     {:noreply, assign(socket, :live_users, get_presence_users())}
   end
 
@@ -498,6 +505,7 @@ defmodule SinghSabhaWeb.CalendarLive do
     Presence.list("calendar:presence")
     |> Map.values()
     |> Enum.map(fn %{metas: [meta | _]} -> meta end)
+    |> Enum.uniq_by(& &1.user_id)
   end
 
   defp load_events(socket) do
