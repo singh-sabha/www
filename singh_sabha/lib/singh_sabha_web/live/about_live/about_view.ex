@@ -60,7 +60,6 @@ defmodule SinghSabhaWeb.AboutLive do
               February 2026 edition of Fateh Care Times
               <.icon name="hero-arrow-top-right-on-square" class="size-3" />
             </a>
-            .
           </p>
         </.section_card>
 
@@ -75,6 +74,16 @@ defmodule SinghSabhaWeb.AboutLive do
             This practice embodies two essential Sikh principles: humility and equality, ensuring
             that everyone, regardless of background, sits and eats together as equals. Today, over
             99% of the world's 20,000+ Gurdwaras have embraced this directive.
+          </p>
+          <p class="text-sm">
+            <span class="text-base-content/60">View the original</span>
+            <a
+              href="/documents/langar_hukamnama.pdf"
+              target="_blank"
+              class="link link-primary inline-flex items-center gap-1"
+            >
+              Langar Hukamnama (1998) <.icon name="hero-arrow-top-right-on-square" class="size-3" />
+            </a>
           </p>
         </.section_card>
 
