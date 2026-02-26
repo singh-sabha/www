@@ -95,4 +95,14 @@ defmodule SinghSabhaWeb.Router do
     post "/users/log-in", UserSessionController, :create
     delete "/users/log-out", UserSessionController, :delete
   end
+
+  scope "/", SinghSabhaWeb do
+    pipe_through :browser
+
+    live_session :not_found,
+      root_layout: {SinghSabhaWeb.Layouts, :root_empty},
+      on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
+      live "/*path", NotFoundLive, :index
+    end
+  end
 end
