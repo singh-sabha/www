@@ -3,6 +3,7 @@ defmodule SinghSabha.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    field :full_name, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
@@ -13,13 +14,20 @@ defmodule SinghSabha.Accounts.User do
     timestamps(type: :utc_datetime)
   end
 
+  def registration_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:full_name, :email])
+    |> validate_required([:full_name])
+    |> validate_length(:full_name, min: 2, max: 100)
+    |> validate_email(opts)
+  end
+
   @doc """
   A user changeset for registering or changing the email.
 
   It requires the email to change otherwise an error is added.
 
   ## Options
-
     * `:validate_unique` - Set to false if you don't want to validate the
       uniqueness of the email, useful when displaying live validations.
       Defaults to `true`.
