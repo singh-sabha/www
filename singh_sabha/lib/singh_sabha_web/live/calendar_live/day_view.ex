@@ -140,7 +140,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                     <div
                       class={[
                         "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
-                        UserHelpers.is_admin?(@current_scope) &&
+                        UserHelpers.is_privileged?(@current_scope) &&
                           EventTypeHelpers.event_status_colour(
                             event.is_verified,
                             event.is_deposit_paid
@@ -228,7 +228,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                     <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-user" class="h-3.5 w-3.5" />
                       <span class="text-sm">
-                        <%= if event.registrant_full_name && (UserHelpers.is_admin?(@current_scope) or event.is_public) do %>
+                        <%= if event.registrant_full_name && (UserHelpers.is_privileged?(@current_scope) or event.is_public) do %>
                           {event.registrant_full_name}
                         <% else %>
                           <span class="flex items-center gap-1">

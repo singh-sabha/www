@@ -2,6 +2,8 @@ defmodule SinghSabha.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @valid_roles ~w(user mod admin)
+
   schema "users" do
     field :full_name, :string
     field :email, :string
@@ -9,7 +11,7 @@ defmodule SinghSabha.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :utc_datetime
     field :authenticated_at, :utc_datetime, virtual: true
-    field :is_admin, :boolean, default: false
+    field :role, :string, default: "user"
 
     timestamps(type: :utc_datetime)
   end
@@ -20,6 +22,13 @@ defmodule SinghSabha.Accounts.User do
     |> validate_required([:full_name])
     |> validate_length(:full_name, min: 2, max: 100)
     |> validate_email(opts)
+  end
+
+  def role_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:role])
+    |> validate_required([:role])
+    |> validate_inclusion(:role, @valid_roles)
   end
 
   @doc """

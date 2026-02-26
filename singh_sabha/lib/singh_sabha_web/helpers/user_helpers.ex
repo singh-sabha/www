@@ -53,7 +53,7 @@ defmodule SinghSabhaWeb.Helpers.UserHelpers do
     "#{Enum.random(adjectives)} #{Enum.random(nouns)}"
   end
 
-  def is_admin?(%SinghSabha.Accounts.Scope{user: user}), do: user.is_admin
-  def is_admin?(%{current_scope: scope}), do: is_admin?(scope)
-  def is_admin?(_), do: false
+  def is_privileged?(%SinghSabha.Accounts.Scope{user: user}), do: user.role in ~w(mod admin)
+  def is_privileged?(%{current_scope: scope}), do: is_privileged?(scope)
+  def is_privileged?(_), do: false
 end

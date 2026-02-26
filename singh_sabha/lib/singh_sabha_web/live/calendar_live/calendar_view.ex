@@ -153,7 +153,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                 >
                   <span class="flex items-center gap-1">
                     <.icon name="hero-plus-circle" class="size-4" />
-                    {if UserHelpers.is_admin?(@current_scope), do: "Create", else: "Book"} Event
+                    {if UserHelpers.is_privileged?(@current_scope), do: "Create", else: "Book"} Event
                   </span>
                 </button>
               </div>
@@ -510,7 +510,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
   defp load_events(socket) do
     events =
-      case UserHelpers.is_admin?(socket.assigns.current_scope) do
+      case UserHelpers.is_privileged?(socket.assigns.current_scope) do
         true -> Events.list_events(:all)
         false -> Events.list_events(:public)
       end
@@ -526,7 +526,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp load_event_types(socket) do
-    case UserHelpers.is_admin?(socket.assigns.current_scope) do
+    case UserHelpers.is_privileged?(socket.assigns.current_scope) do
       true -> assign(socket, :event_types, Events.list_event_types(:all))
       false -> assign(socket, :event_types, Events.list_event_types(:public))
     end

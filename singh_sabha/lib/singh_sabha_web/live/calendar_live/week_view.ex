@@ -178,7 +178,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
           <div
             class={[
               "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
-              UserHelpers.is_admin?(@current_scope) &&
+              UserHelpers.is_privileged?(@current_scope) &&
                 EventTypeHelpers.event_status_colour(event.is_verified, event.is_deposit_paid),
               EventTypeHelpers.badge_colour(colour)
             ]}

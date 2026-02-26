@@ -21,7 +21,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
     >
       <div class="modal-box max-w-4xl">
         <h3 class="font-bold text-lg">
-          {if UserHelpers.is_admin?(assigns), do: "Create Event", else: "Book Event"}
+          {if UserHelpers.is_privileged?(assigns), do: "Create Event", else: "Book Event"}
         </h3>
         <p class="text-base-content/70 text-sm">
           Fill out the form based on your request. Click submit when you're done.
@@ -35,9 +35,9 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         >
           <div class={[
             "flex flex-col justify-between space-y-4",
-            !UserHelpers.is_admin?(assigns) && "md:flex-row md:space-y-0 md:space-x-4"
+            !UserHelpers.is_privileged?(assigns) && "md:flex-row md:space-y-0 md:space-x-4"
           ]}>
-            <%= if !UserHelpers.is_admin?(assigns) do %>
+            <%= if !UserHelpers.is_privileged?(assigns) do %>
               <div class="grid grid-cols-1 h-fit w-full md:w-1/3">
                 <.input
                   field={@form[:registrant_full_name]}
@@ -68,7 +68,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
 
             <div class={[
               "grid grid-cols-1 w-full",
-              !UserHelpers.is_admin?(assigns) && "md:w-2/3"
+              !UserHelpers.is_privileged?(assigns) && "md:w-2/3"
             ]}>
               <.input
                 field={@form[:occassion]}
@@ -124,7 +124,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
               Cancel
             </button>
             <button type="submit" class="btn btn-primary">
-              {if UserHelpers.is_admin?(assigns), do: "Create Event", else: "Submit"}
+              {if UserHelpers.is_privileged?(assigns), do: "Create Event", else: "Submit"}
             </button>
           </div>
         </.form>
@@ -175,7 +175,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
     updated_params =
       params
       |> then(fn p ->
-        if UserHelpers.is_admin?(socket.assigns) do
+        if UserHelpers.is_privileged?(socket.assigns) do
           Map.merge(p, %{"is_deposit_paid" => true, "is_verified" => true})
         else
           p
@@ -191,13 +191,13 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           {:event_created, event}
         )
 
-        unless UserHelpers.is_admin?(socket.assigns) do
+        unless UserHelpers.is_privileged?(socket.assigns) do
           EventNotifier.event_confirmation(event)
           EventNotifier.admin_notification(event)
         end
 
         success_message =
-          if UserHelpers.is_admin?(socket.assigns) do
+          if UserHelpers.is_privileged?(socket.assigns) do
             "Event created successfully!"
           else
             "Event booking submitted and confirmation email sent successfully!"
