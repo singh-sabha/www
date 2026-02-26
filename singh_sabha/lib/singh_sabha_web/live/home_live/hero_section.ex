@@ -33,13 +33,13 @@ defmodule SinghSabhaWeb.HomeLive.HeroSection do
           </div>
           <div class="flex flex-wrap justify-center gap-4">
             <.link
-              phx-click={JS.dispatch("scroll-to-content", to: "#services")}
+              phx-click={JS.dispatch("scroll-to-content", detail: %{target: "#services"})}
               class="btn btn-primary"
             >
               <.icon name="hero-hand-raised" class="mr-2 h-5 w-5" /> Our Services
             </.link>
             <.link
-              phx-click={JS.dispatch("scroll-to-content", to: "#donations")}
+              phx-click={JS.dispatch("scroll-to-content", detail: %{target: "#donations"})}
               class="btn"
             >
               <.icon name="hero-currency-dollar" class="mr-2 h-5 w-5" /> Donate
@@ -47,7 +47,7 @@ defmodule SinghSabhaWeb.HomeLive.HeroSection do
           </div>
         </div>
         <button
-          phx-click={JS.dispatch("scroll-to-content")}
+          phx-click={JS.dispatch("scroll-to-content", detail: %{target: "#upcoming-events"})}
           class="absolute bottom-8 left-1/2 -translate-x-1/2 text-primary-content hover:text-primary-content/80 transition-colors focus:outline-none cursor-pointer animate-bounce"
           aria-label="Scroll to content"
         >

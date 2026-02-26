@@ -149,11 +149,13 @@ if (process.env.NODE_ENV === "development") {
   );
 }
 
-window.addEventListener("scroll-to-content", () => {
-  window.scrollTo({
-    top: window.innerHeight,
-    behavior: "smooth",
-  });
+window.addEventListener("scroll-to-content", (e) => {
+  const target = document.querySelector(e.detail.target);
+  if (target) {
+    const offset = 80;
+    const top = target.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: "smooth" });
+  }
 });
 
 window.addEventListener("phx:copy", (e) => {
