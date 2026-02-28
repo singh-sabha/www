@@ -78,7 +78,7 @@ defmodule SinghSabhaWeb.AboutLive do
           <p class="text-sm">
             <span class="text-base-content/60">View the original</span>
             <a
-              href="/documents/langar_hukamnama.pdf"
+              href="/documents/langar_hukamnama_1998.pdf"
               target="_blank"
               class="link link-primary inline-flex items-center gap-1"
             >
