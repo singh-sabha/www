@@ -34,6 +34,7 @@ defmodule SinghSabhaWeb.Router do
       on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
       live "/calendar", CalendarLive
       live "/about", AboutLive
+      live "/gallery", GalleryLive
     end
 
     live_session :empty,

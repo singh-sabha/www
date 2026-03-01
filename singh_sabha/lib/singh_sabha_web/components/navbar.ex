@@ -22,6 +22,7 @@ defmodule SinghSabhaWeb.Components.Navbar do
           >
             <li><.link navigate={~p"/calendar"}>Calendar</.link></li>
             <li><.link navigate={~p"/about"}>About</.link></li>
+            <li><.link navigate={~p"/gallery"}>Gallery</.link></li>
           </ul>
         </div>
         <.link navigate={~p"/"} class="btn btn-ghost text-xl hidden lg:flex">
@@ -44,6 +45,7 @@ defmodule SinghSabhaWeb.Components.Navbar do
         <ul class="menu menu-horizontal px-1">
           <li><.link navigate={~p"/calendar"}>Calendar</.link></li>
           <li><.link navigate={~p"/about"}>About</.link></li>
+          <li><.link navigate={~p"/gallery"}>Gallery</.link></li>
         </ul>
       </div>
       <div class="navbar-end">

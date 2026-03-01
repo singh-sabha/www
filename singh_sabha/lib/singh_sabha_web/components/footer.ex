@@ -14,6 +14,7 @@ defmodule SinghSabhaWeb.Components.Footer do
       <nav>
         <h6 class="footer-title">Gurdwara</h6>
         <.link navigate={~p"/about"} class="link link-hover">About</.link>
+        <.link navigate={~p"/gallery"} class="link link-hover">Gallery</.link>
       </nav>
       <nav>
         <h6 class="footer-title">Contact</h6>
