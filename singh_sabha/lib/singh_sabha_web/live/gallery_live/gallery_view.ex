@@ -23,9 +23,11 @@ defmodule SinghSabhaWeb.GalleryLive do
         <h1 class="text-2xl font-bold">Gallery</h1>
 
         <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
             <h2 class="font-semibold">Construction and Growth</h2>
-            <span class="badge badge-sm badge-primary">{length(@images)} photos</span>
+            <span class="badge badge-sm lg:badge-md badge-primary text-xs lg:text-md">
+              {length(@images)} photos
+            </span>
           </div>
           <p class="text-sm text-base-content/70">
             A visual journey through the building of our Gurdwara: from the earliest foundations

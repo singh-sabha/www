@@ -46,7 +46,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                 </button>
 
                 <div class="space-y-1 min-w-0 flex-1">
-                  <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1 lg:gap-2">
                     <span class="text-md lg:text-lg font-semibold shrink-0">
                       {CalendarHelpers.get_month_label(@current_date, :full)} {@current_date.year}
                     </span>
@@ -55,7 +55,7 @@ defmodule SinghSabhaWeb.CalendarLive do
                         CalendarHelpers.get_total_events(@events, @current_date, @view_mode) %>
                       {"#{period_events_total} event#{if period_events_total == 1, do: "", else: "s"}"}
                     </div>
-                    <div class="badge badge-sm badge-soft gap-1 lg:hidden text-[10px] lg:text-md  shrink-0">
+                    <div class="badge badge-sm badge-soft gap-1 lg:hidden text-[10px] lg:text-md shrink-0">
                       <span class={[
                         "size-1.5 rounded-full inline-block",
                         EventTypeHelpers.dot_colour(:green)
