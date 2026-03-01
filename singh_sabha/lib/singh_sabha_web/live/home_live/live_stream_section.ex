@@ -13,11 +13,10 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
     <section class="space-y-4" id="live-stream">
       <div class="flex justify-center items-center gap-2">
         <%= if @live_stream do %>
-          <span class={[
-            "h-3 w-3 rounded-full animate-pulse inline-block",
-            EventTypeHelpers.dot_colour(:red)
-          ]}>
-          </span>
+          <div class="inline-grid *:[grid-area:1/1]">
+            <div class={["status animate-ping", EventTypeHelpers.dot_colour(:red)]}></div>
+            <div class={["status", EventTypeHelpers.dot_colour(:red)]}></div>
+          </div>
           <h3 class="text-lg font-semibold">Currently Live</h3>
         <% else %>
           <h3 class="text-lg font-semibold">Live Stream</h3>
