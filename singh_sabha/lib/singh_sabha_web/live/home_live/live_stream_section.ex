@@ -55,9 +55,10 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
 
   defp live_stream_card(assigns) do
     ~H"""
-    <div class="mx-auto overflow-hidden rounded-box border border-base-300">
-      <div class="p-4 flex items-center justify-center">
-        <p class="font-semibold">{@live_stream.title}</p>
+    <div class="flex flex-col rounded-md border border-base-300 overflow-hidden">
+      <div class="flex items-center gap-2 p-4 border-b border-base-300">
+        <.icon name="hero-video-camera" class="size-4" />
+        <h4 class="font-semibold">{@live_stream.title}</h4>
       </div>
       <div class="aspect-video">
         <iframe
