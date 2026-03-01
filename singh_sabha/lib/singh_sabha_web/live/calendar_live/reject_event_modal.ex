@@ -13,7 +13,9 @@ defmodule SinghSabhaWeb.CalendarLive.RejectEventModal do
     >
       <div class="modal-box">
         <form method="dialog">
-          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            <.icon name="hero-x-mark" class="size-4" />
+          </button>
         </form>
 
         <h3 class="font-bold text-lg">Reject Event</h3>
