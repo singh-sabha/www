@@ -150,7 +150,7 @@ defmodule SinghSabhaWeb.AboutLive do
     <div class="collapse collapse-arrow join-item border border-base-300">
       <input type="checkbox" />
       <div class="collapse-title flex items-center gap-2 font-medium text-sm">
-        <.icon name={@icon} class="size-4 text-base-content/50 shrink-0" />
+        <.icon name={@icon} class="size-4 shrink-0" />
         {@title}
       </div>
       <div class="collapse-content">

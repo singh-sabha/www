@@ -9,7 +9,7 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
     ~H"""
     <section class="space-y-4" id="services">
       <h3 class="text-lg font-semibold flex justify-center items-center">Our Services</h3>
-      <p class="text-sm opacity-60 text-center">
+      <p class="text-sm text-base-content/60 text-center">
         Explore or book any of the various services we offer.
       </p>
 

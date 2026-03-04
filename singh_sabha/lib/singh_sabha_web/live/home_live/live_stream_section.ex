@@ -22,7 +22,7 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
           <h3 class="text-lg font-semibold">Live Stream</h3>
         <% end %>
       </div>
-      <p class="text-sm opacity-60 text-center">
+      <p class="text-sm text-base-content/60 text-center">
         Join us virtually for our live services and events.
       </p>
 
@@ -32,10 +32,10 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
         </div>
       <% else %>
         <div class="flex flex-col items-center justify-center gap-2 rounded-box pt-8">
-          <.icon name="hero-video-camera-slash" class="size-10 opacity-70" />
-          <p class="text-sm opacity-60">No live stream currently</p>
+          <.icon name="hero-video-camera-slash" class="size-10 text-base-content/70" />
+          <p class="text-sm text-base-content/60">No live stream currently</p>
           <p class="text-sm">
-            <span class="opacity-60">Visit our</span>
+            <span class="text-base-content/60">Visit our</span>
             <a
               href="https://www.youtube.com/@GurdwaraSinghSabhaVictoria"
               target="_blank"
@@ -43,7 +43,7 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
             >
               YouTube channel <.icon name="hero-arrow-top-right-on-square" class="size-3" />
             </a>
-            <span class="opacity-60">to watch past recordings.</span>
+            <span class="text-base-content/60">to watch past recordings.</span>
           </p>
         </div>
       <% end %>

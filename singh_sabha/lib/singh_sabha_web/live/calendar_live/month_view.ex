@@ -112,7 +112,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
           "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0 mb-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-base-content/10 cursor-pointer",
           !@today? &&
             "hover:bg-base-content/10",
-          !@current_month? && "opacity-20",
+          !@current_month? && "text-base-content/50",
           @today? && "bg-primary text-primary-content"
         ]}
       >

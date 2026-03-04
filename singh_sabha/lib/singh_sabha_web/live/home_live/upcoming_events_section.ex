@@ -16,7 +16,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
           <span class="badge badge-primary">{length(@upcoming)} events</span>
         <% end %>
       </div>
-      <p class="text-sm opacity-60 text-center">
+      <p class="text-sm text-base-content/60 text-center">
         Join us for this week's upcoming events.
       </p>
 
@@ -37,8 +37,8 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
         </div>
       <% else %>
         <div class="flex flex-col items-center justify-center gap-2 rounded-box pt-8">
-          <.icon name="hero-calendar-days" class="size-10 opacity-70" />
-          <p class="text-sm opacity-60">No upcoming events this week</p>
+          <.icon name="hero-calendar-days" class="size-10 text-base-content/70" />
+          <p class="text-sm text-base-content/60">No upcoming events this week</p>
         </div>
       <% end %>
     </section>
@@ -80,7 +80,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
     ]}>
       <div class="flex items-center justify-between">
         <div class={["badge badge-sm gap-1", EventTypeHelpers.badge_colour(@colour)]}>
-          <.icon name="hero-clock" class="size-3 shrink-0 opacity-70" />
+          <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
           {@time_label}
         </div>
       </div>
@@ -93,7 +93,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
       </h4>
 
       <div class="flex items-center gap-1.5">
-        <.icon name="hero-user" class="size-3 shrink-0 opacity-70" />
+        <.icon name="hero-user" class="size-3 shrink-0 text-base-content/70" />
         <p class="text-xs">
           <%= if @event.registrant_full_name do %>
             {@event.registrant_full_name}
@@ -106,12 +106,12 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
       </div>
 
       <div class="flex items-center gap-1.5">
-        <.icon name="hero-tag" class="size-3 shrink-0 opacity-70" />
+        <.icon name="hero-tag" class="size-3 shrink-0 text-base-content/70" />
         <p class="text-xs">{@event.event_type.display_name}</p>
       </div>
 
       <div class="flex items-center gap-1.5">
-        <.icon name="hero-calendar" class="size-3 shrink-0 opacity-70" />
+        <.icon name="hero-calendar" class="size-3 shrink-0 text-base-content/70" />
         <p class="text-xs">
           {TimezoneHelpers.format_datetime(@event.start)} - {TimezoneHelpers.format_datetime(
             @event.end

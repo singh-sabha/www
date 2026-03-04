@@ -82,7 +82,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
         phx-value-event-id={@event.id}
       >
         <span class="truncate">
-          <span class="opacity-70 text-xs">Day {@event_current_day} of {@event_total_days} •</span>
+          <span class="text-base-content/70 text-xs">Day {@event_current_day} of {@event_total_days} •</span>
           <span class={EventTypeHelpers.text_colour(colour)}>{@event.occassion}</span>
         </span>
 

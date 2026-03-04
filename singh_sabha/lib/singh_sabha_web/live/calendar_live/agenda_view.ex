@@ -143,7 +143,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
         <div class="flex items-center gap-1.5">
           <p class="font-medium">
             <%= if @event_current_day && @event_total_days do %>
-              <span class="mr-1 text-xs opacity-70">
+              <span class="mr-1 text-xs text-base-content/70">
                 Day {@event_current_day} of {@event_total_days} •
               </span>
             <% end %>
@@ -154,7 +154,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
         </div>
 
         <div class="flex items-center gap-1.5">
-          <.icon name="hero-user" class="size-3 shrink-0 opacity-70" />
+          <.icon name="hero-user" class="size-3 shrink-0 text-base-content/70" />
           <p class="text-xs">
             <%= if @event.registrant_full_name && (UserHelpers.is_privileged?(@current_scope) or @event.is_public) do %>
               {@event.registrant_full_name}
@@ -167,14 +167,14 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
         </div>
 
         <div class="flex items-center gap-1.5">
-          <.icon name="hero-clock" class="size-3 shrink-0 opacity-70" />
+          <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
           <p class="text-xs">
             {TimezoneHelpers.format_time(@event.start)} - {TimezoneHelpers.format_time(@event.end)}
           </p>
         </div>
 
         <div class="flex items-center gap-1.5">
-          <.icon name="hero-tag" class="size-3 shrink-0 opacity-70" />
+          <.icon name="hero-tag" class="size-3 shrink-0 text-base-content/70" />
           <p class="text-xs">{@event.event_type.display_name}</p>
         </div>
       </div>

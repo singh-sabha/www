@@ -65,7 +65,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Success do
             <.icon name="hero-identification" class="size-4" />
             <h4 class="font-semibold">Booking Reference</h4>
           </div>
-          <p class="text-sm opacity-60">
+          <p class="text-sm text-base-content/60">
             Please save your event ID in case you need to contact us about your booking.
           </p>
           <div class="flex w-full gap-2">
@@ -83,7 +83,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Success do
               <.icon name="hero-check" class="size-4 hidden [[data-copied]_&]:block" />
             </button>
           </div>
-          <p class="text-sm opacity-60">
+          <p class="text-sm text-base-content/60">
             For any questions or changes, reach us at
             <a href="mailto:singhsabhayyj@gmail.com" class="link link-primary font-medium">
               singhsabhayyj@gmail.com
