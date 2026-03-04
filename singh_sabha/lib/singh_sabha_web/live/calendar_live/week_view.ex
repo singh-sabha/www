@@ -1,5 +1,6 @@
 defmodule SinghSabhaWeb.CalendarLive.WeekView do
   use Phoenix.Component
+  use SinghSabhaWeb, :html
 
   alias SinghSabhaWeb.Helpers.UserHelpers
   alias SinghSabhaWeb.CalendarLive.Components.{WeekViewMultiDayEventsRow, Timeline}
@@ -32,9 +33,10 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
       |> assign(:hours, hours)
 
     ~H"""
-    <div class="flex flex-col items-center justify-center border-t border-base-300 py-4 text-sm text-base-400 sm:hidden">
-      <p>Weekly view is not available on smaller devices.</p>
-      <p>Please switch to daily or monthly view.</p>
+    <div class="flex h-full flex-col items-center justify-center gap-2 border-t border-base-300 text-base-content/60 sm:hidden">
+      <.icon name="hero-device-phone-mobile" class="size-10" />
+      <p class="text-sm">Weekly view is not available on smaller devices.</p>
+      <p class="text-sm">Please switch to daily or monthly view.</p>
     </div>
 
     <div class="hidden sm:flex flex-col border-t border-base-300 h-full">

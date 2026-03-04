@@ -25,18 +25,20 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
 
     ~H"""
     <div class="h-full overflow-auto">
-      <div class="space-y-6 p-4">
+      <div class="flex min-h-full flex-col p-4">
         <%= if length(@events_by_day) > 0 do %>
-          <%= for day_group <- @events_by_day do %>
-            <.day_group
-              date={day_group.date}
-              events={day_group.events}
-              multi_day_events={day_group.multi_day_events}
-              current_scope={@current_scope}
-            />
-          <% end %>
+          <div class="space-y-6">
+            <%= for day_group <- @events_by_day do %>
+              <.day_group
+                date={day_group.date}
+                events={day_group.events}
+                multi_day_events={day_group.multi_day_events}
+                current_scope={@current_scope}
+              />
+            <% end %>
+          </div>
         <% else %>
-          <div class="flex flex-col items-center justify-center gap-2 py-20 text-base-content/70">
+          <div class="flex flex-1 flex-col items-center justify-center gap-2 text-base-content/60">
             <.icon name="hero-calendar-days" class="size-10" />
             <p class="text-sm md:text-base">No events scheduled for the selected month</p>
           </div>
