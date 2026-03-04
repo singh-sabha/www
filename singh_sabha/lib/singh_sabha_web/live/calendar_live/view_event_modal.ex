@@ -74,7 +74,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
             </div>
           </div>
 
-          <%= if @selected_event.note && UserHelpers.is_privileged?(@current_scope) do %>
+          <%= if @selected_event.note do %>
             <div class="flex items-start gap-2">
               <.icon name="hero-document-text" class="mt-1 size-4 shrink-0" />
               <div>
