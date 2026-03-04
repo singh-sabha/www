@@ -39,6 +39,8 @@ defmodule SinghSabha.Events.Event do
     |> validate_phone_number()
     |> validate_email()
     |> validate_full_name()
+    |> validate_length(:occassion, min: 2, max: 255)
+    |> validate_length(:note, max: 1000)
     |> foreign_key_constraint(:type)
   end
 
