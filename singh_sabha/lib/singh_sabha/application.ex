@@ -10,6 +10,7 @@ defmodule SinghSabha.Application do
     SinghSabha.Release.migrate()
 
     children = [
+      SinghSabha.PromEx,
       SinghSabhaWeb.Telemetry,
       SinghSabha.Repo,
       {DNSCluster, query: Application.get_env(:singh_sabha, :dns_cluster_query) || :ignore},

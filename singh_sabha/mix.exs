@@ -41,7 +41,9 @@ defmodule SinghSabha.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
+      {:plug_cowboy, "~> 2.7"},
       {:phoenix, "~> 1.8.3"},
+      {:prom_ex, "~> 1.11.0"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.13"},
       {:postgrex, ">= 0.0.0"},

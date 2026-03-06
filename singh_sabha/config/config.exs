@@ -21,8 +21,21 @@ config :singh_sabha, :scopes,
   ]
 
 config :singh_sabha,
+  timezone: "America/Vancouver",
   ecto_repos: [SinghSabha.Repo],
   generators: [timestamp_type: :utc_datetime]
+
+config :singh_sabha, SinghSabha.PromEx,
+  manual_metrics_start_delay: :no_delay,
+  drop_metrics_groups: [],
+  grafana: :disabled,
+  metrics_server: [
+    port: 4021,
+    path: "/metrics",
+    protocol: :http,
+    pool_size: 5,
+    auth_strategy: :none
+  ]
 
 # Configure the endpoint
 config :singh_sabha, SinghSabhaWeb.Endpoint,
@@ -34,9 +47,6 @@ config :singh_sabha, SinghSabhaWeb.Endpoint,
   ],
   pubsub_server: SinghSabha.PubSub,
   live_view: [signing_salt: "Du4NU1nw"]
-
-config :singh_sabha,
-  timezone: "America/Vancouver"
 
 # Configure the mailer
 #
