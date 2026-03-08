@@ -7,8 +7,7 @@ defmodule SinghSabha.PromEx do
       PromEx.Plugins.Application,
       PromEx.Plugins.Beam,
       {PromEx.Plugins.Phoenix, router: SinghSabhaWeb.Router},
-      PromEx.Plugins.PhoenixLiveView,
-      PromEx.Plugins.Ecto
+      SinghSabhaWeb.PromEx.Plugins.ViewerPlugin
     ]
   end
 end
