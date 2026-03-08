@@ -48,6 +48,19 @@ config :singh_sabha, SinghSabhaWeb.Endpoint,
   pubsub_server: SinghSabha.PubSub,
   live_view: [signing_salt: "Du4NU1nw"]
 
+config :libcluster,
+  topologies: [
+    erlang_nodes_in_k8s: [
+      strategy: Elixir.Cluster.Strategy.Kubernetes.DNS,
+      config: [
+        service: "www-headless",
+        namespace: "apps-singhsabha",
+        application_name: "singh_sabha",
+        polling_interval: 10_000
+      ]
+    ]
+  ]
+
 # Configure the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

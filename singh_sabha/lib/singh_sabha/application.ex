@@ -13,7 +13,8 @@ defmodule SinghSabha.Application do
       SinghSabha.PromEx,
       SinghSabhaWeb.Telemetry,
       SinghSabha.Repo,
-      {DNSCluster, query: Application.get_env(:singh_sabha, :dns_cluster_query) || :ignore},
+      {Cluster.Supervisor,
+       [Application.get_env(:libcluster, :topologies), [name: Cluster.Supervisor]]},
       {Phoenix.PubSub, name: SinghSabha.PubSub},
       SinghSabhaWeb.Presence,
       # Start a worker by calling: SinghSabha.Worker.start_link(arg)

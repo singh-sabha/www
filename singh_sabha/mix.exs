@@ -40,6 +40,7 @@ defmodule SinghSabha.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:libcluster, "~> 3.3"},
       {:bcrypt_elixir, "~> 3.0"},
       {:plug_cowboy, "~> 2.7"},
       {:phoenix, "~> 1.8.3"},
@@ -68,7 +69,6 @@ defmodule SinghSabha.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 1.0"},
       {:jason, "~> 1.2"},
-      {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:tzdata, "~> 1.1"},
       {:resend, "~> 0.4.0"},
