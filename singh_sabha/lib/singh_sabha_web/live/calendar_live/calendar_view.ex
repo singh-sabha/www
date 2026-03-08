@@ -238,26 +238,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
-      Phoenix.PubSub.subscribe(SinghSabha.PubSub, "calendar:presence")
-
-      profile =
-        case socket.assigns.current_scope do
-          nil ->
-            [
-              display_name: UserHelpers.generate_guest_name(),
-              user_id: "guest:#{Ecto.UUID.generate()}"
-            ]
-
-          user ->
-            [display_name: user.user.full_name, user_id: "user:#{user.user.id}"]
-        end
-
-      {:ok, _} =
-        Presence.track(self(), "calendar:presence", profile[:user_id], %{
-          online_at: System.system_time(:second),
-          user_id: profile[:user_id],
-          display_name: profile[:display_name]
-        })
+      Phoenix.PubSub.subscribe(SinghSabha.PubSub, "global:presence")
 
       seconds_until_next_minute = 60 - now.second
 
@@ -502,7 +483,7 @@ defmodule SinghSabhaWeb.CalendarLive do
   end
 
   defp get_presence_users do
-    Presence.list("calendar:presence")
+    Presence.list("global:presence")
     |> Map.values()
     |> Enum.map(fn %{metas: [meta | _]} -> meta end)
     |> Enum.uniq_by(& &1.user_id)

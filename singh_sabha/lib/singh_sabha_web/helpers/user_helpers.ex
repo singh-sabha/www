@@ -1,8 +1,8 @@
 defmodule SinghSabhaWeb.Helpers.UserHelpers do
-  def generate_gradient_colours(user_id) do
-    hash = :erlang.phash2(user_id)
+  def generate_gradient_colours(seed) do
+    hash = :erlang.phash2(seed)
 
-    colors = [
+    colours = [
       {"#667eea", "#764ba2"},
       {"#f093fb", "#f5576c"},
       {"#4facfe", "#00f2fe"},
@@ -35,22 +35,19 @@ defmodule SinghSabhaWeb.Helpers.UserHelpers do
       {"#3f2b96", "#a8c0ff"}
     ]
 
-    {color1, color2} = Enum.at(colors, rem(hash, length(colors)))
-    "#{color1}, #{color2}"
+    {colour1, colour2} = Enum.at(colours, rem(hash, length(colours)))
+    "#{colour1}, #{colour2}"
   end
 
-  def generate_guest_name do
-    adjectives = ~w(
-    Calm Swift Brave Quiet Bold Wise Kind Brave Pure Firm
-    Bright Clear Sharp Warm Soft Noble Keen Proud Free Bold
-  )
-
+  def generate_guest_name(seed) do
     nouns = ~w(
-    Kirpan Khanda Dastar Langar Sangat Simran Seva Ardas
-    Granth Amrit Khalsa Waheguru Chardi Kala Nishan Sarbloh
-  )
+      Fox Owl Bear Wolf Hawk Deer Lynx Crow Swan Eagle
+      Tiger Lion Crane Bison Raven Moose Heron Otter Finch Stag
+    )
 
-    "#{Enum.random(adjectives)} #{Enum.random(nouns)}"
+    hash = :erlang.phash2(seed)
+
+    "Anonymous #{Enum.at(nouns, rem(hash, length(nouns)))}"
   end
 
   def is_privileged?(%SinghSabha.Accounts.Scope{user: user}), do: user.role in ~w(mod admin)

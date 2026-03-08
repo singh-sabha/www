@@ -26,19 +26,26 @@ defmodule SinghSabhaWeb.Router do
 
     live_session :full_width,
       root_layout: {SinghSabhaWeb.Layouts, :root_full},
-      on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
+      on_mount: [
+        {SinghSabhaWeb.UserAuth, :mount_current_scope},
+        {SinghSabhaWeb.Hooks.PresenceHook, :default}
+      ] do
       live "/", HomeLive
     end
 
     live_session :default,
-      on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
+      on_mount: [
+        {SinghSabhaWeb.UserAuth, :mount_current_scope},
+        {SinghSabhaWeb.Hooks.PresenceHook, :default}
+      ] do
       live "/calendar", CalendarLive
       live "/about", AboutLive
       live "/gallery", GalleryLive
     end
 
     live_session :empty,
-      root_layout: {SinghSabhaWeb.Layouts, :root_empty} do
+      root_layout: {SinghSabhaWeb.Layouts, :root_empty},
+      on_mount: [{SinghSabhaWeb.Hooks.PresenceHook, :default}] do
       live "/payment/success", PaymentsLive.Success
       live "/payment/cancel", PaymentsLive.Cancel
     end
