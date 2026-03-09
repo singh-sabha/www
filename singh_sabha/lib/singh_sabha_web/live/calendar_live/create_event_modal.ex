@@ -198,7 +198,12 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         )
 
         unless UserHelpers.is_privileged?(socket.assigns) do
-          EventNotifier.event_confirmation(event)
+          if event.event_type.display_name == "Anand Karaj" do
+            EventNotifier.anand_karaj_confirmation(event)
+          else
+            EventNotifier.event_confirmation(event)
+          end
+
           EventNotifier.admin_notification(event)
         end
 
