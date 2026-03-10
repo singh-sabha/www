@@ -8,6 +8,7 @@ defmodule SinghSabha.Events.Event do
     field :registrant_phone_number, :string
     field :start, :utc_datetime
     field :end, :utc_datetime
+    field :requested, :date
     field :occassion, :string
     field :note, :string
     field :is_verified, :boolean, default: false
