@@ -21,7 +21,7 @@
 
   <p class="card-text">
     <span class="label">Time:</span>
-    {Calendar.strftime(@event.start, "%I:%M %p")} - {Calendar.strftime(@event.end, "%I:%M %p")}
+    {format_time(@event.start)} - {format_time(@event.end)}
   </p>
 </div>
 

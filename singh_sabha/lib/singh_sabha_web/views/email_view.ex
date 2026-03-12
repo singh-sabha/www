@@ -7,6 +7,10 @@ defmodule SinghSabhaWeb.EmailView do
     Calendar.strftime(date, "%B %-d, %Y")
   end
 
+  def format_time(time) do
+    Calendar.strftime(time, "%I:%M %p")
+  end
+
   def format_date_range(start_date, end_date) do
     start_str = format_date(start_date)
     end_str = format_date(end_date)

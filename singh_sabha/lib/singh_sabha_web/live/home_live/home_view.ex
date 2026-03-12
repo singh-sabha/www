@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Events
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
+  alias SinghSabhaWeb.Helpers.{TimezoneHelpers, UserHelpers}
 
   alias SinghSabhaWeb.HomeLive.{
     UpcomingEventsSection,
@@ -12,7 +12,7 @@ defmodule SinghSabhaWeb.HomeLive do
     DonationsSection
   }
 
-  alias SinghSabhaWeb.CalendarLive.CreateEventModal
+  alias SinghSabhaWeb.CalendarLive.{CreateEventModal, BookEventModal}
 
   @live_stream_interval 10 * 60 * 1000
 
@@ -22,7 +22,7 @@ defmodule SinghSabhaWeb.HomeLive do
       <HeroSection.section />
 
       <.section_wrapper>
-        <ServicesSection.section event_types={@event_types} />
+        <ServicesSection.section event_types={@event_types} current_scope={@current_scope} />
       </.section_wrapper>
       <.section_wrapper>
         <UpcomingEventsSection.section upcoming={@upcoming} current_time={@current_time} />
@@ -35,6 +35,7 @@ defmodule SinghSabhaWeb.HomeLive do
       </.section_wrapper>
 
       <.live_component
+        :if={UserHelpers.is_privileged?(@current_scope)}
         module={CreateEventModal}
         id="create_event_modal"
         event_types={
@@ -42,7 +43,16 @@ defmodule SinghSabhaWeb.HomeLive do
             do: [@selected_event_type],
             else: @event_types
         }
-        current_scope={@current_scope}
+      />
+      <.live_component
+        :if={!UserHelpers.is_privileged?(@current_scope)}
+        module={BookEventModal}
+        id="book_event_modal"
+        event_types={
+          if Map.has_key?(assigns, :selected_event_type),
+            do: [@selected_event_type],
+            else: @event_types
+        }
       />
 
       <div phx-hook="ModalManager" id="modal-manager"></div>
@@ -124,13 +134,22 @@ defmodule SinghSabhaWeb.HomeLive do
     {:noreply, load_upcoming_events(socket)}
   end
 
-  def handle_event("create_event", %{"event-id" => event_id}, socket) do
+  def handle_info({:put_flash, kind, message}, socket) do
+    {:noreply, put_flash(socket, kind, message)}
+  end
+
+  def handle_event("create_or_book_event", %{"event-id" => event_id}, socket) do
     event_type = Enum.find(socket.assigns.event_types, &(&1.id == String.to_integer(event_id)))
+
+    modal_id =
+      if UserHelpers.is_privileged?(socket.assigns.current_scope),
+        do: "create_event_modal",
+        else: "book_event_modal"
 
     {:noreply,
      socket
      |> assign(:selected_event_type, event_type)
-     |> push_event("open-modal", %{id: "create_event_modal"})}
+     |> push_event("open-modal", %{id: modal_id})}
   end
 
   defp load_upcoming_events(socket) do

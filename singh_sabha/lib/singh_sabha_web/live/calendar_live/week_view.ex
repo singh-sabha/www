@@ -149,7 +149,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
 
           <div
             class="absolute inset-x-0 top-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-            phx-click="create_event"
+            phx-click="create_or_book_event"
             phx-value-date={@day}
             phx-value-time={hour}
           >
@@ -160,7 +160,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
 
           <div
             class="absolute inset-x-0 bottom-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-            phx-click="create_event"
+            phx-click="create_or_book_event"
             phx-value-date={@day}
             phx-value-time={hour}
           >
