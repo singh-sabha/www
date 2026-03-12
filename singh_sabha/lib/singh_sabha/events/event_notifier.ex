@@ -16,15 +16,6 @@ defmodule SinghSabha.Events.EventNotifier do
     |> Mailer.deliver()
   end
 
-  def anand_karaj_confirmation(event) do
-    new()
-    |> to(event.registrant_email)
-    |> from(@from)
-    |> subject("Event booking request received: #{event.occassion}")
-    |> render_body("anand_karaj_confirmation.html", %{event: event})
-    |> Mailer.deliver()
-  end
-
   def event_approved(event) do
     with {:ok, session} <- Payments.create_checkout_session(event) do
       new()
@@ -34,6 +25,15 @@ defmodule SinghSabha.Events.EventNotifier do
       |> render_body("event_approved.html", %{event: event, payment_url: session.url})
       |> Mailer.deliver()
     end
+  end
+
+  def anand_karaj_approved(event) do
+    new()
+    |> to(event.registrant_email)
+    |> from(@from)
+    |> subject("Anand Karaj date approved: #{event.occassion}")
+    |> render_body("anand_karaj_approved.html", %{event: event})
+    |> Mailer.deliver()
   end
 
   def event_denied(event, denial_reason) do

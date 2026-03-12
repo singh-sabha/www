@@ -1,4 +1,5 @@
 defmodule SinghSabha.Events.Event do
+  alias SinghSabhaWeb.Helpers.TimezoneHelpers
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -23,9 +24,6 @@ defmodule SinghSabha.Events.Event do
   def changeset(event, attrs) do
     event
     |> cast(attrs, [
-      :registrant_full_name,
-      :registrant_email,
-      :registrant_phone_number,
       :type,
       :start,
       :end,
@@ -37,12 +35,46 @@ defmodule SinghSabha.Events.Event do
     ])
     |> validate_required([:type, :start, :end, :occassion])
     |> validate_event_period()
+    |> validate_length(:occassion, min: 2, max: 255)
+    |> validate_length(:note, max: 1000)
+    |> foreign_key_constraint(:type)
+  end
+
+  def guest_changeset(event, attrs) do
+    event
+    |> cast(attrs, [
+      :registrant_full_name,
+      :registrant_email,
+      :registrant_phone_number,
+      :type,
+      :requested,
+      :occassion,
+      :note,
+      :is_verified,
+      :is_public,
+      :is_deposit_paid
+    ])
+    |> validate_required([:type, :requested, :occassion])
+    |> validate_future_event()
     |> validate_phone_number()
     |> validate_email()
     |> validate_full_name()
     |> validate_length(:occassion, min: 2, max: 255)
     |> validate_length(:note, max: 1000)
     |> foreign_key_constraint(:type)
+  end
+
+  def validate_future_event(changeset) do
+    requested_date = get_field(changeset, :requested)
+
+    now = DateTime.now!(TimezoneHelpers.local())
+    today = DateTime.to_date(now)
+
+    if Date.compare(requested_date, today) != :gt do
+      add_error(changeset, :requested, "must be in the future")
+    else
+      changeset
+    end
   end
 
   def validate_event_period(changeset) do

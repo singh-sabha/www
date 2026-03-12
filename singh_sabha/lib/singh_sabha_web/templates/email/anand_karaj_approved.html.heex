@@ -1,8 +1,42 @@
-<h1 class="heading">Anand Karaj Booking Form</h1>
+<h1 class="heading">Anand Karaj Date Approved</h1>
 
 <p class="text">
-  Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh. Thank you for your interest in celebrating your Anand Karaj at our Gurdwara Sahib. Please download and complete the booking form below to begin the reservation process.
+  Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh. We're pleased to confirm your requested date for your Anand Karaj at our Gurdwara Sahib. To proceed with the booking, please download and complete the form below.
 </p>
+
+<div class="card">
+  <p class="card-title">
+    {@event.occassion}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Type:</span>
+    {@event.event_type.display_name}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Date:</span>
+    {format_date_range(@event.start, @event.end)}
+  </p>
+
+  <p class="card-text">
+    <span class="label">Time:</span>
+    {format_time(@event.start)} - {format_time(@event.end)}
+  </p>
+</div>
+
+<div class="card">
+  <p class="card-title">Reference Number</p>
+
+  <p class="card-text">
+    <span class="label">Event ID:</span>
+    {@event.id}
+  </p>
+
+  <p class="small-text muted">
+    Please include this reference number in any communications about your event.
+  </p>
+</div>
 
 <a
   href="https://singhsabha.net/documents/anand_karaj_booking.pdf"

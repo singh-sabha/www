@@ -13,6 +13,7 @@ defmodule SinghSabha.Events do
   """
   def list_events(:all) do
     from(e in Event,
+      where: not is_nil(e.start) and not is_nil(e.end),
       order_by: e.start,
       preload: [:event_type]
     )
@@ -22,7 +23,8 @@ defmodule SinghSabha.Events do
   def list_events(:public) do
     from(e in Event,
       where:
-        e.is_verified and
+        not is_nil(e.start) and not is_nil(e.end) and
+          e.is_verified and
           e.is_deposit_paid and
           e.is_public,
       order_by: e.start,
@@ -32,6 +34,18 @@ defmodule SinghSabha.Events do
     |> Enum.map(fn e ->
       %{e | registrant_email: nil, registrant_phone_number: nil}
     end)
+  end
+
+  def list_events(:pending) do
+    from(e in Event,
+      where:
+        not is_nil(e.requested) and
+          is_nil(e.start) and
+          is_nil(e.end),
+      order_by: e.requested,
+      preload: [:event_type]
+    )
+    |> Repo.all()
   end
 
   @doc """
@@ -84,6 +98,17 @@ defmodule SinghSabha.Events do
   end
 
   @doc """
+  Books an event.
+  """
+  def book_event(attrs \\ %{}) do
+    case Event.guest_changeset(%Event{}, attrs)
+         |> Repo.insert() do
+      {:ok, event} -> {:ok, Repo.preload(event, :event_type)}
+      {:error, changeset} -> {:error, changeset}
+    end
+  end
+
+  @doc """
   Updates a event.
   """
   def update_event(%Event{} = event, attrs) do
@@ -104,6 +129,13 @@ defmodule SinghSabha.Events do
   """
   def change_event(%Event{} = event, attrs \\ %{}) do
     Event.changeset(event, attrs)
+  end
+
+  @doc """
+  Returns a data structure for tracking event changes.
+  """
+  def guest_change_event(%Event{} = event, attrs \\ %{}) do
+    Event.guest_changeset(event, attrs)
   end
 
   @doc """

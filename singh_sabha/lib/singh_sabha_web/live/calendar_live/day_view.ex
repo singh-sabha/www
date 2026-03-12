@@ -106,7 +106,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
 
                     <div
                       class="absolute inset-x-0 top-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-                      phx-click="create_event"
+                      phx-click="create_or_book_event"
                       phx-value-date={@current_date}
                       phx-value-time={hour}
                     >
@@ -117,7 +117,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
 
                     <div
                       class="absolute inset-x-0 bottom-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-                      phx-click="create_event"
+                      phx-click="create_or_book_event"
                       phx-value-date={@current_date}
                       phx-value-time={hour + 0.5}
                     >

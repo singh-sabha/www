@@ -18,6 +18,7 @@ defmodule SinghSabhaWeb.CalendarLive do
     DayView,
     AgendaView,
     CreateEventModal,
+    BookEventModal,
     EditEventModal,
     ViewEventModal,
     RejectEventModal
@@ -149,7 +150,7 @@ defmodule SinghSabhaWeb.CalendarLive do
 
                 <button
                   class="btn btn-primary w-full lg:w-auto"
-                  onclick="create_event_modal.showModal()"
+                  phx-click="create_or_book_event"
                 >
                   <span class="flex items-center gap-1">
                     <.icon name="hero-plus-circle" class="size-4" />
@@ -202,8 +203,16 @@ defmodule SinghSabhaWeb.CalendarLive do
         </div>
 
         <.live_component
+          :if={UserHelpers.is_privileged?(@current_scope)}
           module={CreateEventModal}
           id="create_event_modal"
+          event_types={@event_types}
+          current_scope={@current_scope}
+        />
+        <.live_component
+          :if={!UserHelpers.is_privileged?(@current_scope)}
+          module={BookEventModal}
+          id="book_event_modal"
           event_types={@event_types}
           current_scope={@current_scope}
         />
@@ -319,34 +328,53 @@ defmodule SinghSabhaWeb.CalendarLive do
      |> push_event("open-modal", %{id: "view_event_modal"})}
   end
 
-  def handle_event("create_event", %{"date" => date, "time" => start_time}, socket) do
-    start_time =
-      if String.contains?(start_time, ".") do
-        String.to_float(start_time)
-      else
-        String.to_integer(start_time) / 1
+  def handle_event("create_or_book_event", %{"date" => date, "time" => start_time}, socket) do
+    if UserHelpers.is_privileged?(socket.assigns.current_scope) do
+      start_time =
+        if String.contains?(start_time, "."),
+          do: String.to_float(start_time),
+          else: String.to_integer(start_time) / 1
+
+      time_to_string = fn time ->
+        hour = trunc(time)
+        minute = if rem(trunc(time * 2), 2) == 1, do: 30, else: 0
+
+        "#{String.pad_leading(Integer.to_string(hour), 2, "0")}:#{String.pad_leading(Integer.to_string(minute), 2, "0")}:00"
       end
 
-    time_to_string = fn time ->
-      hour = trunc(time)
-      minute = if rem(trunc(time * 2), 2) == 1, do: 30, else: 0
+      end_time = start_time + 0.5
 
-      "#{String.pad_leading(Integer.to_string(hour), 2, "0")}:#{String.pad_leading(Integer.to_string(minute), 2, "0")}:00"
+      {:ok, start_datetime} =
+        NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(start_time)}Z")
+
+      {:ok, end_datetime} = NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(end_time)}Z")
+
+      send_update(SinghSabhaWeb.CalendarLive.CreateEventModal,
+        id: "create_event_modal",
+        start_datetime: start_datetime,
+        end_datetime: end_datetime
+      )
+
+      {:noreply, push_event(socket, "open-modal", %{id: "create_event_modal"})}
+    else
+      {:ok, start_date} = Date.from_iso8601(date)
+
+      send_update(SinghSabhaWeb.CalendarLive.BookEventModal,
+        id: "book_event_modal",
+        start_date: start_date
+      )
+
+      {:noreply, push_event(socket, "open-modal", %{id: "book_event_modal"})}
     end
+  end
 
-    end_time = start_time + 0.5
+  def handle_event("create_or_book_event", _params, socket) do
+    modal_id =
+      if UserHelpers.is_privileged?(socket.assigns.current_scope),
+        do: "create_event_modal",
+        else: "book_event_modal"
 
-    # Create event modal requires UTC hence the "Z"
-    {:ok, start_datetime} = NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(start_time)}Z")
-    {:ok, end_datetime} = NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(end_time)}Z")
-
-    send_update(SinghSabhaWeb.CalendarLive.CreateEventModal,
-      id: "create_event_modal",
-      start_datetime: start_datetime,
-      end_datetime: end_datetime
-    )
-
-    {:noreply, push_event(socket, "open-modal", %{id: "create_event_modal"})}
+    {:noreply, push_event(socket, "open-modal", %{id: modal_id})}
   end
 
   def handle_event("edit_event", %{"event-id" => event_id}, socket) do

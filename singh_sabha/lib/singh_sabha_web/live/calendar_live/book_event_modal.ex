@@ -1,9 +1,7 @@
-defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
+defmodule SinghSabhaWeb.CalendarLive.BookEventModal do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
-
-  alias SinghSabha.Events.{Event}
+  alias SinghSabha.Events.{Event, EventNotifier}
   alias SinghSabha.Events
 
   attr :id, :string, required: true
@@ -14,7 +12,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
   def render(assigns) do
     ~H"""
     <dialog
-      id="create_event_modal"
+      id="book_event_modal"
       class="modal overflow-y-scroll"
       phx-mounted={JS.ignore_attributes(["open"])}
     >
@@ -26,7 +24,7 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         </form>
 
         <h3 class="font-bold text-lg">
-          Create Event
+          Book Event
         </h3>
         <p class="text-base-content/70 text-sm">
           Fill out the form based on your request. Click submit when you're done.
@@ -34,12 +32,39 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
         <.form
           for={@form}
           phx-change="validate_event"
-          phx-submit="create_event"
+          phx-submit="book_event"
           phx-target={@myself}
           class="mt-4"
         >
-          <div class="flex flex-col justify-between space-y-4">
-            <div class="grid grid-cols-1 w-full">
+          <div class="flex flex-col justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+            <div class="grid grid-cols-1 h-fit w-full md:w-1/3">
+              <.input
+                field={@form[:registrant_full_name]}
+                type="text"
+                placeholder="Add full name"
+                label="Full Name"
+                required
+              />
+              <.input
+                field={@form[:registrant_email]}
+                type="email"
+                placeholder="Add email"
+                label="Email"
+                required
+              />
+              <.input
+                field={@form[:registrant_phone_number]}
+                type="text"
+                placeholder="Add phone number"
+                label="Phone Number"
+                required
+              />
+            </div>
+
+            <div class="divider my-0 mb-4 md:hidden"></div>
+            <div class="divider divider-horizontal mx-0 mr-4 hidden md:flex"></div>
+
+            <div class="grid grid-cols-1 w-full md:w-2/3">
               <.input
                 field={@form[:occassion]}
                 type="text"
@@ -48,20 +73,12 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
                 required
               />
 
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <.input
-                  field={@form[:start]}
-                  type="datetime-local"
-                  label="Start Time"
-                  required
-                />
-                <.input
-                  field={@form[:end]}
-                  type="datetime-local"
-                  label="End Time"
-                  required
-                />
-              </div>
+              <.input
+                field={@form[:requested]}
+                type="date"
+                label="Date"
+                required
+              />
 
               <.input
                 field={@form[:type]}
@@ -90,11 +107,11 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           </div>
 
           <div class="modal-action">
-            <button type="button" class="btn" onclick="create_event_modal.close()">
+            <button type="button" class="btn" onclick="book_event_modal.close()">
               Cancel
             </button>
             <button type="submit" class="btn btn-primary">
-              Create Event
+              Submit
             </button>
           </div>
         </.form>
@@ -127,27 +144,22 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
        form:
          to_form(
            Events.change_event(%Event{}, init_params),
-           as: :create_event
+           as: :book_event
          )
      )}
   end
 
-  def handle_event("validate_event", %{"create_event" => params}, socket) do
+  def handle_event("validate_event", %{"book_event" => params}, socket) do
     form =
       %Event{}
-      |> Events.change_event(params)
-      |> to_form(action: :validate, as: :create_event)
+      |> Events.guest_change_event(params)
+      |> to_form(action: :validate, as: :book_event)
 
     {:noreply, assign(socket, form: form)}
   end
 
-  def handle_event("create_event", %{"create_event" => params}, socket) do
-    updated_params =
-      params
-      |> Map.merge(%{"is_deposit_paid" => true, "is_verified" => true})
-      |> TimezoneHelpers.convert_datetime_params()
-
-    case Events.create_event(updated_params) do
+  def handle_event("book_event", %{"book_event" => params}, socket) do
+    case Events.book_event(params) do
       {:ok, event} ->
         Phoenix.PubSub.broadcast(
           SinghSabha.PubSub,
@@ -155,17 +167,24 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           {:event_created, event}
         )
 
-        send(self(), {:put_flash, :success, "Event created successfully!"})
+        EventNotifier.event_confirmation(event)
+        EventNotifier.admin_notification(event)
+
+        send(
+          self(),
+          {:put_flash, :success,
+           "Event booking submitted and confirmation email sent successfully!"}
+        )
 
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "create_event_modal"})}
+         |> push_event("close-modal", %{id: "book_event_modal"})}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply,
          assign(
            socket,
-           form: to_form(changeset, as: :create_event)
+           form: to_form(changeset, as: :book_event)
          )}
     end
   end
