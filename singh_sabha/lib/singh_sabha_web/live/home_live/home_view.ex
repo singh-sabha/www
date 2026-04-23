@@ -18,45 +18,43 @@ defmodule SinghSabhaWeb.HomeLive do
 
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <HeroSection.section />
+    <HeroSection.section />
 
-      <.section_wrapper>
-        <ServicesSection.section event_types={@event_types} current_scope={@current_scope} />
-      </.section_wrapper>
-      <.section_wrapper>
-        <UpcomingEventsSection.section upcoming={@upcoming} current_time={@current_time} />
-      </.section_wrapper>
-      <.section_wrapper>
-        <LiveStreamSection.section live_stream={@live_stream} />
-      </.section_wrapper>
-      <.section_wrapper>
-        <DonationsSection.section />
-      </.section_wrapper>
+    <.section_wrapper>
+      <ServicesSection.section event_types={@event_types} current_scope={@current_scope} />
+    </.section_wrapper>
+    <.section_wrapper>
+      <UpcomingEventsSection.section upcoming={@upcoming} current_time={@current_time} />
+    </.section_wrapper>
+    <.section_wrapper>
+      <LiveStreamSection.section live_stream={@live_stream} />
+    </.section_wrapper>
+    <.section_wrapper>
+      <DonationsSection.section />
+    </.section_wrapper>
 
-      <.live_component
-        :if={UserHelpers.is_privileged?(@current_scope)}
-        module={CreateEventModal}
-        id="create_event_modal"
-        event_types={
-          if Map.has_key?(assigns, :selected_event_type),
-            do: [@selected_event_type],
-            else: @event_types
-        }
-      />
-      <.live_component
-        :if={!UserHelpers.is_privileged?(@current_scope)}
-        module={BookEventModal}
-        id="book_event_modal"
-        event_types={
-          if Map.has_key?(assigns, :selected_event_type),
-            do: [@selected_event_type],
-            else: @event_types
-        }
-      />
+    <.live_component
+      :if={UserHelpers.is_privileged?(@current_scope)}
+      module={CreateEventModal}
+      id="create_event_modal"
+      event_types={
+        if Map.has_key?(assigns, :selected_event_type),
+          do: [@selected_event_type],
+          else: @event_types
+      }
+    />
+    <.live_component
+      :if={!UserHelpers.is_privileged?(@current_scope)}
+      module={BookEventModal}
+      id="book_event_modal"
+      event_types={
+        if Map.has_key?(assigns, :selected_event_type),
+          do: [@selected_event_type],
+          else: @event_types
+      }
+    />
 
-      <div phx-hook="ModalManager" id="modal-manager"></div>
-    </Layouts.app>
+    <div phx-hook="ModalManager" id="modal-manager"></div>
     """
   end
 

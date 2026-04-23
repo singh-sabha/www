@@ -15,12 +15,6 @@
     </script>
   </head>
   <body class="flex flex-col min-h-screen">
-    <SinghSabhaWeb.Components.Navbar.navbar current_scope={@current_scope} />
-    <main class="flex-1">
-      <div class="container mx-auto px-4 py-8">
-        {@inner_content}
-      </div>
-    </main>
-    <SinghSabhaWeb.Components.Footer.footer />
+    {@inner_content}
   </body>
 </html>
