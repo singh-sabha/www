@@ -8,82 +8,80 @@ defmodule SinghSabhaWeb.UserLive.Settings do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={@current_scope}>
-      <div class="max-w-lg mx-auto mt-8 p-6 space-y-6">
-        <div>
-          <h2 class="text-lg font-semibold">Account Settings</h2>
-          <p class="text-sm text-base-content/70">
-            Manage your account email address and password settings.
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
-          <div class="flex items-center gap-2">
-            <.icon name="hero-envelope" class="size-4" />
-            <h4 class="font-semibold">Email Address</h4>
-          </div>
-          <.form
-            for={@email_form}
-            id="email_form"
-            phx-submit="update_email"
-            phx-change="validate_email"
-            class="flex flex-col gap-3"
-          >
-            <.input
-              field={@email_form[:email]}
-              type="email"
-              label="Email"
-              autocomplete="username"
-              required
-            />
-            <div>
-              <.button variant="primary" phx-disable-with="Changing...">Change Email</.button>
-            </div>
-          </.form>
-        </div>
-
-        <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
-          <div class="flex items-center gap-2">
-            <.icon name="hero-lock-closed" class="size-4" />
-            <h4 class="font-semibold">Password</h4>
-          </div>
-          <.form
-            for={@password_form}
-            id="password_form"
-            action={~p"/users/update-password"}
-            method="post"
-            phx-change="validate_password"
-            phx-submit="update_password"
-            phx-trigger-action={@trigger_submit}
-            class="flex flex-col gap-3"
-          >
-            <input
-              name={@password_form[:email].name}
-              type="hidden"
-              id="hidden_user_email"
-              autocomplete="username"
-              value={@current_email}
-            />
-            <.input
-              field={@password_form[:password]}
-              type="password"
-              label="New password"
-              autocomplete="new-password"
-              required
-            />
-            <.input
-              field={@password_form[:password_confirmation]}
-              type="password"
-              label="Confirm new password"
-              autocomplete="new-password"
-            />
-            <div>
-              <.button variant="primary" phx-disable-with="Saving...">Save Password</.button>
-            </div>
-          </.form>
-        </div>
+    <div class="max-w-lg mx-auto mt-8 p-6 space-y-6">
+      <div>
+        <h2 class="text-lg font-semibold">Account Settings</h2>
+        <p class="text-sm text-base-content/70">
+          Manage your account email address and password settings.
+        </p>
       </div>
-    </Layouts.app>
+
+      <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
+        <div class="flex items-center gap-2">
+          <.icon name="hero-envelope" class="size-4" />
+          <h4 class="font-semibold">Email Address</h4>
+        </div>
+        <.form
+          for={@email_form}
+          id="email_form"
+          phx-submit="update_email"
+          phx-change="validate_email"
+          class="flex flex-col gap-3"
+        >
+          <.input
+            field={@email_form[:email]}
+            type="email"
+            label="Email"
+            autocomplete="username"
+            required
+          />
+          <div>
+            <.button variant="primary" phx-disable-with="Changing...">Change Email</.button>
+          </div>
+        </.form>
+      </div>
+
+      <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
+        <div class="flex items-center gap-2">
+          <.icon name="hero-lock-closed" class="size-4" />
+          <h4 class="font-semibold">Password</h4>
+        </div>
+        <.form
+          for={@password_form}
+          id="password_form"
+          action={~p"/users/update-password"}
+          method="post"
+          phx-change="validate_password"
+          phx-submit="update_password"
+          phx-trigger-action={@trigger_submit}
+          class="flex flex-col gap-3"
+        >
+          <input
+            name={@password_form[:email].name}
+            type="hidden"
+            id="hidden_user_email"
+            autocomplete="username"
+            value={@current_email}
+          />
+          <.input
+            field={@password_form[:password]}
+            type="password"
+            label="New password"
+            autocomplete="new-password"
+            required
+          />
+          <.input
+            field={@password_form[:password_confirmation]}
+            type="password"
+            label="Confirm new password"
+            autocomplete="new-password"
+          />
+          <div>
+            <.button variant="primary" phx-disable-with="Saving...">Save Password</.button>
+          </div>
+        </.form>
+      </div>
+    </div>
     """
   end
 

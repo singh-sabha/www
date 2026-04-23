@@ -25,10 +25,10 @@ defmodule SinghSabhaWeb.Router do
     pipe_through :browser
 
     live_session :full_width,
-      root_layout: {SinghSabhaWeb.Layouts, :root_full},
       on_mount: [
         {SinghSabhaWeb.UserAuth, :mount_current_scope},
-        {SinghSabhaWeb.Hooks.PresenceHook, :default}
+        {SinghSabhaWeb.Hooks.PresenceHook, :default},
+        {SinghSabhaWeb.Live.Layouts, :full_width}
       ] do
       live "/", HomeLive
     end
@@ -36,7 +36,8 @@ defmodule SinghSabhaWeb.Router do
     live_session :default,
       on_mount: [
         {SinghSabhaWeb.UserAuth, :mount_current_scope},
-        {SinghSabhaWeb.Hooks.PresenceHook, :default}
+        {SinghSabhaWeb.Hooks.PresenceHook, :default},
+        {SinghSabhaWeb.Live.Layouts, :default}
       ] do
       live "/calendar", CalendarLive
       live "/about", AboutLive
@@ -44,8 +45,10 @@ defmodule SinghSabhaWeb.Router do
     end
 
     live_session :empty,
-      root_layout: {SinghSabhaWeb.Layouts, :root_empty},
-      on_mount: [{SinghSabhaWeb.Hooks.PresenceHook, :default}] do
+      on_mount: [
+        {SinghSabhaWeb.Hooks.PresenceHook, :default},
+        {SinghSabhaWeb.Live.Layouts, :empty}
+      ] do
       live "/payment/success", PaymentsLive.Success
       live "/payment/cancel", PaymentsLive.Cancel
     end
@@ -81,7 +84,10 @@ defmodule SinghSabhaWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{SinghSabhaWeb.UserAuth, :require_authenticated}] do
+      on_mount: [
+        {SinghSabhaWeb.UserAuth, :require_authenticated},
+        {SinghSabhaWeb.Live.Layouts, :default}
+      ] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
     end
@@ -93,8 +99,10 @@ defmodule SinghSabhaWeb.Router do
     pipe_through [:browser]
 
     live_session :current_user,
-      root_layout: {SinghSabhaWeb.Layouts, :root_empty},
-      on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
+      on_mount: [
+        {SinghSabhaWeb.UserAuth, :mount_current_scope},
+        {SinghSabhaWeb.Live.Layouts, :empty}
+      ] do
       live "/users/register", UserLive.Registration, :new
       live "/users/log-in", UserLive.Login, :new
       live "/users/log-in/:token", UserLive.Confirmation, :new
@@ -108,8 +116,10 @@ defmodule SinghSabhaWeb.Router do
     pipe_through :browser
 
     live_session :not_found,
-      root_layout: {SinghSabhaWeb.Layouts, :root_empty},
-      on_mount: [{SinghSabhaWeb.UserAuth, :mount_current_scope}] do
+      on_mount: [
+        {SinghSabhaWeb.UserAuth, :mount_current_scope},
+        {SinghSabhaWeb.Live.Layouts, :empty}
+      ] do
       live "/*path", NotFoundLive, :index
     end
   end

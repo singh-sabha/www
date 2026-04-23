@@ -1,0 +1,24 @@
+<%= if assigns[:show_navbar] do %>
+  <SinghSabhaWeb.Components.Navbar.navbar current_scope={@current_scope} />
+<% end %>
+
+<%= case assigns[:page_layout] do %>
+  <% :full_width -> %>
+    <main class="flex-1">
+      {@inner_content}
+    </main>
+  <% :empty -> %>
+    <main class="flex-1 flex items-center justify-center">
+      {@inner_content}
+    </main>
+  <% _ -> %>
+    <main class="flex-1 container mx-auto px-4 py-8">
+      {@inner_content}
+    </main>
+<% end %>
+
+<%= if assigns[:show_footer] do %>
+  <SinghSabhaWeb.Components.Footer.footer />
+<% end %>
+
+<.flash_group flash={@flash} />
