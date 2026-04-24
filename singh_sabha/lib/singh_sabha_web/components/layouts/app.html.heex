@@ -1,5 +1,8 @@
 <%= if assigns[:show_navbar] do %>
-  <SinghSabhaWeb.Components.Navbar.navbar current_scope={@current_scope} />
+  {live_render(@socket, SinghSabhaWeb.NavbarLive,
+    id: "navbar",
+    session: %{"current_scope" => @current_scope}
+  )}
 <% end %>
 
 <%= case assigns[:page_layout] do %>
