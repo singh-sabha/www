@@ -88,6 +88,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
     socket =
       socket
+      |> assign(:page_title, "Notifications")
       |> assign(:selected_event, nil)
       |> load_pending_events()
 
