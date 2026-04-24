@@ -1,5 +1,4 @@
 defmodule SinghSabhaWeb.CalendarLive do
-  alias SinghSabhaWeb.Helpers.EventTypeHelpers
   use SinghSabhaWeb, :live_view
 
   alias SinghSabhaWeb.Presence
@@ -7,7 +6,8 @@ defmodule SinghSabhaWeb.CalendarLive do
   alias SinghSabhaWeb.Helpers.{
     CalendarHelpers,
     TimezoneHelpers,
-    UserHelpers
+    UserHelpers,
+    EventTypeHelpers
   }
 
   alias SinghSabha.Events.EventNotifier
