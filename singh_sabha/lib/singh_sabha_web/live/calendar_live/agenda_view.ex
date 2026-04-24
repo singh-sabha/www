@@ -129,7 +129,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
                   "badge badge-sm gap-1",
                   EventTypeHelpers.badge_colour(:yellow)
                 ]}>
-                  <.icon name="hero-banknotes" class="size-3" /> Awaiting Payment
+                  <.icon name="hero-currency-dollar" class="size-3" /> Awaiting Payment
                 </span>
               <% true -> %>
                 <span class={[
