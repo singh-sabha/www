@@ -1,14 +1,14 @@
-defmodule SinghSabhaWeb.Components.Navbar do
-  use Phoenix.Component
-  use SinghSabhaWeb, :verified_routes
+defmodule SinghSabhaWeb.NavbarLive do
+  use SinghSabhaWeb, :live_view
 
-  import SinghSabhaWeb.CoreComponents
+  alias SinghSabhaWeb.Helpers.{
+    UserHelpers,
+    EventTypeHelpers
+  }
 
-  alias SinghSabhaWeb.Helpers.UserHelpers
+  alias SinghSabha.Events
 
-  attr :current_scope, :any, required: true
-
-  def navbar(assigns) do
+  def render(assigns) do
     ~H"""
     <div class="navbar bg-base-100 border-b border-base-300 sticky top-0 z-50">
       <div class="navbar-start">
@@ -51,12 +51,18 @@ defmodule SinghSabhaWeb.Components.Navbar do
       <div class="navbar-end">
         <%= if @current_scope do %>
           <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-              <div
-                class="w-10 h-10 rounded-full flex items-center justify-center"
-                style={"background: linear-gradient(135deg, #{UserHelpers.generate_gradient_colours("user:#{@current_scope.user.id}")})"}
-              >
+            <div class="relative w-fit">
+              <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div
+                  class="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={"background: linear-gradient(135deg, #{UserHelpers.generate_gradient_colours("user:#{@current_scope.user.id}")})"}
+                >
+                </div>
               </div>
+              <%= if UserHelpers.is_privileged?(@current_scope) && length(@pending_events) > 0 do %>
+                <span class="absolute top-0 right-0 size-3 rounded-full bg-red-500 border-2 border-base-100">
+                </span>
+              <% end %>
             </div>
             <ul
               tabindex="0"
@@ -64,6 +70,16 @@ defmodule SinghSabhaWeb.Components.Navbar do
             >
               <li class="menu-title">
                 <span>{@current_scope.user.email}</span>
+              </li>
+              <li>
+                <.link href={~p"/users/notifications"}>
+                  Notifications
+                  <%= if length(@pending_events) > 0 do %>
+                    <span class={["badge badge-xs", EventTypeHelpers.badge_colour(:red)]}>
+                      {length(@pending_events)}
+                    </span>
+                  <% end %>
+                </.link>
               </li>
               <li>
                 <.link navigate={~p"/users/settings"}>Settings</.link>
@@ -80,5 +96,43 @@ defmodule SinghSabhaWeb.Components.Navbar do
       </div>
     </div>
     """
+  end
+
+  def mount(_params, session, socket) do
+    current_scope = Map.get(session, "current_scope")
+
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
+    end
+
+    socket =
+      socket
+      |> assign(:current_scope, current_scope)
+      |> load_pending_events()
+
+    {:ok, socket}
+  end
+
+  def handle_info({:event_created, _event}, socket) do
+    {:noreply, load_pending_events(socket)}
+  end
+
+  def handle_info({:event_updated, _event}, socket) do
+    {:noreply, load_pending_events(socket)}
+  end
+
+  def handle_info({:event_deleted, _event}, socket) do
+    {:noreply, load_pending_events(socket)}
+  end
+
+  def handle_info({:put_flash, kind, message}, socket) do
+    {:noreply, put_flash(socket, kind, message)}
+  end
+
+  defp load_pending_events(socket) do
+    case UserHelpers.is_privileged?(socket.assigns.current_scope) do
+      true -> assign(socket, :pending_events, Events.list_events(:pending))
+      false -> assign(socket, :pending_events, [])
+    end
   end
 end
