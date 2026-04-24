@@ -22,15 +22,13 @@ defmodule SinghSabhaWeb.Hooks.PresenceHook do
 
   defp fetch_ip(socket) do
     peer_data = get_connect_info(socket, :peer_data)
-    x_headers = get_connect_info(socket, :x_headers)
+    x_headers = get_connect_info(socket, :x_headers) || []
 
-    ip =
-      case List.keyfind(x_headers, "x-forwarded-for", 0) do
-        {_, ip} -> String.split(ip, ",") |> List.first() |> String.trim()
-        nil -> peer_data.address |> Tuple.to_list() |> Enum.join(".")
-      end
-
-    ip
+    case List.keyfind(x_headers, "x-forwarded-for", 0) do
+      {_, ip} -> ip |> String.split(",") |> List.first() |> String.trim()
+      nil when not is_nil(peer_data) -> peer_data.address |> Tuple.to_list() |> Enum.join(".")
+      _ -> "unknown"
+    end
   end
 
   defp build_profile(nil, ip) do
