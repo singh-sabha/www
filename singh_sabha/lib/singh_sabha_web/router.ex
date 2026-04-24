@@ -86,6 +86,7 @@ defmodule SinghSabhaWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [
         {SinghSabhaWeb.UserAuth, :require_authenticated},
+        {SinghSabhaWeb.Hooks.PresenceHook, :default},
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
       live "/users/settings", UserLive.Settings, :edit
