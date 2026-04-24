@@ -10,8 +10,6 @@ defmodule SinghSabhaWeb.CalendarLive do
     EventTypeHelpers
   }
 
-  alias SinghSabha.Events.EventNotifier
-
   alias SinghSabhaWeb.CalendarLive.{
     MonthView,
     WeekView,
