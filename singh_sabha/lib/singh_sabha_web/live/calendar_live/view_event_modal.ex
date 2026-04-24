@@ -36,6 +36,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
               </span>
             </div>
           <% end %>
+
           <div class="flex items-start gap-2">
             <.icon name="hero-user" class="mt-1 size-4 shrink-0" />
             <div>
@@ -88,42 +89,23 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
 
           <%= if UserHelpers.is_privileged?(@current_scope) do %>
             <div class="modal-action">
-              <%= if !@selected_event.is_verified do %>
+              <%= if @selected_event.is_deposit_paid do %>
                 <button
                   type="button"
                   class="btn"
-                  phx-click="approve_event"
+                  phx-click="edit_event"
                   phx-value-event-id={@selected_event.id}
                 >
-                  Approve
+                  Edit
                 </button>
                 <button
                   type="button"
                   class="btn"
-                  phx-click="reject_event"
+                  phx-click="delete_event"
                   phx-value-event-id={@selected_event.id}
                 >
-                  Reject
+                  Delete
                 </button>
-              <% else %>
-                <%= if @selected_event.is_deposit_paid do %>
-                  <button
-                    type="button"
-                    class="btn"
-                    phx-click="edit_event"
-                    phx-value-event-id={@selected_event.id}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    class="btn"
-                    phx-click="delete_event"
-                    phx-value-event-id={@selected_event.id}
-                  >
-                    Delete
-                  </button>
-                <% end %>
               <% end %>
             </div>
           <% end %>
@@ -137,8 +119,6 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
   end
 
   def update(assigns, socket) do
-    {:ok,
-     socket
-     |> assign(assigns)}
+    {:ok, assign(socket, assigns)}
   end
 end
