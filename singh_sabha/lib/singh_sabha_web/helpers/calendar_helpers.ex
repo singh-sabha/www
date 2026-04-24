@@ -1,4 +1,16 @@
 defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
+  def find_event(event_id, events) when is_binary(event_id) do
+    Enum.find(events, fn event ->
+      event.id == String.to_integer(event_id)
+    end)
+  end
+
+  def find_event(event_id, events) when is_integer(event_id) do
+    Enum.find(events, fn event ->
+      event.id == event_id
+    end)
+  end
+
   def partition_events(events) do
     Enum.split_with(events, fn event ->
       start_date = DateTime.to_date(event.start)
