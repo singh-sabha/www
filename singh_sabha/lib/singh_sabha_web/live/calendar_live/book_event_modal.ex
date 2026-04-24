@@ -6,8 +6,7 @@ defmodule SinghSabhaWeb.CalendarLive.BookEventModal do
 
   attr :id, :string, required: true
   attr :event_types, :list, required: true
-  attr :start_datetime, :string, default: nil
-  attr :end_datetime, :string, default: nil
+  attr :requested_date, :string, default: nil
 
   def render(assigns) do
     ~H"""
@@ -126,15 +125,9 @@ defmodule SinghSabhaWeb.CalendarLive.BookEventModal do
   def update(assigns, socket) do
     # This gets populated when a user clicks on a gutter in week/day views
     init_params =
-      case Map.has_key?(assigns, :start_datetime) do
-        true ->
-          %{
-            "start" => assigns.start_datetime,
-            "end" => assigns.end_datetime
-          }
-
-        false ->
-          %{}
+      case Map.fetch(assigns, :requested_date) do
+        {:ok, date} -> %{"requested" => Date.to_iso8601(date)}
+        :error -> %{}
       end
 
     {:ok,

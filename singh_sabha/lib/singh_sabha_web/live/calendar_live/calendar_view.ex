@@ -355,11 +355,11 @@ defmodule SinghSabhaWeb.CalendarLive do
 
       {:noreply, push_event(socket, "open-modal", %{id: "create_event_modal"})}
     else
-      {:ok, start_date} = Date.from_iso8601(date)
+      {:ok, requested_date} = Date.from_iso8601(date)
 
       send_update(SinghSabhaWeb.CalendarLive.BookEventModal,
         id: "book_event_modal",
-        start_date: start_date
+        requested_date: requested_date
       )
 
       {:noreply, push_event(socket, "open-modal", %{id: "book_event_modal"})}
