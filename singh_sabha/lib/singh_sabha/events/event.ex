@@ -67,13 +67,17 @@ defmodule SinghSabha.Events.Event do
   def validate_future_event(changeset) do
     requested_date = get_field(changeset, :requested)
 
-    now = DateTime.now!(TimezoneHelpers.local())
-    today = DateTime.to_date(now)
-
-    if Date.compare(requested_date, today) != :gt do
-      add_error(changeset, :requested, "must be in the future")
-    else
+    if is_nil(requested_date) do
       changeset
+    else
+      now = DateTime.now!(TimezoneHelpers.local())
+      today = DateTime.to_date(now)
+
+      if Date.compare(requested_date, today) != :gt do
+        add_error(changeset, :requested, "must be in the future")
+      else
+        changeset
+      end
     end
   end
 
