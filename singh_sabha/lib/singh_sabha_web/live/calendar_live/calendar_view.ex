@@ -20,8 +20,7 @@ defmodule SinghSabhaWeb.CalendarLive do
     CreateEventModal,
     BookEventModal,
     EditEventModal,
-    ViewEventModal,
-    RejectEventModal
+    ViewEventModal
   }
 
   alias SinghSabha.Events
@@ -228,11 +227,6 @@ defmodule SinghSabhaWeb.CalendarLive do
         id="edit_event_modal"
         selected_event={@selected_event}
       />
-      <.live_component
-        module={RejectEventModal}
-        id="reject_event_modal"
-        selected_event={@selected_event}
-      />
 
       <div phx-hook="ModalManager" id="modal-manager"></div>
     </div>
@@ -403,62 +397,8 @@ defmodule SinghSabhaWeb.CalendarLive do
     end
   end
 
-  def handle_event("approve_event", %{"event-id" => event_id}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.events)
-
-    case Events.update_event(event, %{"is_verified" => true}) do
-      {:ok, event} ->
-        Phoenix.PubSub.broadcast(
-          SinghSabha.PubSub,
-          "events",
-          {:event_updated, event}
-        )
-
-        EventNotifier.event_approved(event)
-
-        {:noreply,
-         socket
-         |> put_flash(:success, "Event Approved! Email sent to user.")
-         |> push_event("close-modal", %{id: "view_event_modal"})}
-
-      {:error, _} ->
-        {:noreply,
-         socket
-         |> put_flash(:error, "Failed to approve event. Please try again.")
-         |> push_event("close-modal", %{id: "view_event_modal"})}
-    end
-  end
-
-  def handle_event("reject_event", %{"event-id" => event_id}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.events)
-
-    {:noreply,
-     socket
-     |> assign(:selected_event, event)
-     |> push_event("open-modal", %{id: "reject_event_modal"})}
-  end
-
   def handle_info({:put_flash, kind, message}, socket) do
     {:noreply, put_flash(socket, kind, message)}
-  end
-
-  def handle_info({:reject_event, event, reason}, socket) do
-    case Events.delete_event(event) do
-      {:ok, _} ->
-        Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
-
-        EventNotifier.event_denied(event, reason)
-
-        {:noreply,
-         socket
-         |> push_event("close-modal", %{id: "reject_event_modal"})}
-
-      {:error, _} ->
-        {:noreply,
-         socket
-         |> put_flash(:error, "Failed to delete event. Please try again.")
-         |> push_event("close-modal", %{id: "reject_event_modal"})}
-    end
   end
 
   def handle_info(:tick, socket) do
