@@ -173,7 +173,7 @@ defmodule SinghSabhaWeb.CalendarLive.BookEventModal do
         send(
           self(),
           {:put_flash, :success,
-           "Event booking submitted and confirmation email sent successfully!"}
+           "Event booking submitted successfully! Please check your email for confirmation."}
         )
 
         {:noreply,
