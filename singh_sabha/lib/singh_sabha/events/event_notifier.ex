@@ -36,12 +36,12 @@ defmodule SinghSabha.Events.EventNotifier do
     |> Mailer.deliver()
   end
 
-  def event_denied(event, denial_reason) do
+  def event_denied(event) do
     new()
     |> to(event.registrant_email)
     |> from(@from)
     |> subject("Event request update: #{event.occassion}")
-    |> render_body("event_denied.html", %{event: event, denial_reason: denial_reason})
+    |> render_body("event_denied.html", %{event: event})
     |> Mailer.deliver()
   end
 
