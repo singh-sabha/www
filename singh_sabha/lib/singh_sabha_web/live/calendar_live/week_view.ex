@@ -113,22 +113,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
       end)
 
     grouped_events = CalendarHelpers.group_overlapping_events(day_events)
-
-    events_with_overlap_info =
-      for {group, group_index} <- Enum.with_index(grouped_events),
-          event <- group do
-        overlapping_group_indices =
-          grouped_events
-          |> Enum.with_index()
-          |> Enum.filter(fn {other_group, _other_index} ->
-            Enum.any?(other_group, fn other_event ->
-              CalendarHelpers.events_overlap?(event, other_event)
-            end)
-          end)
-          |> Enum.map(fn {_group, index} -> index end)
-
-        {event, group_index, overlapping_group_indices}
-      end
+    events_with_overlap_info = CalendarHelpers.get_overlap_info(grouped_events)
 
     assigns =
       assigns

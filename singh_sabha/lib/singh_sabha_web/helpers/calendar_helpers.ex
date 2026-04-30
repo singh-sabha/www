@@ -70,6 +70,24 @@ defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
 
   def get_visible_hours(:all_hours, _working_hours), do: Enum.to_list(0..23)
 
+  def get_overlap_info(grouped_events) do
+    for {group, group_index} <- Enum.with_index(grouped_events),
+        event <- group do
+      overlapping_group_indices =
+        grouped_events
+        |> Enum.with_index()
+        |> Enum.filter(fn {other_group, other_index} ->
+          other_index == group_index or
+            Enum.any?(other_group, fn other_event ->
+              events_overlap?(event, other_event)
+            end)
+        end)
+        |> Enum.map(fn {_group, index} -> index end)
+
+      {event, group_index, overlapping_group_indices}
+    end
+  end
+
   def group_overlapping_events(events) do
     sorted = Enum.sort_by(events, & &1.start, DateTime)
 
