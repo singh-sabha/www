@@ -52,7 +52,7 @@ defmodule SinghSabhaWeb.AboutLive do
         <p class="text-sm">
           <span class="text-base-content/60">Read the full story in the</span>
           <a
-            href="https://fctimes.ca/wp-admin/admin-ajax.php?action=get_viewer&scrolling=-1&selection_tool=0&spreads=0&file=https://fctimes.ca/wp-content/uploads/2026/02/February-2026-Newspaper-compressed.pdf"
+            href="/documents/fctimes_february_2026.pdf"
             target="_blank"
             class="link link-primary inline-flex items-center gap-1"
           >
