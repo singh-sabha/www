@@ -50,7 +50,7 @@ jobs:
       - name: Checkout infrastructure repo
         uses: actions/checkout@v4
         with:
-          repository: singhsabha/infrastructure
+          repository: singh-sabha/infrastructure
           token: ${{ secrets.INFRASTRUCTURE_PAT }}
           path: infrastructure
 
