@@ -6,13 +6,27 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  release-please:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      released: ${{ steps.release.outputs.release_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: elixir
 
+  build-and-push:
+    needs: release-please
+    if: needs.release-please.outputs.released == 'true'
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
     steps:
       - uses: actions/checkout@v4
 
@@ -29,4 +43,23 @@ jobs:
           context: ./singh_sabha
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ needs.release-please.outputs.tag }}
+            ghcr.io/${{ github.repository }}:latest
+
+      - name: Checkout infrastructure repo
+        uses: actions/checkout@v4
+        with:
+          repository: singhsabha/infrastructure
+          token: ${{ secrets.INFRASTRUCTURE_PAT }}
+          path: infrastructure
+
+      - name: Bump image tag
+        run: |
+          sed -i "s|ghcr.io/singh-sabha/www:.*|ghcr.io/singh-sabha/www:${{ needs.release-please.outputs.tag }}|" \
+            infrastructure/k8s/www/deployment.yaml
+          cd infrastructure
+          git config user.email "ci@singhsabha.net"
+          git config user.name "CI"
+          git commit -am "chore: bump www to ${{ needs.release-please.outputs.tag }}"
+          git push
