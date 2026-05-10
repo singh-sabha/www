@@ -45,8 +45,9 @@ defmodule SinghSabhaWeb.PromEx.Plugins.ViewerPlugin do
     :telemetry.execute([:singhsabha, :viewers, :poll], %{count: map_size(presences)}, %{})
 
     presences
+    |> Enum.filter(fn {_id, %{metas: [meta | _]}} -> meta[:lat] && meta[:lon] end)
     |> Enum.group_by(fn {_id, %{metas: [meta | _]}} ->
-      {meta[:country] || "unknown", meta[:city] || "unknown", meta[:lat], meta[:lon]}
+      {meta[:country], meta[:city], meta[:lat], meta[:lon]}
     end)
     |> Enum.each(fn {{country, city, lat, lon}, viewers} ->
       :telemetry.execute(
