@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/singh-sabha/www/compare/v1.1.0...v1.2.0) (2026-05-10)
+
+
+### Features
+
+* track user geolocation ([88c322c](https://github.com/singh-sabha/www/commit/88c322c07176e6b5769510b365da5ff0046316f2))
+
 ## [1.1.0](https://github.com/singh-sabha/www/compare/v1.0.0...v1.1.0) (2026-05-03)
 
 
