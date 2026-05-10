@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/singh-sabha/www/compare/v1.2.0...v1.2.1) (2026-05-10)
+
+
+### Bug Fixes
+
+* filter instead of boolean logic overloading ([fad92a6](https://github.com/singh-sabha/www/commit/fad92a6d47cd1062d7aa1de101be67433297d765))
+* should be using "success" instead of "200" ([9a72d5f](https://github.com/singh-sabha/www/commit/9a72d5f5bd2709ead94f3745ed79d46235eb1af8))
+
 ## [1.2.0](https://github.com/singh-sabha/www/compare/v1.1.0...v1.2.0) (2026-05-10)
 
 
