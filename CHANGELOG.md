@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/singh-sabha/www/compare/v1.2.2...v1.2.3) (2026-05-10)
+
+
+### Bug Fixes
+
+* output x-header information ([1b75159](https://github.com/singh-sabha/www/commit/1b7515981f0159f37921e8ac449fcc4bc4378f28))
+
 ## [1.2.2](https://github.com/singh-sabha/www/compare/v1.2.1...v1.2.2) (2026-05-10)
 
 
