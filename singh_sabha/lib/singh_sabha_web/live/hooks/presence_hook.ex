@@ -1,4 +1,6 @@
 defmodule SinghSabhaWeb.Hooks.PresenceHook do
+  require Logger
+
   import Phoenix.LiveView
 
   alias SinghSabha.GeoIP
@@ -10,6 +12,9 @@ defmodule SinghSabhaWeb.Hooks.PresenceHook do
     if connected?(socket) do
       ip = fetch_ip(socket)
       geo = GeoIP.lookup(ip)
+
+      Logger.info("PresenceHook ip=#{ip} geo=#{inspect(geo)}")
+
       profile = build_profile(socket.assigns.current_scope, ip)
 
       Presence.track(self(), "global:presence", profile[:user_id], %{
