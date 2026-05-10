@@ -6,7 +6,7 @@ defmodule SinghSabha.GeoIP do
 
   def lookup(ip) do
     case Req.get("http://ip-api.com/json/#{ip}", params: [fields: "lat,lon,country,city,status"]) do
-      {:ok, %{body: %{"status" => 200} = body}} ->
+      {:ok, %{body: %{"status" => "success"} = body}} ->
         %{
           lat: body["lat"],
           lon: body["lon"],
