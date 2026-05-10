@@ -1,6 +1,5 @@
 defmodule SinghSabhaWeb.PromEx.Plugins.ViewerPlugin do
   use PromEx.Plugin
-
   alias SinghSabhaWeb.Presence
 
   @impl true
@@ -18,6 +17,13 @@ defmodule SinghSabhaWeb.PromEx.Plugins.ViewerPlugin do
             event_name: [:singhsabha, :viewers, :poll],
             description: "Number of currently live viewers",
             measurement: :count
+          ),
+          last_value(
+            [:singhsabha, :viewers, :live, :geo],
+            event_name: [:singhsabha, :viewers, :poll, :geo],
+            description: "Live viewers by geographic location",
+            measurement: :count,
+            tags: [:country, :city, :lat, :lon]
           )
         ]
       )
@@ -25,13 +31,29 @@ defmodule SinghSabhaWeb.PromEx.Plugins.ViewerPlugin do
   end
 
   def execute_viewer_poll do
-    count =
-      try do
-        Presence.list("global:presence") |> map_size()
-      rescue
-        _ -> 0
+    presences =
+      if Process.whereis(SinghSabhaWeb.Presence) do
+        try do
+          Presence.list("global:presence")
+        rescue
+          _ -> %{}
+        end
+      else
+        %{}
       end
 
-    :telemetry.execute([:singhsabha, :viewers, :poll], %{count: count}, %{})
+    :telemetry.execute([:singhsabha, :viewers, :poll], %{count: map_size(presences)}, %{})
+
+    presences
+    |> Enum.group_by(fn {_id, %{metas: [meta | _]}} ->
+      {meta[:country] || "unknown", meta[:city] || "unknown", meta[:lat], meta[:lon]}
+    end)
+    |> Enum.each(fn {{country, city, lat, lon}, viewers} ->
+      :telemetry.execute(
+        [:singhsabha, :viewers, :poll, :geo],
+        %{count: length(viewers)},
+        %{country: country, city: city, lat: lat, lon: lon}
+      )
+    end)
   end
 end
