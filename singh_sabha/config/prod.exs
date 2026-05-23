@@ -28,7 +28,7 @@ config :swoosh, local: false
 config :logger, level: :info
 
 # Track user locations in production environments 
-config :singh_sabha, :track_location, false
+config :singh_sabha, :track_location, true
 
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.
