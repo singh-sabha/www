@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/singh-sabha/www/compare/v1.2.4...v1.2.5) (2026-05-23)
+
+
+### Bug Fixes
+
+* `track_location` should be set to true in prod ([2dd7bab](https://github.com/singh-sabha/www/commit/2dd7bab2b1065d744b28c2f88d420fec8e318e19))
+
 ## [1.2.4](https://github.com/singh-sabha/www/compare/v1.2.3...v1.2.4) (2026-05-23)
 
 
