@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/singh-sabha/www/compare/v1.2.3...v1.2.4) (2026-05-23)
+
+
+### Bug Fixes
+
+* do not track user location in dev environments ([fcb1748](https://github.com/singh-sabha/www/commit/fcb174864b8d7844d293ad717ea4685caea19fb2))
+
 ## [1.2.3](https://github.com/singh-sabha/www/compare/v1.2.2...v1.2.3) (2026-05-10)
 
 
