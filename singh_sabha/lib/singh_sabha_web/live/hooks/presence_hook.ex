@@ -11,7 +11,13 @@ defmodule SinghSabhaWeb.Hooks.PresenceHook do
   def on_mount(:default, _params, _session, socket) do
     if connected?(socket) do
       ip = fetch_ip(socket)
-      geo = GeoIP.lookup(ip)
+
+      geo =
+        if Application.get_env(:singh_sabha, :track_location) do
+          GeoIP.lookup(ip)
+        else
+          GeoIP.unknown()
+        end
 
       Logger.info("PresenceHook ip=#{ip} geo=#{inspect(geo)}")
 

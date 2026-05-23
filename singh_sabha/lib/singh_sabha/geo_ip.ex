@@ -1,6 +1,8 @@
 defmodule SinghSabha.GeoIP do
   @unknown %{lat: nil, lon: nil, country: nil, city: nil}
 
+  def unknown, do: @unknown
+
   def lookup("unknown"), do: @unknown
   def lookup(nil), do: @unknown
 
