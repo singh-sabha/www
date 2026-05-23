@@ -1,13 +1,29 @@
-name: Build and Push Docker Image
+name: CI
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
+  lint-commits:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 0
+      - name: Lint commit messages
+        uses: wagoid/commitlint-github-action@b948419dd99f3fd78a6548d48f94e3df7f6bf3ed
+        with:
+          configFile: .commitlintrc.json
+
   release-please:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     permissions:
       contents: write
       pull-requests: write
