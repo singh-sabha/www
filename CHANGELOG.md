@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/singh-sabha/www/compare/v1.2.7...v1.3.0) (2026-05-25)
+
+
+### Features
+
+* use a GenServer to fetch live stream ([32eab1a](https://github.com/singh-sabha/www/commit/32eab1a320e38cb9355a8c9625847740d08d5164))
+
 ## [1.2.7](https://github.com/singh-sabha/www/compare/v1.2.6...v1.2.7) (2026-05-25)
 
 
