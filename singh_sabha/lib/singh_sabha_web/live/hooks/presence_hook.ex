@@ -15,8 +15,7 @@ defmodule SinghSabhaWeb.Hooks.PresenceHook do
       Presence.track(self(), "global:presence", profile[:user_id], %{
         online_at: System.system_time(:second),
         user_id: profile[:user_id],
-        display_name: profile[:display_name],
-        ip_addr: ip
+        display_name: profile[:display_name]
       })
     end
 

@@ -17,13 +17,6 @@ defmodule SinghSabhaWeb.PromEx.Plugins.ViewerPlugin do
             event_name: [:singhsabha, :viewers, :poll],
             description: "Number of currently live viewers",
             measurement: :count
-          ),
-          last_value(
-            [:singhsabha, :viewers, :live, :geo],
-            event_name: [:singhsabha, :viewers, :poll, :geo],
-            description: "Live viewers by geographic location",
-            measurement: :count,
-            tags: [:country, :city, :lat, :lon]
           )
         ]
       )
@@ -43,18 +36,5 @@ defmodule SinghSabhaWeb.PromEx.Plugins.ViewerPlugin do
       end
 
     :telemetry.execute([:singhsabha, :viewers, :poll], %{count: map_size(presences)}, %{})
-
-    presences
-    |> Enum.filter(fn {_id, %{metas: [meta | _]}} -> meta[:lat] && meta[:lon] end)
-    |> Enum.group_by(fn {_id, %{metas: [meta | _]}} ->
-      {meta[:country], meta[:city], meta[:lat], meta[:lon]}
-    end)
-    |> Enum.each(fn {{country, city, lat, lon}, viewers} ->
-      :telemetry.execute(
-        [:singhsabha, :viewers, :poll, :geo],
-        %{count: length(viewers)},
-        %{country: country, city: city, lat: lat, lon: lon}
-      )
-    end)
   end
 end
