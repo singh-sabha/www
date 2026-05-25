@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.6](https://github.com/singh-sabha/www/compare/v1.2.5...v1.2.6) (2026-05-25)
+
+
+### Bug Fixes
+
+* remove GeoIP to prevent websocket promotion issues ([fbc35ce](https://github.com/singh-sabha/www/commit/fbc35ce431eebf9efb2d5a24390e54e949ba9ddd))
+
 ## [1.2.5](https://github.com/singh-sabha/www/compare/v1.2.4...v1.2.5) (2026-05-23)
 
 
