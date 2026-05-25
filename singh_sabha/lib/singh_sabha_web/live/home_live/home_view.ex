@@ -14,8 +14,6 @@ defmodule SinghSabhaWeb.HomeLive do
 
   alias SinghSabhaWeb.CalendarLive.{CreateEventModal, BookEventModal}
 
-  @live_stream_interval 10 * 60 * 1000
-
   def render(assigns) do
     ~H"""
     <HeroSection.section />
@@ -70,14 +68,9 @@ defmodule SinghSabhaWeb.HomeLive do
         seconds_until_next_minute * 1000 - rem(now.microsecond |> elem(0), 1000)
 
       Process.send_after(self(), :tick, milliseconds_until_next_minute)
-      Process.send_after(self(), :refresh_live_stream, @live_stream_interval)
     end
 
-    live_stream =
-      case LiveStreamSection.fetch_live_stream() do
-        {:ok, result} -> result
-        {:error, _} -> nil
-      end
+    live_stream = SinghSabha.LiveStreamPoller.get_live_stream()
 
     socket =
       socket
@@ -100,18 +93,6 @@ defmodule SinghSabhaWeb.HomeLive do
       </div>
     </div>
     """
-  end
-
-  def handle_info(:refresh_live_stream, socket) do
-    Process.send_after(self(), :refresh_live_stream, @live_stream_interval)
-
-    live_stream =
-      case LiveStreamSection.fetch_live_stream() do
-        {:ok, result} -> result
-        {:error, _} -> socket.assigns.live_stream
-      end
-
-    {:noreply, assign(socket, :live_stream, live_stream)}
   end
 
   def handle_info(:tick, socket) do

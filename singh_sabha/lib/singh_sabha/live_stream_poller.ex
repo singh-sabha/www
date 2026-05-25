@@ -1,0 +1,36 @@
+defmodule SinghSabha.LiveStreamPoller do
+  use GenServer
+  require Logger
+
+  # 10 minutes
+  @interval 10 * 60 * 1000
+  @table :livestream_cache
+
+  def start_link(_), do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
+
+  def get_live_stream do
+    case :ets.lookup(@table, :live_stream) do
+      [{:live_stream, result}] -> result
+      [] -> nil
+    end
+  end
+
+  def init(_) do
+    :ets.new(@table, [:named_table, :public, read_concurrency: true])
+    send(self(), :refresh)
+    {:ok, %{}}
+  end
+
+  def handle_info(:refresh, state) do
+    case SinghSabhaWeb.HomeLive.LiveStreamSection.fetch_live_stream() do
+      {:ok, result} ->
+        :ets.insert(@table, {:live_stream, result})
+
+      {:error, reason} ->
+        Logger.warning("YouTube fetch failed: #{inspect(reason)}")
+    end
+
+    Process.send_after(self(), :refresh, @interval)
+    {:noreply, state}
+  end
+end

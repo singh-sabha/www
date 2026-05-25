@@ -17,6 +17,7 @@ defmodule SinghSabha.Application do
        [Application.get_env(:libcluster, :topologies), [name: Cluster.Supervisor]]},
       {Phoenix.PubSub, name: SinghSabha.PubSub},
       SinghSabhaWeb.Presence,
+      SinghSabha.LiveStreamPoller,
       # Start a worker by calling: SinghSabha.Worker.start_link(arg)
       # {SinghSabha.Worker, arg},
       # Start to serve requests, typically the last entry
