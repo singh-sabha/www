@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/singh-sabha/www/compare/v1.2.6...v1.2.7) (2026-05-25)
+
+
+### Bug Fixes
+
+* remove dead code ([f8c1640](https://github.com/singh-sabha/www/commit/f8c16405656920d263fdc9e7c4ef0acc0f6266cd))
+
 ## [1.2.6](https://github.com/singh-sabha/www/compare/v1.2.5...v1.2.6) (2026-05-25)
 
 
