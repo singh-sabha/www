@@ -10,7 +10,6 @@ defmodule SinghSabha.Application do
     SinghSabha.Release.migrate()
 
     children = [
-      SinghSabha.PromEx,
       SinghSabhaWeb.Telemetry,
       SinghSabha.Repo,
       {Cluster.Supervisor,
