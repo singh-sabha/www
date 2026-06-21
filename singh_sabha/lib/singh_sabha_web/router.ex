@@ -17,10 +17,6 @@ defmodule SinghSabhaWeb.Router do
     plug :accepts, ["json"]
   end
 
-  pipeline :webhooks do
-    plug SinghSabha.Plugs.RequireSecret
-  end
-
   scope "/", SinghSabhaWeb do
     pipe_through :browser
 
@@ -52,13 +48,6 @@ defmodule SinghSabhaWeb.Router do
       live "/payment/success", PaymentsLive.Success
       live "/payment/cancel", PaymentsLive.Cancel
     end
-  end
-
-  scope "/api/v1", SinghSabhaWeb do
-    pipe_through [:api, :webhooks]
-
-    post "/events/generate", WorkflowController, :generate
-    post "/events/create", WorkflowController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
