@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/singh-sabha/www/compare/v1.3.0...v1.3.1) (2026-06-22)
+
+
+### Bug Fixes
+
+* remove `n8n` integration ([7733eaf](https://github.com/singh-sabha/www/commit/7733eaf4f263649b74390a944c6d2683c86ad347))
+
 ## [1.3.0](https://github.com/singh-sabha/www/compare/v1.2.7...v1.3.0) (2026-05-25)
 
 
