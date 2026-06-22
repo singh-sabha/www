@@ -62,20 +62,3 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ needs.release-please.outputs.tag }}
             ghcr.io/${{ github.repository }}:latest
-
-      - name: Checkout infrastructure repo
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-        with:
-          repository: singh-sabha/infrastructure
-          token: ${{ secrets.INFRASTRUCTURE_PAT }}
-          path: infrastructure
-
-      - name: Bump image tag
-        run: |
-          sed -i "s|ghcr.io/singh-sabha/www:.*|ghcr.io/singh-sabha/www:${{ needs.release-please.outputs.tag }}|" \
-            infrastructure/k8s/www/deployment.yaml
-          cd infrastructure
-          git config user.email "ci@singhsabha.net"
-          git config user.name "CI"
-          git commit -am "chore: bump www to ${{ needs.release-please.outputs.tag }}"
-          git push
