@@ -25,6 +25,11 @@ config :singh_sabha,
   ecto_repos: [SinghSabha.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :singh_sabha, Oban,
+  engine: Oban.Engines.Basic,
+  repo: SinghSabha.Repo,
+  queues: [default: 10, posters: 5]
+
 # Configure the endpoint
 config :singh_sabha, SinghSabhaWeb.Endpoint,
   url: [host: "localhost"],
