@@ -12,6 +12,7 @@ defmodule SinghSabha.Application do
     children = [
       SinghSabhaWeb.Telemetry,
       SinghSabha.Repo,
+      {Oban, Application.fetch_env!(:singh_sabha, Oban)},
       {Cluster.Supervisor,
        [Application.get_env(:libcluster, :topologies), [name: Cluster.Supervisor]]},
       {Phoenix.PubSub, name: SinghSabha.PubSub},

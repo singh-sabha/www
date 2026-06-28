@@ -41,6 +41,7 @@ defmodule SinghSabha.MixProject do
   defp deps do
     [
       {:libcluster, "~> 3.3"},
+      {:oban, "~> 2.23"},
       {:bcrypt_elixir, "~> 3.0"},
       {:plug_cowboy, "~> 2.7"},
       {:phoenix, "~> 1.8.3"},
