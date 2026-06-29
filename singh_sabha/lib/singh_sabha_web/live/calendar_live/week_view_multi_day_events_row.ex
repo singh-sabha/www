@@ -151,7 +151,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.WeekViewMultiDayEventsRow do
     >
       <%= if @starts do %>
         <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
-          <span class="truncate">{@event.occassion}</span>
+          <span class="truncate">{@event.occasion}</span>
           <span>{TimezoneHelpers.format_time(@event.start)}</span>
         </div>
       <% end %>

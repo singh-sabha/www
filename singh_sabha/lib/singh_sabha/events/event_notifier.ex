@@ -11,7 +11,7 @@ defmodule SinghSabha.Events.EventNotifier do
     new()
     |> to(event.registrant_email)
     |> from(@from)
-    |> subject("Event booking request received: #{event.occassion}")
+    |> subject("Event booking request received: #{event.occasion}")
     |> render_body("event_confirmation.html", %{event: event})
     |> Mailer.deliver()
   end
@@ -21,7 +21,7 @@ defmodule SinghSabha.Events.EventNotifier do
       new()
       |> to(event.registrant_email)
       |> from(@from)
-      |> subject("Event approved: #{event.occassion}")
+      |> subject("Event approved: #{event.occasion}")
       |> render_body("event_approved.html", %{event: event, payment_url: session.url})
       |> Mailer.deliver()
     end
@@ -31,7 +31,7 @@ defmodule SinghSabha.Events.EventNotifier do
     new()
     |> to(event.registrant_email)
     |> from(@from)
-    |> subject("Anand Karaj date approved: #{event.occassion}")
+    |> subject("Anand Karaj date approved: #{event.occasion}")
     |> render_body("anand_karaj_approved.html", %{event: event})
     |> Mailer.deliver()
   end
@@ -40,7 +40,7 @@ defmodule SinghSabha.Events.EventNotifier do
     new()
     |> to(event.registrant_email)
     |> from(@from)
-    |> subject("Event request update: #{event.occassion}")
+    |> subject("Event request update: #{event.occasion}")
     |> render_body("event_denied.html", %{event: event})
     |> Mailer.deliver()
   end
@@ -58,7 +58,7 @@ defmodule SinghSabha.Events.EventNotifier do
         new()
         |> to(emails)
         |> from(@from)
-        |> subject("New event booking: #{event.occassion}")
+        |> subject("New event booking: #{event.occasion}")
         |> render_body("admin_notification.html", %{event: event})
         |> Mailer.deliver()
     end

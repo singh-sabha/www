@@ -45,7 +45,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
                 <div class="flex items-center gap-1.5">
                   <p class="font-medium">
                     <span class={EventTypeHelpers.text_colour(colour)}>
-                      {event.occassion}
+                      {event.occasion}
                     </span>
                   </p>
                 </div>

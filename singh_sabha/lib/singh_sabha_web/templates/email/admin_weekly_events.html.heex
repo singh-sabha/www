@@ -10,7 +10,7 @@
     <%= for event <- day_events do %>
       <p class="card-text">
         <span class="label">{Calendar.strftime(event.start, "%I:%M %p")}:</span>
-        {event.occassion}
+        {event.occasion}
       </p>
     <% end %>
   </div>

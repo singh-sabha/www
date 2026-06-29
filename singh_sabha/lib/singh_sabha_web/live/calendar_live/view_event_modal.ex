@@ -25,7 +25,7 @@ defmodule SinghSabhaWeb.CalendarLive.ViewEventModal do
           </button>
         </form>
 
-        <h3 class="font-bold text-lg">{@selected_event.occassion}</h3>
+        <h3 class="font-bold text-lg">{@selected_event.occasion}</h3>
 
         <div class="space-y-4 mt-4">
           <%= if @selected_event.is_verified && !@selected_event.is_deposit_paid do %>

@@ -89,7 +89,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
         "font-semibold leading-tight line-clamp-2",
         EventTypeHelpers.text_colour(@colour)
       ]}>
-        {@event.occassion}
+        {@event.occasion}
       </h4>
 
       <div class="flex items-center gap-1.5">

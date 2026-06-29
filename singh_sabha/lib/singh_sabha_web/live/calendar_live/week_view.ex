@@ -172,7 +172,7 @@ defmodule SinghSabhaWeb.CalendarLive.WeekView do
             phx-click="view_event"
             phx-value-event-id={event.id}
           >
-            <div class="font-medium truncate">{event.occassion}</div>
+            <div class="font-medium truncate">{event.occasion}</div>
             {TimezoneHelpers.format_time(event.start)} - {TimezoneHelpers.format_time(event.end)}
           </div>
         </div>

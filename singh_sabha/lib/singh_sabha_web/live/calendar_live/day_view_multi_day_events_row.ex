@@ -83,7 +83,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.DayViewMultiDayEventsRow do
       >
         <span class="truncate">
           <span class="text-base-content/70 text-xs">Day {@event_current_day} of {@event_total_days} •</span>
-          <span class={EventTypeHelpers.text_colour(colour)}>{@event.occassion}</span>
+          <span class={EventTypeHelpers.text_colour(colour)}>{@event.occasion}</span>
         </span>
 
         <span class={["ml-2", EventTypeHelpers.text_colour(colour)]}>

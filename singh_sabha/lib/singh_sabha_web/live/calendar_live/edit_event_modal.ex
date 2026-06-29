@@ -35,10 +35,10 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
           class="space-y-4 mt-4"
         >
           <.input
-            field={@form[:occassion]}
+            field={@form[:occasion]}
             type="text"
-            placeholder="Add the occassion"
-            label="Occassion"
+            placeholder="Add the occasion"
+            label="Occasion"
             required
           />
 
