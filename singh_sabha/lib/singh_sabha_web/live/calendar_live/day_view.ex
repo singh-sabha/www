@@ -135,7 +135,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
                       phx-click="view_event"
                       phx-value-event-id={event.id}
                     >
-                      <div class="font-medium truncate">{event.occassion}</div>
+                      <div class="font-medium truncate">{event.occasion}</div>
                       {TimezoneHelpers.format_time(event.start)} - {TimezoneHelpers.format_time(
                         event.end
                       )}
@@ -202,7 +202,7 @@ defmodule SinghSabhaWeb.CalendarLive.DayView do
               <div class="space-y-6 pb-4">
                 <%= for event <- current_events do %>
                   <div class="space-y-1.5">
-                    <p class="line-clamp-2 text-sm font-semibold">{event.occassion}</p>
+                    <p class="line-clamp-2 text-sm font-semibold">{event.occasion}</p>
 
                     <div class="flex items-center gap-1.5 text-base-content/70">
                       <.icon name="hero-user" class="h-3.5 w-3.5" />

@@ -65,10 +65,10 @@ defmodule SinghSabhaWeb.CalendarLive.BookEventModal do
 
             <div class="grid grid-cols-1 w-full md:w-2/3">
               <.input
-                field={@form[:occassion]}
+                field={@form[:occasion]}
                 type="text"
-                placeholder="Add the occassion"
-                label="Occassion"
+                placeholder="Add the occasion"
+                label="Occasion"
                 required
               />
 

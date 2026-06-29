@@ -150,7 +150,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
               </span>
             <% end %>
             <span class={EventTypeHelpers.text_colour(colour)}>
-              {@event.occassion}
+              {@event.occasion}
             </span>
           </p>
         </div>

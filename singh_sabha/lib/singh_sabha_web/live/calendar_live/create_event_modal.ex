@@ -41,10 +41,10 @@ defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
           <div class="flex flex-col justify-between space-y-4">
             <div class="grid grid-cols-1 w-full">
               <.input
-                field={@form[:occassion]}
+                field={@form[:occasion]}
                 type="text"
-                placeholder="Add the occassion"
-                label="Occassion"
+                placeholder="Add the occasion"
+                label="Occasion"
                 required
               />
 

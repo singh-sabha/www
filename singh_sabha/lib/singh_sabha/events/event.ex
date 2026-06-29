@@ -10,7 +10,7 @@ defmodule SinghSabha.Events.Event do
     field :start, :utc_datetime
     field :end, :utc_datetime
     field :requested, :date
-    field :occassion, :string
+    field :occasion, :string
     field :note, :string
     field :is_verified, :boolean, default: false
     field :is_public, :boolean, default: false
@@ -27,15 +27,15 @@ defmodule SinghSabha.Events.Event do
       :type,
       :start,
       :end,
-      :occassion,
+      :occasion,
       :note,
       :is_verified,
       :is_public,
       :is_deposit_paid
     ])
-    |> validate_required([:type, :start, :end, :occassion])
+    |> validate_required([:type, :start, :end, :occasion])
     |> validate_event_period()
-    |> validate_length(:occassion, min: 2, max: 255)
+    |> validate_length(:occasion, min: 2, max: 255)
     |> validate_length(:note, max: 1000)
     |> foreign_key_constraint(:type)
   end
@@ -48,18 +48,18 @@ defmodule SinghSabha.Events.Event do
       :registrant_phone_number,
       :type,
       :requested,
-      :occassion,
+      :occasion,
       :note,
       :is_verified,
       :is_public,
       :is_deposit_paid
     ])
-    |> validate_required([:type, :requested, :occassion])
+    |> validate_required([:type, :requested, :occasion])
     |> validate_future_event()
     |> validate_phone_number()
     |> validate_email()
     |> validate_full_name()
-    |> validate_length(:occassion, min: 2, max: 255)
+    |> validate_length(:occasion, min: 2, max: 255)
     |> validate_length(:note, max: 1000)
     |> foreign_key_constraint(:type)
   end

@@ -160,7 +160,7 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
               >
                 <%= if segment.starts? do %>
                   <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
-                    <span class="truncate">{segment.event.occassion}</span>
+                    <span class="truncate">{segment.event.occasion}</span>
                     <span>{TimezoneHelpers.format_time(segment.event.start)}</span>
                   </div>
                 <% end %>
