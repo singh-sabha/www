@@ -114,14 +114,14 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
       |> Map.put("is_verified", true)
 
     case Events.update_event(event, params) do
-      {:ok, _} ->
+      {:ok, updated_event} ->
         Phoenix.PubSub.broadcast(
           SinghSabha.PubSub,
           "events",
-          {:event_updated, event}
+          {:event_updated, updated_event}
         )
 
-        EventNotifier.event_approved(event)
+        EventNotifier.event_approved(updated_event)
 
         {:noreply,
          socket
