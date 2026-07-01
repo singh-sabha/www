@@ -40,6 +40,16 @@ defmodule SinghSabhaWeb.Router do
       live "/gallery", GalleryLive
     end
 
+    live_session :require_privileged_user,
+      on_mount: [
+        {SinghSabhaWeb.UserAuth, :mount_current_scope},
+        {SinghSabhaWeb.Hooks.PresenceHook, :default},
+        {SinghSabhaWeb.UserAuth, :require_privileged_user},
+        {SinghSabhaWeb.Live.Layouts, :default}
+      ] do
+      live "/calendar/assistant", CalendarLive.Assistant, :index
+    end
+
     live_session :empty,
       on_mount: [
         {SinghSabhaWeb.Hooks.PresenceHook, :default},

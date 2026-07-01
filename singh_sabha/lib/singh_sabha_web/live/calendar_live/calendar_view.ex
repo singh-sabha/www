@@ -144,15 +144,66 @@ defmodule SinghSabhaWeb.CalendarLive do
                 </button>
               </div>
 
-              <button
-                class="btn btn-primary w-full lg:w-auto"
-                phx-click="create_or_book_event"
-              >
-                <span class="flex items-center gap-1">
-                  <.icon name="hero-plus-circle" class="size-4" />
-                  {if UserHelpers.is_privileged?(@current_scope), do: "Create", else: "Book"} Event
-                </span>
-              </button>
+              <%= if UserHelpers.is_privileged?(@current_scope) do %>
+                <div class="join w-full lg:w-auto">
+                  <button
+                    class="btn btn-primary join-item flex-1 lg:flex-none"
+                    phx-click="create_or_book_event"
+                    phx-value-mode="manual"
+                  >
+                    <span class="flex items-center gap-1">
+                      <.icon name="hero-plus-circle" class="size-4" /> Create Event
+                    </span>
+                  </button>
+                  <div class="dropdown dropdown-end join-item">
+                    <div
+                      tabindex="0"
+                      role="button"
+                      class="btn btn-primary join-item px-2 flex items-center"
+                    >
+                      <.icon name="hero-chevron-down" class="size-4 mr-2" />
+                    </div>
+                    <ul
+                      tabindex="0"
+                      class="dropdown-content menu bg-base-100 rounded-box z-10 w-64 p-2 shadow-sm border border-base-300"
+                    >
+                      <li>
+                        <button
+                          phx-click="create_or_book_event"
+                          phx-value-mode="manual"
+                          class="flex items-start gap-2 py-2"
+                        >
+                          <.icon name="hero-list-bullet" class="size-4 mt-0.5 text-base-content/60" />
+                          <div class="flex flex-col items-start text-left">
+                            <span class="font-medium text-sm">Manual</span>
+                            <span class="text-xs text-base-content/60">Fill out the event form</span>
+                          </div>
+                        </button>
+                      </li>
+                      <li>
+                        <button phx-click="open_assistant" class="flex items-start gap-2 py-2">
+                          <.icon name="hero-sparkles" class="size-4 mt-0.5 text-base-content/60" />
+                          <div class="flex flex-col items-start text-left">
+                            <span class="font-medium text-sm">Assistant</span>
+                            <span class="text-xs text-base-content/60">
+                              Describe it or upload a poster
+                            </span>
+                          </div>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              <% else %>
+                <button
+                  class="btn btn-primary w-full lg:w-auto"
+                  phx-click="create_or_book_event"
+                >
+                  <span class="flex items-center gap-1">
+                    <.icon name="hero-plus-circle" class="size-4" /> Book Event
+                  </span>
+                </button>
+              <% end %>
             </div>
           </div>
         </div>
@@ -393,6 +444,10 @@ defmodule SinghSabhaWeb.CalendarLive do
          |> put_flash(:error, "Failed to delete event. Please try again.")
          |> push_event("close-modal", %{id: "view_event_modal"})}
     end
+  end
+
+  def handle_event("open_assistant", _params, socket) do
+    {:noreply, push_navigate(socket, to: ~p"/calendar/assistant")}
   end
 
   def handle_info({:put_flash, kind, message}, socket) do

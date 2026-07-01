@@ -4,6 +4,7 @@ defmodule SinghSabhaWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  alias SinghSabhaWeb.Helpers.UserHelpers
   alias SinghSabha.Accounts
   alias SinghSabha.Accounts.Scope
 
@@ -240,6 +241,19 @@ defmodule SinghSabhaWeb.UserAuth do
         socket
         |> Phoenix.LiveView.put_flash(:error, "You must re-authenticate to access this page.")
         |> Phoenix.LiveView.redirect(to: ~p"/users/log-in")
+
+      {:halt, socket}
+    end
+  end
+
+  def on_mount(:require_privileged_user, _params, _session, socket) do
+    if UserHelpers.is_privileged?(socket.assigns.current_scope) do
+      {:cont, socket}
+    else
+      socket =
+        socket
+        |> Phoenix.LiveView.put_flash(:error, "You are not authorized to access this page.")
+        |> Phoenix.LiveView.redirect(to: ~p"/calendar")
 
       {:halt, socket}
     end

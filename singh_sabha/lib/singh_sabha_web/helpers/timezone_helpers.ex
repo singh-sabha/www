@@ -20,6 +20,15 @@ defmodule SinghSabhaWeb.Helpers.TimezoneHelpers do
     end
   end
 
+  def local_to_utc_full(datetime_string) when is_binary(datetime_string) do
+    normalized = String.replace(datetime_string, " ", "T")
+
+    with {:ok, naive} <- NaiveDateTime.from_iso8601(normalized),
+         {:ok, local_dt} <- DateTime.from_naive(naive, local()) do
+      {:ok, DateTime.shift_zone!(local_dt, "Etc/UTC")}
+    end
+  end
+
   def utc_to_local(%DateTime{} = utc_datetime) do
     DateTime.shift_zone!(utc_datetime, local())
   end
@@ -45,7 +54,8 @@ defmodule SinghSabhaWeb.Helpers.TimezoneHelpers do
     %{event | start: utc_to_local(start), end: utc_to_local(end_time)}
   end
 
-  def format_time(datetime) do
+  def format_time(%DateTime{} = utc_datetime) do
+    datetime = to_local(utc_datetime)
     hour = datetime.hour
     minute = String.pad_leading("#{datetime.minute}", 2, "0")
     period = if hour < 12, do: "AM", else: "PM"
@@ -59,11 +69,15 @@ defmodule SinghSabhaWeb.Helpers.TimezoneHelpers do
     "#{display_hour} #{period}"
   end
 
-  def format_date(datetime) do
-    Calendar.strftime(datetime, "%b %-d, %Y")
+  def format_date(%DateTime{} = utc_datetime) do
+    utc_datetime
+    |> to_local()
+    |> Calendar.strftime("%b %-d, %Y")
   end
 
-  def format_datetime(datetime) do
-    Calendar.strftime(datetime, "%b %-d, %Y %-I:%M %p")
+  def format_datetime(%DateTime{} = utc_datetime) do
+    utc_datetime
+    |> to_local()
+    |> Calendar.strftime("%b %-d, %Y %-I:%M %p")
   end
 end

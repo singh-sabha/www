@@ -7,6 +7,7 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
 
   attr :id, :string, required: true
   attr :selected_event, :map, default: nil
+  attr :source, :any, default: nil
 
   def render(assigns) do
     ~H"""
@@ -100,14 +101,30 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
   def update(assigns, socket) do
     event = assigns.selected_event || %Event{}
 
+    # every event's start/end is stored as UTC; the datetime-local input
+    # needs local wall-clock time, so shift for display only. "selected_event"
+    # (assigned below via assigns) stays UTC for changeset/DB writes
+    form_event =
+      case event do
+        %{start: %DateTime{}, end: %DateTime{}} -> TimezoneHelpers.convert_event_to_local(event)
+        _ -> event
+      end
+
+    source =
+      case event do
+        %{__meta__: %{state: :loaded}} -> {:db, nil}
+        _ -> Map.get(assigns, :source, {:pending, nil, nil})
+      end
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:source, source)
      |> assign(:event_types, Events.list_event_types(:all))
      |> assign(
        :form,
        to_form(
-         Events.change_event(event),
+         Events.change_event(form_event),
          as: :edit_event
        )
      )}
@@ -125,28 +142,53 @@ defmodule SinghSabhaWeb.CalendarLive.EditEventModal do
   def handle_event("update_event", %{"edit_event" => params}, socket) do
     updated_params = TimezoneHelpers.convert_datetime_params(params)
 
-    case Events.update_event(socket.assigns.selected_event, updated_params) do
-      {:ok, event} ->
-        Phoenix.PubSub.broadcast(
-          SinghSabha.PubSub,
-          "events",
-          {:event_updated, event}
-        )
+    case socket.assigns.source do
+      {:db, _} ->
+        case Events.update_event(socket.assigns.selected_event, updated_params) do
+          {:ok, event} ->
+            Phoenix.PubSub.broadcast(
+              SinghSabha.PubSub,
+              "events",
+              {:event_updated, event}
+            )
 
-        send(self(), {:put_flash, :success, "Event updated!"})
+            send(self(), {:put_flash, :success, "Event updated!"})
 
-        {:noreply,
-         socket
-         |> push_event("close-modal", %{id: "edit_event_modal"})}
+            {:noreply, push_event(socket, "close-modal", %{id: "edit_event_modal"})}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        send(self(), {:put_flash, :error, "Error when updating event. Please try again."})
+          {:error, %Ecto.Changeset{} = changeset} ->
+            send(self(), {:put_flash, :error, "Error when updating event. Please try again."})
 
-        {:noreply,
-         assign(
-           socket,
-           form: to_form(changeset, as: :edit_event)
-         )}
+            {:noreply,
+             assign(
+               socket,
+               form: to_form(changeset, as: :edit_event)
+             )}
+        end
+
+      {:pending, file_id, index} ->
+        event_type =
+          Enum.find(socket.assigns.event_types, fn event_type ->
+            event_type.id == String.to_integer(updated_params["type"])
+          end)
+
+        changeset = Events.change_event(socket.assigns.selected_event, updated_params)
+
+        if changeset.valid? do
+          updated_event =
+            changeset
+            |> Ecto.Changeset.apply_changes()
+            |> Map.put(:event_type, %{
+              id: Integer.to_string(event_type.id),
+              display_name: event_type.display_name
+            })
+
+          send(self(), {:pending_event_updated, file_id, index, updated_event})
+          {:noreply, push_event(socket, "close-modal", %{id: "edit_event_modal"})}
+        else
+          {:noreply,
+           assign(socket, form: to_form(%{changeset | action: :validate}, as: :edit_event))}
+        end
     end
   end
 end
