@@ -23,27 +23,40 @@ defmodule SinghSabhaWeb.CalendarLive.Assistant do
         phx-submit="save"
         class={[@processing? && "hidden"]}
       >
-        <section
-          class="flex flex-col items-center justify-center gap-2 rounded-box border border-base-300 py-12"
-          phx-drop-target={@uploads.poster.ref}
-        >
+        <section class={[
+          "flex flex-col items-center justify-center",
+          @uploads.poster.entries == [] && "rounded-box border border-base-300 py-12"
+        ]}>
           <%= if @uploads.poster.entries == [] do %>
             <.icon name="hero-photo" class="size-10 text-base-content/70" />
-            <p class="text-sm text-base-content/60">Drag a poster here, or click below to browse</p>
+            <p class="text-sm text-base-content/60">Click below to browse for a poster</p>
           <% else %>
-            <%= for entry <- @uploads.poster.entries do %>
-              <.icon name="hero-photo" class="size-10 text-base-content/70" />
-              <p class="text-sm font-medium">{entry.client_name}</p>
-              <progress class="progress progress-primary w-40" value={entry.progress} max="100" />
-              <button
-                type="button"
-                phx-click="cancel_upload"
-                phx-value-ref={entry.ref}
-                class="btn btn-xs btn-ghost"
-              >
-                <.icon name="hero-x-mark" class="size-3" /> Remove
-              </button>
-            <% end %>
+            <div class="w-full space-y-2">
+              <%= for entry <- @uploads.poster.entries do %>
+                <div class="flex items-center gap-3 rounded-md border border-base-300 p-3">
+                  <.icon name="hero-photo" class="size-5 shrink-0 text-base-content/70" />
+
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium truncate">{entry.client_name}</p>
+                    <progress
+                      class="progress progress-primary w-full h-1.5"
+                      value={entry.progress}
+                      max="100"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    phx-click="cancel_upload"
+                    phx-value-ref={entry.ref}
+                    class="btn btn-xs btn-ghost btn-circle shrink-0"
+                    aria-label="Remove"
+                  >
+                    <.icon name="hero-x-mark" class="size-3" />
+                  </button>
+                </div>
+              <% end %>
+            </div>
           <% end %>
 
           <label class={["btn btn-sm", @uploads.poster.entries != [] && "hidden"]}>
@@ -73,7 +86,7 @@ defmodule SinghSabhaWeb.CalendarLive.Assistant do
         <%= for file <- @uploaded_files do %>
           <%= case file.status do %>
             <% :done -> %>
-              <div class="collapse collapse-arrow join-item border border-base-300">
+              <div class="collapse collapse-arrow rounded-md border border-base-300">
                 <input
                   type="checkbox"
                   checked={@open_file_id == file.id}
@@ -81,12 +94,15 @@ defmodule SinghSabhaWeb.CalendarLive.Assistant do
                   phx-value-file-id={file.id}
                 />
 
-                <div class="collapse-title flex items-center gap-2 font-medium text-sm">
-                  <.icon name="hero-photo" class="size-4 shrink-0" />
-                  {file.filename}
+                <div class="collapse-title min-h-0 !py-3 !pl-3 !pr-10 flex items-center gap-3 text-sm">
+                  <.icon name="hero-photo" class="size-4 shrink-0 text-base-content/70" />
+                  <span class="font-medium truncate flex-1">{file.filename}</span>
+                  <span class="badge badge-sm badge-ghost shrink-0">
+                    {length(file.events)} event{if length(file.events) != 1, do: "s"}
+                  </span>
                 </div>
 
-                <div class="collapse-content space-y-3">
+                <div class="collapse-content !pb-3 space-y-3">
                   <% selected = Map.get(@selected_event_ids, file.id, MapSet.new()) %>
 
                   <div class="flex items-center justify-between pb-1">
@@ -124,25 +140,21 @@ defmodule SinghSabhaWeb.CalendarLive.Assistant do
                 </div>
               </div>
             <% :processing -> %>
-              <div class="flex items-center justify-between rounded-md border border-base-300 p-3">
-                <div class="flex items-center gap-2 font-medium text-sm">
-                  <.icon name="hero-photo" class="size-4 shrink-0" />
-                  {file.filename}
-                </div>
-                <span class="loading loading-spinner loading-xs" />
+              <div class="flex items-center gap-3 rounded-md border border-base-300 p-3 text-sm">
+                <.icon name="hero-photo" class="size-4 shrink-0 text-base-content/70" />
+                <span class="font-medium truncate flex-1">{file.filename}</span>
+                <span class="loading loading-spinner loading-xs shrink-0" />
               </div>
             <% :error -> %>
-              <div class="flex flex-col gap-1 rounded-md border border-base-300 p-3">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2 font-medium text-sm">
-                    <.icon name="hero-photo" class="size-4 shrink-0" />
-                    {file.filename}
-                  </div>
-                  <.icon name="hero-exclamation-circle" class="size-4 shrink-0 text-error" />
+              <div class="flex items-center gap-3 rounded-md border border-base-300 p-3 text-sm">
+                <.icon name="hero-photo" class="size-4 shrink-0 text-base-content/70" />
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium truncate">{file.filename}</p>
+                  <p class="text-xs text-base-content/60 truncate">
+                    {file.error || "Could not extract event details from image"}
+                  </p>
                 </div>
-                <p class="text-xs text-base-content/60">
-                  {file.error || "Could not extract event details from image"}
-                </p>
+                <.icon name="hero-exclamation-circle" class="size-4 shrink-0 text-error" />
               </div>
           <% end %>
         <% end %>
