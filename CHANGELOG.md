@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.4.0](https://github.com/singh-sabha/www/compare/v1.3.1...v1.4.0) (2026-07-02)
+
+
+### Features
+
+* add Oban ([2ec0d5d](https://github.com/singh-sabha/www/commit/2ec0d5d3593e5f8db96775c030d64c740559d9a6))
+* improve design ([5941f04](https://github.com/singh-sabha/www/commit/5941f04ab65585fd277266d6da30f2fa4983fc56))
+* now able to parse images and extract relevant events ([f0c3a5c](https://github.com/singh-sabha/www/commit/f0c3a5c1df9407fbb29bf10467df04eea17b0209))
+
+
+### Bug Fixes
+
+* allow for proper noun casing ([854118a](https://github.com/singh-sabha/www/commit/854118a1cdc4cb571b34ad21bbe27c6646567407))
+* dangling updates ([843c80b](https://github.com/singh-sabha/www/commit/843c80b7b87fc1b584177851700e7faa02960adf))
+* modal not closing after clicking "Save changes" ([f0c3a5c](https://github.com/singh-sabha/www/commit/f0c3a5c1df9407fbb29bf10467df04eea17b0209))
+* reset processing flag after successful ingestion ([f0c3a5c](https://github.com/singh-sabha/www/commit/f0c3a5c1df9407fbb29bf10467df04eea17b0209))
+* should be using updated event instead of of desync'd version ([3b75d73](https://github.com/singh-sabha/www/commit/3b75d7341081c4bdb6cbe0513ec8ad7f23198a0d))
+
 ## [1.3.1](https://github.com/singh-sabha/www/compare/v1.3.0...v1.3.1) (2026-06-22)
 
 
