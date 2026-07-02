@@ -7,7 +7,7 @@ defmodule SinghSabha.Workers.Poster do
 
   alias SinghSabhaWeb.Helpers.TimezoneHelpers
 
-  alias SinghSabha.Events.Event
+  alias SinghSabha.Events.{Event, EventType}
   alias SinghSabha.Events
 
   @model "google:gemini-3.1-flash-lite"
@@ -126,7 +126,7 @@ defmodule SinghSabha.Workers.Poster do
               occasion: event["occasion"],
               # required: in DB "type" is a foreign key used for modal population
               type: type_id,
-              event_type: %{
+              event_type: %EventType{
                 id: type_id,
                 display_name: event["type"]
               },
