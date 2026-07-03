@@ -272,17 +272,21 @@ defmodule SinghSabhaWeb.CalendarLive.Assistant do
     if Enum.all?(socket.assigns.uploads.poster.entries, & &1.done?) do
       entries =
         consume_uploaded_entries(socket, :poster, fn %{path: path}, entry ->
-          dest =
-            Path.join(
-              Application.app_dir(:singh_sabha, "priv/static/uploads"),
-              entry.client_name
-            )
+          key = "posters/#{entry.uuid}-#{entry.client_name}"
+          body = File.read!(path)
 
-          File.cp!(path, dest)
+          "singh-sabha-posters"
+          |> ExAws.S3.put_object(key, body)
+          |> ExAws.request!()
 
-          %{id: entry.uuid, path: dest, filename: entry.client_name}
+          %{id: entry.uuid, key: key, filename: entry.client_name}
           |> tap(fn file ->
-            %{"id" => file.id, "path" => file.path, "topic" => socket.assigns.topic}
+            %{
+              "id" => file.id,
+              "key" => file.key,
+              "filename" => entry.client_name,
+              "topic" => socket.assigns.topic
+            }
             |> Poster.new()
             |> Oban.insert()
           end)

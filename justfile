@@ -20,6 +20,37 @@ start-db:
     done
     echo "Ready: postgresql://singhsabha_user:password@localhost:5432/singhsabha"
 
+start-bucket:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if container inspect singhsabha_bucket &>/dev/null; then
+        container start singhsabha_bucket
+    else
+        container run -d \
+            --name singhsabha_bucket \
+            --platform linux/arm64 \
+            -p 8333:8333 \
+            -v singhsabha_bucket-data:/data \
+            chrislusf/seaweedfs server \
+            -s3 \
+            -s3.port=8333 \
+            -dir=/data \
+            -master.volumeSizeLimitMB=1024
+    fi
+    until curl -sf http://localhost:8333 -o /dev/null; do
+        sleep 0.5
+    done
+    echo "Ready: http://localhost:8333"
+
+stop-bucket:
+    container stop singhsabha_bucket
+
+create-buckets:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mc alias set singhsabha_bucket http://localhost:8333 dev-access-key dev-secret-key 2>/dev/null || true
+    mc mb -p singhsabha_bucket/singh-sabha-posters 2>/dev/null || echo "bucket already exists"
+
 seed-db:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -34,3 +65,13 @@ stop-db:
 
 connect-db:
     container exec -it singhsabha_db psql -U singhsabha_user -d singhsabha_db
+
+setup:
+    just start-db
+    just start-bucket
+    just create-buckets
+    just seed-db
+
+stop:
+    just stop-db
+    just stop-bucket

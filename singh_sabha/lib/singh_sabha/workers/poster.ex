@@ -1,5 +1,5 @@
 defmodule SinghSabha.Workers.Poster do
-  use Oban.Worker, queue: :posters, max_attempts: 1
+  use Oban.Worker, queue: :posters, max_attempts: 3
 
   require Logger
 
@@ -13,26 +13,29 @@ defmodule SinghSabha.Workers.Poster do
   @model "google:gemini-3.1-flash-lite"
 
   @impl Oban.Worker
-  def perform(%Oban.Job{args: %{"id" => id, "path" => path, "topic" => topic} = _args}) do
-    results =
-      case extract_event(path) do
-        {:ok, events} -> {:ok, events}
-        {:error, reason} -> {:error, reason}
-      end
+  def perform(%Oban.Job{
+        args: %{"id" => id, "key" => key, "filename" => filename, "topic" => topic},
+        attempt: attempt
+      }) do
+    case extract_event(key, filename) do
+      {:error, %ReqLLM.Error.API.Request{status: 503}} when attempt < 3 ->
+        {:snooze, 30}
 
-    Phoenix.PubSub.broadcast(
-      SinghSabha.PubSub,
-      topic,
-      {:poster_processed, id, results}
-    )
+      results ->
+        Phoenix.PubSub.broadcast(
+          SinghSabha.PubSub,
+          topic,
+          {:poster_processed, id, results}
+        )
 
-    case results do
-      {:ok, _} -> :ok
-      {:error, reason} -> {:error, reason}
+        case results do
+          {:ok, _} -> :ok
+          {:error, reason} -> {:error, reason}
+        end
     end
   end
 
-  defp extract_event(path) do
+  defp extract_event(key, filename) do
     event_types = Events.list_event_types(:all)
     type_names = Enum.map(event_types, & &1.display_name)
 
@@ -62,8 +65,13 @@ defmodule SinghSabha.Workers.Poster do
       time is given for an event, use "00:00:00".
     """
 
-    image_binary = File.read!(path)
-    mime_type = MIME.from_path(path)
+    image_binary =
+      "singh-sabha-posters"
+      |> ExAws.S3.get_object(key)
+      |> ExAws.request!()
+      |> Map.fetch!(:body)
+
+    mime_type = MIME.from_path(filename)
 
     messages = [
       ReqLLM.Context.user([
