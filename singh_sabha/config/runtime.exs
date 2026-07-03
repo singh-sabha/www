@@ -51,6 +51,16 @@ if config_env() == :prod do
     # pool_count: 4,
     socket_options: maybe_ipv6
 
+  config :ex_aws,
+    access_key_id: System.fetch_env!("BUCKET_ACCESS_KEY"),
+    secret_access_key: System.fetch_env!("BUCKET_SECRET_KEY"),
+    region: "us-east-1"
+
+  config :ex_aws, :s3,
+    scheme: "http://",
+    host: System.fetch_env!("BUCKET_HOST"),
+    port: String.to_integer(System.get_env("BUCKET_PORT", "8333"))
+
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
   # want to use a different value for prod and you most likely don't want
