@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/singh-sabha/www/compare/v1.4.0...v1.5.0) (2026-07-03)
+
+
+### Features
+
+* use an S3 bucket instead of pod-local storage ([8c56ce3](https://github.com/singh-sabha/www/commit/8c56ce3c8d141ded184272f7afd2a4de7b4a4f12))
+
 ## [1.4.0](https://github.com/singh-sabha/www/compare/v1.3.1...v1.4.0) (2026-07-02)
 
 
