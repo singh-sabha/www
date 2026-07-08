@@ -1,12 +1,12 @@
 defmodule SinghSabhaWeb.UserLive.Notifications do
-  alias SinghSabhaWeb.Helpers.CalendarHelpers
+  alias SinghSabhaWeb.Helpers.Event
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Events
 
   alias SinghSabha.Events.EventNotifier
 
-  alias SinghSabhaWeb.Helpers.{UserHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{User, EventType}
 
   alias SinghSabhaWeb.UsersLive.Modals.ReviewEvent
 
@@ -24,11 +24,11 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
       <% else %>
         <div class="space-y-3">
           <%= for event <- @pending_events do %>
-            <% colour = EventTypeHelpers.event_type_to_colour(event.event_type.display_name) %>
+            <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
             <div
               class={[
                 "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
-                EventTypeHelpers.card_colour(colour)
+                EventType.card_colour(colour)
               ]}
               phx-click="review_event"
               phx-value-event-id={event.id}
@@ -37,14 +37,14 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
             >
               <div class="flex flex-1 flex-col gap-2">
                 <div class="flex items-center gap-1.5">
-                  <span class={["badge badge-sm gap-1", EventTypeHelpers.badge_colour(:red)]}>
+                  <span class={["badge badge-sm gap-1", EventType.badge_colour(:red)]}>
                     <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
                   </span>
                 </div>
 
                 <div class="flex items-center gap-1.5">
                   <p class="font-medium">
-                    <span class={EventTypeHelpers.text_colour(colour)}>
+                    <span class={EventType.text_colour(colour)}>
                       {event.occasion}
                     </span>
                   </p>
@@ -97,7 +97,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
   @impl true
   def handle_event("review_event", %{"event-id" => event_id}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.pending_events)
+    event = Event.find_event(event_id, socket.assigns.pending_events)
 
     {:noreply,
      socket
@@ -107,7 +107,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
   @impl true
   def handle_info({:approve_event, event_id, params}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.pending_events)
+    event = Event.find_event(event_id, socket.assigns.pending_events)
 
     params =
       params
@@ -137,7 +137,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
   end
 
   def handle_info({:deny_event, event_id}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.pending_events)
+    event = Event.find_event(event_id, socket.assigns.pending_events)
 
     case Events.delete_event(event) do
       {:ok, _} ->
@@ -179,7 +179,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
   end
 
   defp load_pending_events(socket) do
-    case UserHelpers.is_privileged?(socket.assigns.current_scope) do
+    case User.privileged?(socket.assigns.current_scope) do
       true -> assign(socket, :pending_events, Events.list_events(:pending))
       false -> assign(socket, :pending_events, [])
     end

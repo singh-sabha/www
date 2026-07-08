@@ -3,7 +3,7 @@ defmodule SinghSabhaWeb.AssistantLive.Components do
 
   import SinghSabhaWeb.CoreComponents
 
-  alias SinghSabhaWeb.Helpers.{EventTypeHelpers, TimezoneHelpers}
+  alias SinghSabhaWeb.Helpers.{EventType, Timezone}
 
   attr :event, :map, required: true
   attr :checked, :boolean, default: false
@@ -12,11 +12,11 @@ defmodule SinghSabhaWeb.AssistantLive.Components do
 
   def event_card(assigns) do
     ~H"""
-    <% colour = EventTypeHelpers.event_type_to_colour(@event.event_type.display_name) %>
+    <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
     <div class={[
       "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors",
-      EventTypeHelpers.card_colour(colour)
+      EventType.card_colour(colour)
     ]}>
       <input
         type="checkbox"
@@ -30,7 +30,7 @@ defmodule SinghSabhaWeb.AssistantLive.Components do
       <div class="flex flex-1 flex-col gap-2 min-w-0">
         <div class="flex items-center gap-1.5">
           <p class="font-medium">
-            <span class={EventTypeHelpers.text_colour(colour)}>
+            <span class={EventType.text_colour(colour)}>
               {@event.occasion}
             </span>
           </p>
@@ -39,7 +39,7 @@ defmodule SinghSabhaWeb.AssistantLive.Components do
         <div class="flex items-center gap-1.5">
           <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
           <p class="text-xs">
-            {TimezoneHelpers.format_datetime(@event.start)} - {TimezoneHelpers.format_datetime(
+            {Timezone.format_datetime(@event.start)} - {Timezone.format_datetime(
               @event.end
             )}
           </p>

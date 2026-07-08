@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.UserLive.Login do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Accounts
-  alias SinghSabhaWeb.Helpers.EventTypeHelpers
+  alias SinghSabhaWeb.Helpers.EventType
 
   @impl true
   def render(assigns) do
@@ -25,7 +25,7 @@ defmodule SinghSabhaWeb.UserLive.Login do
         </.header>
       </div>
 
-      <div :if={local_mail_adapter?()} class={["alert", EventTypeHelpers.badge_colour(:blue)]}>
+      <div :if={local_mail_adapter?()} class={["alert", EventType.badge_colour(:blue)]}>
         <.icon name="hero-information-circle" class="size-6 shrink-0" />
         <div>
           <p>You are running the local mail adapter.</p>

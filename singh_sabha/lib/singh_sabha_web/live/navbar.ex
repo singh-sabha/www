@@ -2,8 +2,8 @@ defmodule SinghSabhaWeb.NavbarLive do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabhaWeb.Helpers.{
-    UserHelpers,
-    EventTypeHelpers
+    User,
+    EventType
   }
 
   alias SinghSabha.Events
@@ -55,11 +55,11 @@ defmodule SinghSabhaWeb.NavbarLive do
               <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                 <div
                   class="w-10 h-10 rounded-full flex items-center justify-center"
-                  style={"background: linear-gradient(135deg, #{UserHelpers.generate_gradient_colours("user:#{@current_scope.user.id}")})"}
+                  style={"background: linear-gradient(135deg, #{User.generate_gradient_colours("user:#{@current_scope.user.id}")})"}
                 >
                 </div>
               </div>
-              <%= if UserHelpers.is_privileged?(@current_scope) && length(@pending_events) > 0 do %>
+              <%= if User.privileged?(@current_scope) && length(@pending_events) > 0 do %>
                 <span class="absolute top-0 right-0 size-3 rounded-full bg-red-500 border-2 border-base-100">
                 </span>
               <% end %>
@@ -75,7 +75,7 @@ defmodule SinghSabhaWeb.NavbarLive do
                 <.link href={~p"/users/notifications"}>
                   Notifications
                   <%= if length(@pending_events) > 0 do %>
-                    <span class={["badge badge-xs", EventTypeHelpers.badge_colour(:red)]}>
+                    <span class={["badge badge-xs", EventType.badge_colour(:red)]}>
                       {length(@pending_events)}
                     </span>
                   <% end %>
@@ -130,7 +130,7 @@ defmodule SinghSabhaWeb.NavbarLive do
   end
 
   defp load_pending_events(socket) do
-    case UserHelpers.is_privileged?(socket.assigns.current_scope) do
+    case User.privileged?(socket.assigns.current_scope) do
       true -> assign(socket, :pending_events, Events.list_events(:pending))
       false -> assign(socket, :pending_events, [])
     end

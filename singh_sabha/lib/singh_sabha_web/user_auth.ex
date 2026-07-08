@@ -4,7 +4,7 @@ defmodule SinghSabhaWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias SinghSabhaWeb.Helpers.UserHelpers
+  alias SinghSabhaWeb.Helpers.User
   alias SinghSabha.Accounts
   alias SinghSabha.Accounts.Scope
 
@@ -247,7 +247,7 @@ defmodule SinghSabhaWeb.UserAuth do
   end
 
   def on_mount(:require_privileged_user, _params, _session, socket) do
-    if UserHelpers.is_privileged?(socket.assigns.current_scope) do
+    if User.privileged?(socket.assigns.current_scope) do
       {:cont, socket}
     else
       socket =

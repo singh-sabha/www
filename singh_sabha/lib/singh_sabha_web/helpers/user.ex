@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.Helpers.UserHelpers do
+defmodule SinghSabhaWeb.Helpers.User do
   def generate_gradient_colours(seed) do
     hash = :erlang.phash2(seed)
 
@@ -50,7 +50,7 @@ defmodule SinghSabhaWeb.Helpers.UserHelpers do
     "Anonymous #{Enum.at(nouns, rem(hash, length(nouns)))}"
   end
 
-  def is_privileged?(%SinghSabha.Accounts.Scope{user: user}), do: user.role in ~w(mod admin)
-  def is_privileged?(%{current_scope: scope}), do: is_privileged?(scope)
-  def is_privileged?(_), do: false
+  def privileged?(%SinghSabha.Accounts.Scope{user: user}), do: user.role in ~w(mod admin)
+  def privileged?(%{current_scope: scope}), do: privileged?(scope)
+  def privileged?(_), do: false
 end

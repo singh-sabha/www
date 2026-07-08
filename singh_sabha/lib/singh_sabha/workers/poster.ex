@@ -5,7 +5,7 @@ defmodule SinghSabha.Workers.Poster do
 
   alias ReqLLM.Message.ContentPart
 
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
+  alias SinghSabhaWeb.Helpers.Timezone
 
   alias SinghSabha.Events.{Event, EventType}
   alias SinghSabha.Events
@@ -125,9 +125,9 @@ defmodule SinghSabha.Workers.Poster do
 
     results =
       Enum.flat_map(events, fn event ->
-        with {:ok, start} <- TimezoneHelpers.local_to_utc_full(event["start"]),
+        with {:ok, start} <- Timezone.local_to_utc_full(event["start"]),
              # "end" is a reversed keyword, so we use "end_" instead
-             {:ok, end_} <- TimezoneHelpers.local_to_utc_full(event["end"]),
+             {:ok, end_} <- Timezone.local_to_utc_full(event["end"]),
              {:ok, type_id} <- Map.fetch(name_to_id, event["type"]) do
           [
             %Event{

@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.Components.Modals.CreateEvent do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
+  alias SinghSabhaWeb.Helpers.Timezone
 
   alias SinghSabha.Events.{Event}
   alias SinghSabha.Events
@@ -145,7 +145,7 @@ defmodule SinghSabhaWeb.Components.Modals.CreateEvent do
     updated_params =
       params
       |> Map.merge(%{"is_deposit_paid" => true, "is_verified" => true})
-      |> TimezoneHelpers.convert_datetime_params()
+      |> Timezone.convert_datetime_params()
 
     case Events.create_event(updated_params) do
       {:ok, event} ->

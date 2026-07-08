@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.Helpers.EventTypeHelpers
+  alias SinghSabhaWeb.Helpers.EventType
 
   attr :event_types, :list, required: true
   attr :current_scope, :map, default: nil
@@ -28,7 +28,7 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
   attr :current_scope, :map, default: nil
 
   defp event_type_card(assigns) do
-    colour = EventTypeHelpers.event_type_to_colour(assigns.event_type.display_name)
+    colour = EventType.event_type_to_colour(assigns.event_type.display_name)
 
     assigns = assign(assigns, :colour, colour)
 
@@ -36,14 +36,14 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
     <div
       class={[
         "flex flex-col gap-3 rounded-md border p-4 cursor-pointer",
-        EventTypeHelpers.card_colour(@colour)
+        EventType.card_colour(@colour)
       ]}
       phx-click="create_or_book_event"
       phx-value-event-id={assigns.event_type.id}
     >
       <h4 class={[
         "font-semibold leading-tight",
-        EventTypeHelpers.text_colour(@colour)
+        EventType.text_colour(@colour)
       ]}>
         {@event_type.display_name}
       </h4>

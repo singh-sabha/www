@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.Helpers.{TimezoneHelpers, EventTypeHelpers}
+  alias SinghSabhaWeb.Helpers.{Timezone, EventType}
 
   attr :upcoming, :list, required: true
   attr :current_time, :any, required: true
@@ -49,7 +49,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
   attr :current_time, :any, required: true
 
   defp event_card(assigns) do
-    colour = EventTypeHelpers.event_type_to_colour(assigns.event.event_type.display_name)
+    colour = EventType.event_type_to_colour(assigns.event.event_type.display_name)
 
     event_start_date = DateTime.to_date(assigns.event.start)
 
@@ -77,10 +77,10 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
     ~H"""
     <div class={[
       "w-full max-w-md flex flex-col gap-3 rounded-md border p-4",
-      EventTypeHelpers.card_colour(@colour)
+      EventType.card_colour(@colour)
     ]}>
       <div class="flex items-center justify-between">
-        <div class={["badge badge-sm gap-1", EventTypeHelpers.badge_colour(@colour)]}>
+        <div class={["badge badge-sm gap-1", EventType.badge_colour(@colour)]}>
           <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
           {@time_label}
         </div>
@@ -88,7 +88,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
 
       <h4 class={[
         "font-semibold leading-tight line-clamp-2",
-        EventTypeHelpers.text_colour(@colour)
+        EventType.text_colour(@colour)
       ]}>
         {@event.occasion}
       </h4>
@@ -114,7 +114,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
       <div class="flex items-center gap-1.5">
         <.icon name="hero-calendar" class="size-3 shrink-0 text-base-content/70" />
         <p class="text-xs">
-          {TimezoneHelpers.format_datetime(@event.start)} - {TimezoneHelpers.format_datetime(
+          {Timezone.format_datetime(@event.start)} - {Timezone.format_datetime(
             @event.end
           )}
         </p>

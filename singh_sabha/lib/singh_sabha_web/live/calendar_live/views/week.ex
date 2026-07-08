@@ -4,12 +4,12 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
 
   import SinghSabhaWeb.CalendarLive.Components
 
-  alias SinghSabhaWeb.Helpers.UserHelpers
+  alias SinghSabhaWeb.Helpers.User
 
   alias SinghSabhaWeb.Helpers.{
-    CalendarHelpers,
-    TimezoneHelpers,
-    EventTypeHelpers
+    Event,
+    Timezone,
+    EventType
   }
 
   attr :current_date, :any, required: true
@@ -27,9 +27,9 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
         Date.add(week_start, i)
       end)
 
-    {single_day_events, multi_day_events} = CalendarHelpers.partition_events(assigns.events)
+    {single_day_events, multi_day_events} = Event.partition_events(assigns.events)
 
-    hours = CalendarHelpers.get_visible_hours(assigns.visible_hours, assigns.working_hours)
+    hours = Event.get_visible_hours(assigns.visible_hours, assigns.working_hours)
 
     assigns =
       assigns
@@ -75,7 +75,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
                 <%= if index != 0 do %>
                   <div class="absolute -top-3 right-2 flex h-6 items-center">
                     <span class="text-xs text-base-content/50">
-                      {TimezoneHelpers.format_hour(hour)}
+                      {Timezone.format_hour(hour)}
                     </span>
                   </div>
                 <% end %>
@@ -118,8 +118,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
         Date.compare(event_date, assigns.day) == :eq
       end)
 
-    grouped_events = CalendarHelpers.group_overlapping_events(day_events)
-    events_with_overlap_info = CalendarHelpers.get_overlap_info(grouped_events)
+    grouped_events = Event.group_overlapping_events(day_events)
+    events_with_overlap_info = Event.get_overlap_info(grouped_events)
 
     assigns =
       assigns
@@ -129,10 +129,10 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
     ~H"""
     <div class="relative border-r border-base-300 last:border-r-0">
       <%= for {hour, index} <- Enum.with_index(@hours) do %>
-        <% is_working = CalendarHelpers.working_hour?(@day, hour, @working_hours) %>
+        <% working? = Event.working_hour?(@day, hour, @working_hours) %>
         <div class={[
           "relative h-[96px]",
-          !is_working && "bg-calendar-disabled-hour"
+          !working? && "bg-calendar-disabled-hour"
         ]}>
           <%= if index != 0 do %>
             <div class="pointer-events-none absolute inset-x-0 top-0 border-b border-base-300"></div>
@@ -163,23 +163,23 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
         <% total_overlapping = length(overlapping_indices) %>
         <% relative_position = Enum.find_index(overlapping_indices, &(&1 == group_index)) %>
         <% style =
-          CalendarHelpers.get_event_style(event, relative_position, total_overlapping, @hours) %>
+          Event.get_event_style(event, relative_position, total_overlapping, @hours) %>
 
-        <% colour = EventTypeHelpers.event_type_to_colour(event.event_type.display_name) %>
+        <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
 
         <div class="absolute p-1 pointer-events-none" style={style}>
           <div
             class={[
               "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
-              UserHelpers.is_privileged?(@current_scope) &&
-                EventTypeHelpers.event_status_colour(event.is_verified, event.is_deposit_paid),
-              EventTypeHelpers.badge_colour(colour)
+              User.privileged?(@current_scope) &&
+                EventType.event_status_colour(event.is_verified, event.is_deposit_paid),
+              EventType.badge_colour(colour)
             ]}
             phx-click="view_event"
             phx-value-event-id={event.id}
           >
             <div class="font-medium truncate">{event.occasion}</div>
-            {TimezoneHelpers.format_time(event.start)} - {TimezoneHelpers.format_time(event.end)}
+            {Timezone.format_time(event.start)} - {Timezone.format_time(event.end)}
           </div>
         </div>
       <% end %>
@@ -249,14 +249,14 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
 
   defp multiday_event_badge(assigns) do
     ~H"""
-    <% colour = EventTypeHelpers.event_type_to_colour(@event.event_type.display_name) %>
+    <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
     <div
       class={[
         "h-6.5 text-xs font-medium flex items-center border -mx-px cursor-pointer",
-        EventTypeHelpers.badge_colour(colour),
-        UserHelpers.is_privileged?(@current_scope) && @starts &&
-          EventTypeHelpers.event_status_colour(@event.is_verified, @event.is_deposit_paid),
+        EventType.badge_colour(colour),
+        User.privileged?(@current_scope) && @starts &&
+          EventType.event_status_colour(@event.is_verified, @event.is_deposit_paid),
         @starts && "rounded-l-md ml-1",
         @ends && "rounded-r-md mr-1",
         !@starts && "rounded-l-none border-l-0",
@@ -268,7 +268,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
       <%= if @starts do %>
         <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
           <span class="truncate">{@event.occasion}</span>
-          <span>{TimezoneHelpers.format_time(@event.start)}</span>
+          <span>{Timezone.format_time(@event.start)}</span>
         </div>
       <% end %>
     </div>

@@ -48,7 +48,7 @@
     </section>
     <%= for err <- upload_errors(@uploads.poster) do %>
       <div class="flex items-center gap-1.5 mt-2">
-        <span class={["badge badge-sm gap-1", EventTypeHelpers.badge_colour(:red)]}>
+        <span class={["badge badge-sm gap-1", EventType.badge_colour(:red)]}>
           <.icon name="hero-exclamation-circle" class="size-3" />
           {Phoenix.Naming.humanize(err)}
         </span>

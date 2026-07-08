@@ -3,10 +3,10 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   use SinghSabhaWeb, :html
 
   alias SinghSabhaWeb.Helpers.{
-    CalendarHelpers,
-    TimezoneHelpers,
-    EventTypeHelpers,
-    UserHelpers
+    Event,
+    Timezone,
+    EventType,
+    User
   }
 
   attr :current_date, :any, required: true
@@ -15,7 +15,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   attr :events, :list, required: true
 
   def agenda(assigns) do
-    {single_day_events, multi_day_events} = CalendarHelpers.partition_events(assigns.events)
+    {single_day_events, multi_day_events} = Event.partition_events(assigns.events)
 
     events_by_day = group_events_by_day(single_day_events, multi_day_events, assigns.current_date)
 
@@ -97,14 +97,14 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   # TODO: could this be extracted into core_components? We're using a variation in AssistantLive
   defp event_card(assigns) do
     ~H"""
-    <% colour = EventTypeHelpers.event_type_to_colour(@event.event_type.display_name) %>
+    <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
     <div
       class={[
         "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
-        EventTypeHelpers.card_colour(colour),
-        UserHelpers.is_privileged?(@current_scope) &&
-          EventTypeHelpers.event_status_colour(
+        EventType.card_colour(colour),
+        User.privileged?(@current_scope) &&
+          EventType.event_status_colour(
             @event.is_verified,
             @event.is_deposit_paid
           )
@@ -115,27 +115,27 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
       tabindex="0"
     >
       <div class="flex flex-1 flex-col gap-2">
-        <%= if UserHelpers.is_privileged?(@current_scope) do %>
+        <%= if User.privileged?(@current_scope) do %>
           <div class="mb-1 flex items-center gap-1.5">
             <%= cond do %>
               <% !@event.is_verified -> %>
                 <span class={[
                   "badge badge-sm gap-1",
-                  EventTypeHelpers.badge_colour(:red)
+                  EventType.badge_colour(:red)
                 ]}>
                   <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
                 </span>
               <% @event.is_verified && !@event.is_deposit_paid -> %>
                 <span class={[
                   "badge badge-sm gap-1",
-                  EventTypeHelpers.badge_colour(:yellow)
+                  EventType.badge_colour(:yellow)
                 ]}>
                   <.icon name="hero-currency-dollar" class="size-3" /> Awaiting Payment
                 </span>
               <% true -> %>
                 <span class={[
                   "badge badge-sm gap-1",
-                  EventTypeHelpers.badge_colour(:green)
+                  EventType.badge_colour(:green)
                 ]}>
                   <.icon name="hero-check-circle" class="size-3" /> Confirmed
                 </span>
@@ -150,7 +150,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
                 Day {@event_current_day} of {@event_total_days} •
               </span>
             <% end %>
-            <span class={EventTypeHelpers.text_colour(colour)}>
+            <span class={EventType.text_colour(colour)}>
               {@event.occasion}
             </span>
           </p>
@@ -159,7 +159,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
         <div class="flex items-center gap-1.5">
           <.icon name="hero-user" class="size-3 shrink-0 text-base-content/70" />
           <p class="text-xs">
-            <%= if @event.registrant_full_name && (UserHelpers.is_privileged?(@current_scope) or @event.is_public) do %>
+            <%= if @event.registrant_full_name && (User.privileged?(@current_scope) or @event.is_public) do %>
               {@event.registrant_full_name}
             <% else %>
               <span class="flex items-center gap-1">
@@ -172,7 +172,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
         <div class="flex items-center gap-1.5">
           <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
           <p class="text-xs">
-            {TimezoneHelpers.format_time(@event.start)} - {TimezoneHelpers.format_time(@event.end)}
+            {Timezone.format_time(@event.start)} - {Timezone.format_time(@event.end)}
           </p>
         </div>
 
