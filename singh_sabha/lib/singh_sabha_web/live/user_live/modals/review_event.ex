@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.NotificationActionModal do
+defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabha.Events
@@ -11,7 +11,7 @@ defmodule SinghSabhaWeb.CalendarLive.NotificationActionModal do
   def render(assigns) do
     ~H"""
     <dialog
-      id="notification_action_modal"
+      id="review_event_modal"
       class="modal overflow-y-scroll"
       phx-mounted={JS.ignore_attributes(["open"])}
     >

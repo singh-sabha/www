@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.GalleryLive.ViewImageModal do
+defmodule SinghSabhaWeb.GalleryLive.Modal.ViewImage do
   use SinghSabhaWeb, :live_component
 
   attr :id, :string, required: true

@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.Components.Timeline do
+defmodule SinghSabhaWeb.CalendarLive.Components do
   use Phoenix.Component
 
   alias SinghSabhaWeb.Helpers.TimezoneHelpers
@@ -6,7 +6,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components.Timeline do
   attr :current_time, :any, required: true
   attr :hours, :list, required: true
 
-  def view(assigns) do
+  def timeline(assigns) do
     now = assigns.current_time
     current_hour = now.hour
     current_minute = now.minute
@@ -15,9 +15,9 @@ defmodule SinghSabhaWeb.CalendarLive.Components.Timeline do
     first_hour = List.first(hours_list)
     last_hour = List.last(hours_list)
 
-    show_timeline = current_hour >= first_hour and current_hour <= last_hour
+    show? = current_hour >= first_hour and current_hour <= last_hour
 
-    if show_timeline do
+    if show? do
       minutes = current_hour * 60 + current_minute
       visible_start_minutes = first_hour * 60
       visible_end_minutes = (last_hour + 1) * 60
@@ -46,5 +46,10 @@ defmodule SinghSabhaWeb.CalendarLive.Components.Timeline do
     else
       ~H""
     end
+  end
+
+  def happening_now?(current_time, event_start_time, event_end_time) do
+    DateTime.compare(current_time, event_start_time) in [:gt, :eq] &&
+      DateTime.compare(current_time, event_end_time) == :lt
   end
 end

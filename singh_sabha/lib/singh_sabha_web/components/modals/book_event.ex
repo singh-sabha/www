@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.BookEventModal do
+defmodule SinghSabhaWeb.Components.Modals.BookEvent do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabha.Events.{Event, EventNotifier}

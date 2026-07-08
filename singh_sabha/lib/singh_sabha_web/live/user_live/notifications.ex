@@ -8,7 +8,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
   alias SinghSabhaWeb.Helpers.{UserHelpers, EventTypeHelpers}
 
-  alias SinghSabhaWeb.CalendarLive.NotificationActionModal
+  alias SinghSabhaWeb.UsersLive.Modals.ReviewEvent
 
   @impl true
   def render(assigns) do
@@ -30,7 +30,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
                 "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
                 EventTypeHelpers.card_colour(colour)
               ]}
-              phx-click="notification_action"
+              phx-click="review_event"
               phx-value-event-id={event.id}
               role="button"
               tabindex="0"
@@ -69,8 +69,8 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
       <.live_component
         :if={@selected_event}
-        module={NotificationActionModal}
-        id="notification_action_modal"
+        module={ReviewEvent}
+        id="review_event_modal"
         selected_event={@selected_event}
         current_scope={@current_scope}
       />
@@ -96,13 +96,13 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
   end
 
   @impl true
-  def handle_event("notification_action", %{"event-id" => event_id}, socket) do
+  def handle_event("review_event", %{"event-id" => event_id}, socket) do
     event = CalendarHelpers.find_event(event_id, socket.assigns.pending_events)
 
     {:noreply,
      socket
      |> assign(:selected_event, event)
-     |> push_event("open-modal", %{id: "notification_action_modal"})}
+     |> push_event("open-modal", %{id: "review_event_modal"})}
   end
 
   @impl true
@@ -125,13 +125,13 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "notification_action_modal"})
+         |> push_event("close-modal", %{id: "review_event_modal"})
          |> put_flash(:success, "Event approved successfully!")}
 
       {:error, _} ->
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "notification_action_modal"})
+         |> push_event("close-modal", %{id: "review_event_modal"})
          |> put_flash(:error, "Could not approve event. Please try again later.")}
     end
   end
@@ -151,13 +151,13 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "notification_action_modal"})
+         |> push_event("close-modal", %{id: "review_event_modal"})
          |> put_flash(:success, "Event denied successfully!")}
 
       {:error, _} ->
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "notification_action_modal"})
+         |> push_event("close-modal", %{id: "review_event_modal"})
          |> put_flash(:error, "Could not deny event. Please try again later.")}
     end
   end

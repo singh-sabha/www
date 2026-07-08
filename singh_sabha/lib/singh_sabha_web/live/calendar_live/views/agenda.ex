@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.AgendaView do
+defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
@@ -14,7 +14,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
   attr :current_scope, :map, default: nil
   attr :events, :list, required: true
 
-  def view(assigns) do
+  def agenda(assigns) do
     {single_day_events, multi_day_events} = CalendarHelpers.partition_events(assigns.events)
 
     events_by_day = group_events_by_day(single_day_events, multi_day_events, assigns.current_date)
@@ -94,6 +94,7 @@ defmodule SinghSabhaWeb.CalendarLive.AgendaView do
   attr :event_total_days, :integer, default: nil
   attr :current_scope, :any, required: true
 
+  # TODO: could this be extracted into core_components? We're using a variation in AssistantLive
   defp event_card(assigns) do
     ~H"""
     <% colour = EventTypeHelpers.event_type_to_colour(@event.event_type.display_name) %>
