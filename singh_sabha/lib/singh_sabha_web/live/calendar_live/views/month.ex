@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.MonthView do
+defmodule SinghSabhaWeb.CalendarLive.Views.Month do
   use Phoenix.Component
 
   alias SinghSabhaWeb.Helpers.{
@@ -12,9 +12,9 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
   attr :current_scope, :map, default: nil
   attr :events, :list, required: true
 
-  def view(assigns) do
+  def month(assigns) do
     max_visible_events = 4
-    {dates, first_display, last_display} = month_dates(assigns.current_date)
+    {dates, first_display, last_display} = dates(assigns.current_date)
 
     event_positions =
       calculate_event_positions(
@@ -53,26 +53,6 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       </div>
     </div>
     """
-  end
-
-  defp month_dates(date) do
-    first_of_month = Date.beginning_of_month(date)
-    last_of_month = Date.end_of_month(date)
-
-    days_before_first = rem(Date.day_of_week(first_of_month), 7)
-    first_display = Date.add(first_of_month, -days_before_first)
-
-    days_after_last = rem(7 - Date.day_of_week(last_of_month), 7)
-    last_display = Date.add(last_of_month, days_after_last)
-
-    total_days = Date.diff(last_display, first_display)
-
-    days =
-      Enum.map(0..(total_days - 1), fn i ->
-        Date.add(first_display, i)
-      end)
-
-    {days, first_display, last_display}
   end
 
   attr :date, :any, required: true
@@ -260,5 +240,25 @@ defmodule SinghSabhaWeb.CalendarLive.MonthView do
       end)
 
     positions
+  end
+
+  defp dates(date) do
+    first_of_month = Date.beginning_of_month(date)
+    last_of_month = Date.end_of_month(date)
+
+    days_before_first = rem(Date.day_of_week(first_of_month), 7)
+    first_display = Date.add(first_of_month, -days_before_first)
+
+    days_after_last = rem(7 - Date.day_of_week(last_of_month), 7)
+    last_display = Date.add(last_of_month, days_after_last)
+
+    total_days = Date.diff(last_display, first_display)
+
+    days =
+      Enum.map(0..(total_days - 1), fn i ->
+        Date.add(first_display, i)
+      end)
+
+    {days, first_display, last_display}
   end
 end

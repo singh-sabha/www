@@ -53,6 +53,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
 
     event_start_date = DateTime.to_date(assigns.event.start)
 
+    # TODO: use happening_now? function
     is_happening_now =
       DateTime.compare(assigns.current_time, assigns.event.start) in [:gt, :eq] &&
         DateTime.compare(assigns.current_time, assigns.event.end) == :lt

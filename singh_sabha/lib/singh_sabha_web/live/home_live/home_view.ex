@@ -12,7 +12,7 @@ defmodule SinghSabhaWeb.HomeLive do
     DonationsSection
   }
 
-  alias SinghSabhaWeb.CalendarLive.{CreateEventModal, BookEventModal}
+  alias SinghSabhaWeb.Components.Modals.{BookEvent, CreateEvent}
 
   def render(assigns) do
     ~H"""
@@ -33,7 +33,7 @@ defmodule SinghSabhaWeb.HomeLive do
 
     <.live_component
       :if={UserHelpers.is_privileged?(@current_scope)}
-      module={CreateEventModal}
+      module={CreateEvent}
       id="create_event_modal"
       event_types={
         if Map.has_key?(assigns, :selected_event_type),
@@ -43,7 +43,7 @@ defmodule SinghSabhaWeb.HomeLive do
     />
     <.live_component
       :if={!UserHelpers.is_privileged?(@current_scope)}
-      module={BookEventModal}
+      module={BookEvent}
       id="book_event_modal"
       event_types={
         if Map.has_key?(assigns, :selected_event_type),

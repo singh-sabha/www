@@ -2,8 +2,9 @@ defmodule SinghSabhaWeb.GalleryLive do
   use SinghSabhaWeb, :live_view
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.GalleryLive.ViewImageModal
+  alias SinghSabhaWeb.GalleryLive.Modals.ViewImage
 
+  # TODO: use S3
   @images "priv/static/images/construction/gurdwara_construction_*.jpeg"
           |> Path.wildcard()
           |> Enum.sort()
@@ -53,7 +54,7 @@ defmodule SinghSabhaWeb.GalleryLive do
 
       <.live_component
         :if={@selected_image}
-        module={ViewImageModal}
+        module={ViewImage}
         id="view_image_modal"
         image={@selected_image}
         total={length(@images)}

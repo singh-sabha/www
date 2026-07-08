@@ -35,7 +35,8 @@ defmodule SinghSabhaWeb.Router do
         {SinghSabhaWeb.Hooks.PresenceHook, :default},
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
-      live "/calendar", CalendarLive
+      live "/calendar", CalendarLive.Index, :index
+
       live "/about", AboutLive
       live "/gallery", GalleryLive
     end
@@ -47,7 +48,7 @@ defmodule SinghSabhaWeb.Router do
         {SinghSabhaWeb.UserAuth, :require_privileged_user},
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
-      live "/calendar/assistant", CalendarLive.Assistant, :index
+      live "/calendar/assistant", Assistant.Index, :index
     end
 
     live_session :empty,

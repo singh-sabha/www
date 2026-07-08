@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.CreateEventModal do
+defmodule SinghSabhaWeb.Components.Modals.CreateEvent do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabhaWeb.Helpers.TimezoneHelpers
