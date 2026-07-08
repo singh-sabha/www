@@ -2,9 +2,9 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabhaWeb.Helpers.{
-    EventTypeHelpers,
-    TimezoneHelpers,
-    UserHelpers
+    EventType,
+    Timezone,
+    User
   }
 
   attr :id, :string, required: true
@@ -29,7 +29,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
 
         <div class="space-y-4 mt-4">
           <%= if @selected_event.is_verified && !@selected_event.is_deposit_paid do %>
-            <div class={["mt-4 alert", EventTypeHelpers.badge_colour(:yellow)]}>
+            <div class={["mt-4 alert", EventType.badge_colour(:yellow)]}>
               <.icon name="hero-currency-dollar" class="size-5" />
               <span>
                 Awaiting payment from organizer. Payment link sent to {@selected_event.registrant_email}
@@ -42,7 +42,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
             <div>
               <p class="text-sm font-medium">Organizer</p>
               <p class="text-sm text-base-content/70">
-                <%= if @selected_event.registrant_full_name && (UserHelpers.is_privileged?(@current_scope) or @selected_event.is_public) do %>
+                <%= if @selected_event.registrant_full_name && (User.privileged?(@current_scope) or @selected_event.is_public) do %>
                   {@selected_event.registrant_full_name}
                 <% else %>
                   <span class="flex items-center gap-1">
@@ -68,7 +68,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
             <div>
               <p class="text-sm font-medium">Time</p>
               <p class="text-sm text-base-content/70">
-                {TimezoneHelpers.format_datetime(@selected_event.start)} - {TimezoneHelpers.format_datetime(
+                {Timezone.format_datetime(@selected_event.start)} - {Timezone.format_datetime(
                   @selected_event.end
                 )}
               </p>
@@ -87,7 +87,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
             </div>
           <% end %>
 
-          <%= if UserHelpers.is_privileged?(@current_scope) do %>
+          <%= if User.privileged?(@current_scope) do %>
             <div class="modal-action">
               <%= if @selected_event.is_deposit_paid do %>
                 <button

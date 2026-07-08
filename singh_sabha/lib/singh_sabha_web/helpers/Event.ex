@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.Helpers.CalendarHelpers do
+defmodule SinghSabhaWeb.Helpers.Event do
   def find_event(event_id, events) when is_binary(event_id) do
     Enum.find(events, fn event ->
       event.id == String.to_integer(event_id)

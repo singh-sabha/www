@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.Helpers.TimezoneHelpers do
+defmodule SinghSabhaWeb.Helpers.Timezone do
   def local do
     Application.get_env(:singh_sabha, :timezone, "America/Vancouver")
   end

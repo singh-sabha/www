@@ -1,5 +1,5 @@
 defmodule SinghSabha.Events.Event do
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
+  alias SinghSabhaWeb.Helpers.Timezone
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -70,7 +70,7 @@ defmodule SinghSabha.Events.Event do
     if is_nil(requested_date) do
       changeset
     else
-      now = DateTime.now!(TimezoneHelpers.local())
+      now = DateTime.now!(Timezone.local())
       today = DateTime.to_date(now)
 
       if Date.compare(requested_date, today) != :gt do

@@ -2,9 +2,9 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
   use Phoenix.Component
 
   alias SinghSabhaWeb.Helpers.{
-    EventTypeHelpers,
-    TimezoneHelpers,
-    UserHelpers
+    EventType,
+    Timezone,
+    User
   }
 
   attr :current_date, :any, required: true
@@ -107,7 +107,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
           <% segment = Enum.find(@segments, &(&1.row == row)) %>
 
           <%= if segment do %>
-            <% colour = EventTypeHelpers.event_type_to_colour(segment.event.event_type.display_name) %>
+            <% colour = EventType.event_type_to_colour(segment.event.event_type.display_name) %>
 
             <div class={[
               "lg:flex-1",
@@ -116,15 +116,15 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
             ]}>
               <div class={[
                 "block w-2 h-2 rounded-full lg:hidden",
-                EventTypeHelpers.dot_colour(colour)
+                EventType.dot_colour(colour)
               ]}>
               </div>
               <div
                 class={[
                   "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
-                  EventTypeHelpers.badge_colour(colour),
-                  UserHelpers.is_privileged?(@current_scope) && segment.starts? &&
-                    EventTypeHelpers.event_status_colour(
+                  EventType.badge_colour(colour),
+                  User.privileged?(@current_scope) && segment.starts? &&
+                    EventType.event_status_colour(
                       segment.event.is_verified,
                       segment.event.is_deposit_paid
                     ),
@@ -141,7 +141,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
                 <%= if segment.starts? do %>
                   <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
                     <span class="truncate">{segment.event.occasion}</span>
-                    <span>{TimezoneHelpers.format_time(segment.event.start)}</span>
+                    <span>{Timezone.format_time(segment.event.start)}</span>
                   </div>
                 <% end %>
               </div>

@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.Helpers.EventTypeHelpers do
+defmodule SinghSabhaWeb.Helpers.EventType do
   def event_type_to_colour("Other"), do: :gray
   def event_type_to_colour("Funeral"), do: :green
   def event_type_to_colour("Sukhmani Sahib Path"), do: :blue

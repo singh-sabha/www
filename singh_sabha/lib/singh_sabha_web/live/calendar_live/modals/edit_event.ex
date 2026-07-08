@@ -1,5 +1,5 @@
 defmodule SinghSabhaWeb.CalendarLive.Modals.EditEvent do
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
+  alias SinghSabhaWeb.Helpers.Timezone
   use SinghSabhaWeb, :live_component
 
   alias SinghSabha.Events.Event
@@ -106,7 +106,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.EditEvent do
     # (assigned below via assigns) stays UTC for changeset/DB writes
     form_event =
       case event do
-        %{start: %DateTime{}, end: %DateTime{}} -> TimezoneHelpers.convert_event_to_local(event)
+        %{start: %DateTime{}, end: %DateTime{}} -> Timezone.convert_event_to_local(event)
         _ -> event
       end
 
@@ -140,7 +140,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.EditEvent do
   end
 
   def handle_event("update_event", %{"edit_event" => params}, socket) do
-    updated_params = TimezoneHelpers.convert_datetime_params(params)
+    updated_params = Timezone.convert_datetime_params(params)
 
     case socket.assigns.source do
       {:db, _} ->

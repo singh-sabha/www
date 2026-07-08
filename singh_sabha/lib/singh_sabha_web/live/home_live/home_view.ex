@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Events
-  alias SinghSabhaWeb.Helpers.{TimezoneHelpers, UserHelpers}
+  alias SinghSabhaWeb.Helpers.{Timezone, User}
 
   alias SinghSabhaWeb.HomeLive.{
     UpcomingEventsSection,
@@ -32,7 +32,7 @@ defmodule SinghSabhaWeb.HomeLive do
     </.section_wrapper>
 
     <.live_component
-      :if={UserHelpers.is_privileged?(@current_scope)}
+      :if={User.privileged?(@current_scope)}
       module={CreateEvent}
       id="create_event_modal"
       event_types={
@@ -42,7 +42,7 @@ defmodule SinghSabhaWeb.HomeLive do
       }
     />
     <.live_component
-      :if={!UserHelpers.is_privileged?(@current_scope)}
+      :if={!User.privileged?(@current_scope)}
       module={BookEvent}
       id="book_event_modal"
       event_types={
@@ -57,7 +57,7 @@ defmodule SinghSabhaWeb.HomeLive do
   end
 
   def mount(_params, _session, socket) do
-    now = DateTime.now!(TimezoneHelpers.local())
+    now = DateTime.now!(Timezone.local())
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
@@ -98,7 +98,7 @@ defmodule SinghSabhaWeb.HomeLive do
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 30_000)
 
-    {:noreply, assign(socket, :current_time, DateTime.now!(TimezoneHelpers.local()))}
+    {:noreply, assign(socket, :current_time, DateTime.now!(Timezone.local()))}
   end
 
   def handle_info({:event_created, _event}, socket) do
@@ -121,7 +121,7 @@ defmodule SinghSabhaWeb.HomeLive do
     event_type = Enum.find(socket.assigns.event_types, &(&1.id == String.to_integer(event_id)))
 
     modal_id =
-      if UserHelpers.is_privileged?(socket.assigns.current_scope),
+      if User.privileged?(socket.assigns.current_scope),
         do: "create_event_modal",
         else: "book_event_modal"
 
@@ -142,8 +142,8 @@ defmodule SinghSabhaWeb.HomeLive do
       |> Enum.map(fn event ->
         %{
           event
-          | start: TimezoneHelpers.utc_to_local(event.start),
-            end: TimezoneHelpers.utc_to_local(event.end)
+          | start: Timezone.utc_to_local(event.start),
+            end: Timezone.utc_to_local(event.end)
         }
       end)
 

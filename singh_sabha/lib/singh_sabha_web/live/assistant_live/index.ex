@@ -2,10 +2,8 @@ defmodule SinghSabhaWeb.Assistant.Index do
   use SinghSabhaWeb, :live_view
 
   import SinghSabhaWeb.AssistantLive.Components
-  # TODO: drop the Helper in TimezoneHelpers, etc.
-  alias SinghSabhaWeb.Helpers.EventTypeHelpers
   alias SinghSabhaWeb.CalendarLive.Modals.EditEvent
-  alias SinghSabhaWeb.Helpers.EventTypeHelpers
+  alias SinghSabhaWeb.Helpers.EventType
   alias SinghSabha.Events
   alias SinghSabha.Workers.Poster
 

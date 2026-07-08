@@ -4,7 +4,7 @@ defmodule SinghSabhaWeb.Hooks.PresenceHook do
   import Phoenix.LiveView
 
   alias SinghSabhaWeb.Presence
-  alias SinghSabhaWeb.Helpers.UserHelpers
+  alias SinghSabhaWeb.Helpers.User
 
   def on_mount(:default, _params, _session, socket) do
     if connected?(socket) do
@@ -39,7 +39,7 @@ defmodule SinghSabhaWeb.Hooks.PresenceHook do
     encoding = Base.encode64(ip)
 
     [
-      display_name: UserHelpers.generate_guest_name(encoding),
+      display_name: User.generate_guest_name(encoding),
       user_id: "guest:#{encoding}"
     ]
   end

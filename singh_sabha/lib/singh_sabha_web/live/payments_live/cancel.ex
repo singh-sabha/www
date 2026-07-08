@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.PaymentsLive.Cancel do
   use SinghSabhaWeb, :live_view
   alias SinghSabha.Events
-  alias SinghSabhaWeb.Helpers.EventTypeHelpers
+  alias SinghSabhaWeb.Helpers.EventType
 
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -28,7 +28,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Cancel do
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto mt-8 p-6 space-y-4">
-      <div class={["alert", EventTypeHelpers.badge_colour(:red)]}>
+      <div class={["alert", EventType.badge_colour(:red)]}>
         <.icon name="hero-information-circle" class="size-6" />
         <div>
           <h3 class="font-bold">Booking Cancelled</h3>

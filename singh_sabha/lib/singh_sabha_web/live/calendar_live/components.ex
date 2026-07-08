@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.CalendarLive.Components do
   use Phoenix.Component
 
-  alias SinghSabhaWeb.Helpers.TimezoneHelpers
+  alias SinghSabhaWeb.Helpers.Timezone
 
   attr :current_time, :any, required: true
   attr :hours, :list, required: true
@@ -24,7 +24,7 @@ defmodule SinghSabhaWeb.CalendarLive.Components do
       visible_range_minutes = visible_end_minutes - visible_start_minutes
       position = (minutes - visible_start_minutes) / visible_range_minutes * 100
 
-      time_string = TimezoneHelpers.format_time(now)
+      time_string = Timezone.format_time(now)
 
       assigns =
         assigns

@@ -4,10 +4,10 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   alias SinghSabhaWeb.Presence
 
   alias SinghSabhaWeb.Helpers.{
-    CalendarHelpers,
-    TimezoneHelpers,
-    UserHelpers,
-    EventTypeHelpers
+    Event,
+    Timezone,
+    User,
+    EventType
   }
 
   alias SinghSabhaWeb.Components.Modals.{BookEvent, CreateEvent}
@@ -25,7 +25,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    now = DateTime.now!(TimezoneHelpers.local())
+    now = DateTime.now!(Timezone.local())
     today = DateTime.to_date(now)
 
     if connected?(socket) do
@@ -105,7 +105,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   end
 
   def handle_event("view_event", %{"event-id" => event_id}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.events)
+    event = Event.find_event(event_id, socket.assigns.events)
 
     {:noreply,
      socket
@@ -114,7 +114,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   end
 
   def handle_event("create_or_book_event", %{"date" => date, "time" => start_time}, socket) do
-    if UserHelpers.is_privileged?(socket.assigns.current_scope) do
+    if User.privileged?(socket.assigns.current_scope) do
       start_time =
         if String.contains?(start_time, "."),
           do: String.to_float(start_time),
@@ -155,7 +155,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
 
   def handle_event("create_or_book_event", _params, socket) do
     modal_id =
-      if UserHelpers.is_privileged?(socket.assigns.current_scope),
+      if User.privileged?(socket.assigns.current_scope),
         do: "create_event_modal",
         else: "book_event_modal"
 
@@ -163,7 +163,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   end
 
   def handle_event("edit_event", %{"event-id" => event_id}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.events)
+    event = Event.find_event(event_id, socket.assigns.events)
 
     {:noreply,
      socket
@@ -172,7 +172,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   end
 
   def handle_event("delete_event", %{"event-id" => event_id}, socket) do
-    event = CalendarHelpers.find_event(event_id, socket.assigns.events)
+    event = Event.find_event(event_id, socket.assigns.events)
 
     case Events.delete_event(event) do
       {:ok, _} ->
@@ -202,7 +202,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   def handle_info(:tick, socket) do
     Process.send_after(self(), :tick, 30_000)
 
-    {:noreply, assign(socket, :current_time, DateTime.now!(TimezoneHelpers.local()))}
+    {:noreply, assign(socket, :current_time, DateTime.now!(Timezone.local()))}
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff"}, socket) do
@@ -229,7 +229,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
           assign(
             socket,
             :selected_event,
-            Events.get_event!(updated_event.id) |> TimezoneHelpers.convert_event_to_local()
+            Events.get_event!(updated_event.id) |> Timezone.convert_event_to_local()
           )
         else
           socket
@@ -255,15 +255,15 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
 
   defp load_events(socket) do
     events =
-      case UserHelpers.is_privileged?(socket.assigns.current_scope) do
+      case User.privileged?(socket.assigns.current_scope) do
         true -> Events.list_events(:all)
         false -> Events.list_events(:public)
       end
       |> Enum.map(fn event ->
         %{
           event
-          | start: TimezoneHelpers.utc_to_local(event.start),
-            end: TimezoneHelpers.utc_to_local(event.end)
+          | start: Timezone.utc_to_local(event.start),
+            end: Timezone.utc_to_local(event.end)
         }
       end)
 
@@ -271,7 +271,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   end
 
   defp load_event_types(socket) do
-    case UserHelpers.is_privileged?(socket.assigns.current_scope) do
+    case User.privileged?(socket.assigns.current_scope) do
       true -> assign(socket, :event_types, Events.list_event_types(:all))
       false -> assign(socket, :event_types, Events.list_event_types(:public))
     end
