@@ -26,7 +26,6 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     now = DateTime.now!(Timezone.local())
-    today = DateTime.to_date(now)
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
@@ -41,134 +40,65 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
       Process.send_after(self(), :tick, milliseconds_until_next_minute)
     end
 
+    event_types =
+      if User.privileged?(socket.assigns.current_scope) do
+        Events.list_event_types(:all)
+      else
+        Events.list_event_types(:public)
+      end
+
     socket =
       socket
       |> assign(:page_title, "Calendar")
       |> assign(:live_users, get_presence_users())
-      |> assign(:view_mode, :month)
-      |> assign(:current_date, today)
       |> assign(:current_time, now)
-      |> assign(:selected_date, today)
       |> assign(:working_hours, %{start: 4, end: 20})
       |> assign(:visible_hours, :all_hours)
       |> assign(:selected_event, nil)
-      |> load_events()
-      |> load_event_types()
+      |> assign(:event_types, event_types)
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event("change_view", %{"view" => view}, socket) do
-    {:noreply, assign(socket, :view_mode, String.to_atom(view))}
+  def handle_params(params, _url, socket) do
+    view = parse_view(params["view"])
+    date = parse_date(params["date"])
+
+    socket =
+      socket
+      |> assign(:view_mode, view)
+      |> assign(:current_date, date)
+      |> assign(:calendar_query, %{view: view, date: date})
+      |> load_events()
+
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  @impl true
   def handle_event("prev_period", _, socket) do
     new_date = shift_date(socket.assigns.current_date, socket.assigns.view_mode, -1)
-    {:noreply, socket |> assign(:current_date, new_date) |> load_events()}
+
+    {:noreply,
+     push_patch(socket, to: calendar_path(socket.assigns.calendar_query, date: new_date))}
   end
 
   def handle_event("next_period", _, socket) do
     new_date = shift_date(socket.assigns.current_date, socket.assigns.view_mode, 1)
-    {:noreply, socket |> assign(:current_date, new_date) |> load_events()}
-  end
 
-  def handle_event("change_view_to_today", _, socket) do
-    {:noreply, socket |> assign(:current_date, socket.assigns.current_time)}
-  end
-
-  def handle_event("change_view_to_date", %{"date" => date}, socket) do
-    case Date.from_iso8601(date) do
-      {:ok, parsed_date} ->
-        {:noreply,
-         socket
-         |> assign(:current_date, parsed_date)
-         |> assign(:view_mode, :day)
-         |> load_events()}
-
-      {:error, _} ->
-        {:noreply, socket}
-    end
+    {:noreply,
+     push_patch(socket, to: calendar_path(socket.assigns.calendar_query, date: new_date))}
   end
 
   def handle_event("date-selected", %{"date" => date}, socket) do
     case Date.from_iso8601(date) do
       {:ok, date} ->
         {:noreply,
-         socket
-         |> assign(:selected_date, date)
-         |> assign(:current_date, date)}
+         push_patch(socket, to: calendar_path(socket.assigns.calendar_query, date: date))}
 
       {:error, _} ->
         {:noreply, socket}
     end
-  end
-
-  def handle_event("view_event", %{"event-id" => event_id}, socket) do
-    event = Event.find_event(event_id, socket.assigns.events)
-
-    {:noreply,
-     socket
-     |> assign(:selected_event, event)
-     |> push_event("open-modal", %{id: "view_event_modal"})}
-  end
-
-  def handle_event("create_or_book_event", %{"date" => date, "time" => start_time}, socket) do
-    if User.privileged?(socket.assigns.current_scope) do
-      start_time =
-        if String.contains?(start_time, "."),
-          do: String.to_float(start_time),
-          else: String.to_integer(start_time) / 1
-
-      time_to_string = fn time ->
-        hour = trunc(time)
-        minute = if rem(trunc(time * 2), 2) == 1, do: 30, else: 0
-
-        "#{String.pad_leading(Integer.to_string(hour), 2, "0")}:#{String.pad_leading(Integer.to_string(minute), 2, "0")}:00"
-      end
-
-      end_time = start_time + 0.5
-
-      {:ok, start_datetime} =
-        NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(start_time)}Z")
-
-      {:ok, end_datetime} = NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(end_time)}Z")
-
-      send_update(CreateEvent,
-        id: "create_event_modal",
-        start_datetime: start_datetime,
-        end_datetime: end_datetime
-      )
-
-      {:noreply, push_event(socket, "open-modal", %{id: "create_event_modal"})}
-    else
-      {:ok, requested_date} = Date.from_iso8601(date)
-
-      send_update(BookEvent,
-        id: "book_event_modal",
-        requested_date: requested_date
-      )
-
-      {:noreply, push_event(socket, "open-modal", %{id: "book_event_modal"})}
-    end
-  end
-
-  def handle_event("create_or_book_event", _params, socket) do
-    modal_id =
-      if User.privileged?(socket.assigns.current_scope),
-        do: "create_event_modal",
-        else: "book_event_modal"
-
-    {:noreply, push_event(socket, "open-modal", %{id: modal_id})}
-  end
-
-  def handle_event("edit_event", %{"event-id" => event_id}, socket) do
-    event = Event.find_event(event_id, socket.assigns.events)
-
-    {:noreply,
-     socket
-     |> assign(:selected_event, event)
-     |> push_event("open-modal", %{id: "edit_event_modal"})}
   end
 
   def handle_event("delete_event", %{"event-id" => event_id}, socket) do
@@ -178,20 +108,14 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
       {:ok, _} ->
         Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
 
-        {:noreply,
-         socket
-         |> push_event("close-modal", %{id: "view_event_modal"})}
+        {:noreply, push_patch(socket, to: calendar_path(socket.assigns.calendar_query))}
 
       {:error, _} ->
         {:noreply,
          socket
          |> put_flash(:error, "Failed to delete event. Please try again.")
-         |> push_event("close-modal", %{id: "view_event_modal"})}
+         |> push_patch(to: calendar_path(socket.assigns.calendar_query))}
     end
-  end
-
-  def handle_event("open_assistant", _params, socket) do
-    {:noreply, push_navigate(socket, to: ~p"/calendar/assistant")}
   end
 
   @impl true
@@ -246,6 +170,87 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
      |> load_events()}
   end
 
+  def calendar_path(query, opts \\ []) do
+    view = Keyword.get(opts, :view, query.view)
+    date = Keyword.get(opts, :date, query.date)
+
+    queries = [view: view, date: Date.to_string(date)]
+    queries = if time = Keyword.get(opts, :time), do: queries ++ [time: time], else: queries
+
+    case Keyword.get(opts, :action, :index) do
+      :index -> ~p"/calendar?#{queries}"
+      :new -> ~p"/calendar/new?#{queries}"
+      {:show, id} -> ~p"/calendar/#{id}?#{queries}"
+      {:edit, id} -> ~p"/calendar/#{id}/edit?#{queries}"
+    end
+  end
+
+  defp parse_view(view) when view in ~w(day week month agenda), do: String.to_existing_atom(view)
+  defp parse_view(_view), do: :month
+
+  defp parse_date(nil), do: Date.utc_today()
+
+  defp parse_date(str) do
+    case Date.from_iso8601(str) do
+      {:ok, date} -> date
+      _ -> Date.utc_today()
+    end
+  end
+
+  defp apply_action(socket, :index, _params) do
+    assign(socket, :selected_event, nil)
+  end
+
+  defp apply_action(socket, :new, params) do
+    if User.privileged?(socket.assigns.current_scope) do
+      case build_event_window(params) do
+        {:ok, start_datetime, end_datetime} ->
+          send_update(CreateEvent,
+            id: "create_event_modal",
+            start_datetime: start_datetime,
+            end_datetime: end_datetime
+          )
+
+          assign(socket, :selected_event, nil)
+
+        :no_slot ->
+          assign(socket, :selected_event, nil)
+      end
+    else
+      case params do
+        %{"date" => date} ->
+          {:ok, requested_date} = Date.from_iso8601(date)
+          send_update(BookEvent, id: "book_event_modal", requested_date: requested_date)
+          assign(socket, :selected_event, nil)
+
+        _ ->
+          assign(socket, :selected_event, nil)
+      end
+    end
+  end
+
+  defp apply_action(socket, :show, %{"id" => event_id}) do
+    with event when not is_nil(event) <- Events.get_event(event_id),
+         true <- event.is_public or User.privileged?(socket.assigns.current_scope) do
+      assign(socket, :selected_event, event)
+    else
+      nil ->
+        socket
+        |> put_flash(:error, "Event not found.")
+        |> push_patch(to: calendar_path(socket.assigns.calendar_query))
+
+      false ->
+        socket
+        |> put_flash(:warning, "Event not available.")
+        |> push_patch(to: calendar_path(socket.assigns.calendar_query))
+    end
+  end
+
+  defp apply_action(socket, :edit, %{"id" => event_id}) do
+    event = Events.get_event!(event_id)
+    assign(socket, :selected_event, event)
+  end
+
   defp get_presence_users do
     Presence.list("global:presence")
     |> Map.values()
@@ -270,13 +275,6 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
     assign(socket, :events, events)
   end
 
-  defp load_event_types(socket) do
-    case User.privileged?(socket.assigns.current_scope) do
-      true -> assign(socket, :event_types, Events.list_event_types(:all))
-      false -> assign(socket, :event_types, Events.list_event_types(:public))
-    end
-  end
-
   defp shift_date(date, :month, offset), do: Date.add(date, offset * 30)
   defp shift_date(date, :week, offset), do: Date.add(date, offset * 7)
   defp shift_date(date, :day, offset), do: Date.add(date, offset)
@@ -292,4 +290,31 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
 
   defp period_label(date, :day), do: Calendar.strftime(date, "%A, %B %d, %Y")
   defp period_label(date, :agenda), do: Calendar.strftime(date, "%A, %B %d, %Y")
+
+  defp build_event_window(%{"date" => date, "time" => start_time}) do
+    start_time =
+      if String.contains?(start_time, "."),
+        do: String.to_float(start_time),
+        else: String.to_integer(start_time) / 1
+
+    time_to_string = fn time ->
+      hour = trunc(time)
+      minute = if rem(trunc(time * 2), 2) == 1, do: 30, else: 0
+
+      "#{String.pad_leading(Integer.to_string(hour), 2, "0")}:#{String.pad_leading(Integer.to_string(minute), 2, "0")}:00"
+    end
+
+    end_time = start_time + 0.5
+
+    with {:ok, start_datetime} <-
+           NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(start_time)}Z"),
+         {:ok, end_datetime} <-
+           NaiveDateTime.from_iso8601("#{date}T#{time_to_string.(end_time)}Z") do
+      {:ok, start_datetime, end_datetime}
+    else
+      _ -> :no_slot
+    end
+  end
+
+  defp build_event_window(_params), do: :no_slot
 end

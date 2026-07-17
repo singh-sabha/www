@@ -1,10 +1,7 @@
 defmodule SinghSabhaWeb.NavbarLive do
   use SinghSabhaWeb, :live_view
 
-  alias SinghSabhaWeb.Helpers.{
-    User,
-    EventType
-  }
+  alias SinghSabhaWeb.Helpers.User
 
   alias SinghSabha.Events
 
@@ -68,24 +65,26 @@ defmodule SinghSabhaWeb.NavbarLive do
               tabindex="0"
               class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
-              <li class="menu-title">
+              <li class="menu-title border-b border-base-300">
                 <span>{@current_scope.user.email}</span>
               </li>
               <li>
-                <.link href={~p"/users/notifications"}>
-                  Notifications
-                  <%= if length(@pending_events) > 0 do %>
-                    <span class={["badge badge-xs", EventType.badge_colour(:red)]}>
-                      {length(@pending_events)}
-                    </span>
-                  <% end %>
+                <.link href={~p"/users/notifications"} class="flex items-center gap-2">
+                  <.icon
+                    name={if length(@pending_events) > 0, do: "hero-bell-alert", else: "hero-bell"}
+                    class={["size-4", length(@pending_events) > 0]}
+                  /> Notifications
                 </.link>
               </li>
               <li>
-                <.link navigate={~p"/users/settings"}>Settings</.link>
+                <.link navigate={~p"/users/settings"} class="flex items-center gap-2">
+                  <.icon name="hero-cog-6-tooth" class="size-4" /> Settings
+                </.link>
               </li>
               <li>
-                <.link href={~p"/users/log-out"} method="delete">Log out</.link>
+                <.link href={~p"/users/log-out"} method="delete" class="flex items-center gap-2">
+                  <.icon name="hero-arrow-right-start-on-rectangle" class="size-4" /> Log out
+                </.link>
               </li>
             </ul>
           </div>

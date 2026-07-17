@@ -168,19 +168,17 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
         <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
 
         <div class="absolute p-1 pointer-events-none" style={style}>
-          <div
-            class={[
+          <.link patch={~p"/calendar/event.id"}>
+            <div class={[
               "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
               User.privileged?(@current_scope) &&
                 EventType.event_status_colour(event.is_verified, event.is_deposit_paid),
               EventType.badge_colour(colour)
-            ]}
-            phx-click="view_event"
-            phx-value-event-id={event.id}
-          >
-            <div class="font-medium truncate">{event.occasion}</div>
-            {Timezone.format_time(event.start)} - {Timezone.format_time(event.end)}
-          </div>
+            ]}>
+              <div class="font-medium truncate">{event.occasion}</div>
+              {Timezone.format_time(event.start)} - {Timezone.format_time(event.end)}
+            </div>
+          </.link>
         </div>
       <% end %>
     </div>
@@ -251,8 +249,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <div
-      class={[
+    <.link patch={~p"/calendar/@event.id"}>
+      <div class={[
         "h-6.5 text-xs font-medium flex items-center border -mx-px cursor-pointer",
         EventType.badge_colour(colour),
         User.privileged?(@current_scope) && @starts &&
@@ -261,17 +259,15 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
         @ends && "rounded-r-md mr-1",
         !@starts && "rounded-l-none border-l-0",
         !@ends && "rounded-r-none border-r-0"
-      ]}
-      phx-click="view_event"
-      phx-value-event-id={@event.id}
-    >
-      <%= if @starts do %>
-        <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
-          <span class="truncate">{@event.occasion}</span>
-          <span>{Timezone.format_time(@event.start)}</span>
-        </div>
-      <% end %>
-    </div>
+      ]}>
+        <%= if @starts do %>
+          <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
+            <span class="truncate">{@event.occasion}</span>
+            <span>{Timezone.format_time(@event.start)}</span>
+          </div>
+        <% end %>
+      </div>
+    </.link>
     """
   end
 

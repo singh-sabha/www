@@ -31,18 +31,6 @@ const csrfToken = document
 
 let Hooks = {};
 
-Hooks.ModalManager = {
-  mounted() {
-    this.handleEvent("open-modal", ({ id }) => {
-      document.getElementById(id).showModal();
-    });
-
-    this.handleEvent("close-modal", ({ id }) => {
-      document.getElementById(id).close();
-    });
-  },
-};
-
 Hooks.AutoCarousel = {
   mounted() {
     this.index = 0;

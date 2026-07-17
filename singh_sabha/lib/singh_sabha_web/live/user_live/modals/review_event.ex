@@ -10,100 +10,95 @@ defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
 
   def render(assigns) do
     ~H"""
-    <dialog
-      id="review_event_modal"
-      class="modal overflow-y-scroll"
-      phx-mounted={JS.ignore_attributes(["open"])}
-    >
-      <div class="modal-box">
-        <form method="dialog">
-          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-            <.icon name="hero-x-mark" class="size-4" />
-          </button>
-        </form>
+    <div class="modal-box">
+      <button
+        type="button"
+        class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+        phx-click={JS.patch(~p"/users/notifications")}
+      >
+        <.icon name="hero-x-mark" class="size-4" />
+      </button>
 
-        <h3 class="font-bold text-lg">{@selected_event.occasion}</h3>
+      <h3 class="font-bold text-lg">{@selected_event.occasion}</h3>
 
-        <div class="space-y-3 mt-4">
-          <div class="flex items-start gap-2">
-            <.icon name="hero-user" class="mt-1 size-4 shrink-0" />
-            <div>
-              <p class="text-sm font-medium">Organizer</p>
-              <p class="text-sm text-base-content/70">{@selected_event.registrant_full_name}</p>
-            </div>
+      <div class="space-y-3 mt-4">
+        <div class="flex items-start gap-2">
+          <.icon name="hero-user" class="mt-1 size-4 shrink-0" />
+          <div>
+            <p class="text-sm font-medium">Organizer</p>
+            <p class="text-sm text-base-content/70">{@selected_event.registrant_full_name}</p>
           </div>
-
-          <div class="flex items-start gap-2">
-            <.icon name="hero-tag" class="mt-1 size-4 shrink-0" />
-            <div>
-              <p class="text-sm font-medium">Event Type</p>
-              <p class="text-sm text-base-content/70">{@selected_event.event_type.display_name}</p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-2">
-            <.icon name="hero-calendar" class="mt-1 size-4 shrink-0" />
-            <div>
-              <p class="text-sm font-medium">Date</p>
-              <p class="text-base-content/70 text-sm mt-1">
-                {Calendar.strftime(@selected_event.requested, "%B %-d, %Y")}
-              </p>
-            </div>
-          </div>
-
-          <%= if @selected_event.note do %>
-            <div class="flex items-start gap-2">
-              <.icon name="hero-document-text" class="mt-1 size-4 shrink-0" />
-              <div>
-                <p class="text-sm font-medium">Note</p>
-                <p class="text-sm text-base-content/70">{@selected_event.note}</p>
-              </div>
-            </div>
-          <% end %>
         </div>
 
-        <div class="border-t border-base-300 my-4" />
-
-        <.form
-          for={@form}
-          phx-change="validate"
-          phx-submit="approve_event"
-          phx-target={@myself}
-        >
-          <div class="grid grid-cols-2 gap-4">
-            <.input field={@form[:start]} type="datetime-local" label="Start Time" required />
-            <.input field={@form[:end]} type="datetime-local" label="End Time" required />
+        <div class="flex items-start gap-2">
+          <.icon name="hero-tag" class="mt-1 size-4 shrink-0" />
+          <div>
+            <p class="text-sm font-medium">Event Type</p>
+            <p class="text-sm text-base-content/70">{@selected_event.event_type.display_name}</p>
           </div>
+        </div>
 
-          <div class="modal-action">
-            <button
-              type="submit"
-              class={[
-                "btn",
-                if(@start_time not in [nil, ""] and @end_time not in [nil, ""],
-                  do: "btn",
-                  else: "btn-disabled"
-                )
-              ]}
-            >
-              Approve
-            </button>
-            <button
-              type="button"
-              class="btn"
-              phx-click="deny_event"
-              phx-value-event-id={@selected_event.id}
-              phx-target={@myself}
-            >
-              Deny
-            </button>
+        <div class="flex items-start gap-2">
+          <.icon name="hero-calendar" class="mt-1 size-4 shrink-0" />
+          <div>
+            <p class="text-sm font-medium">Date</p>
+            <p class="text-base-content/70 text-sm mt-1">
+              {Calendar.strftime(@selected_event.requested, "%B %-d, %Y")}
+            </p>
           </div>
-        </.form>
+        </div>
+
+        <%= if @selected_event.note do %>
+          <div class="flex items-start gap-2">
+            <.icon name="hero-document-text" class="mt-1 size-4 shrink-0" />
+            <div>
+              <p class="text-sm font-medium">Note</p>
+              <p class="text-sm text-base-content/70">{@selected_event.note}</p>
+            </div>
+          </div>
+        <% end %>
       </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
+
+      <div class="border-t border-base-300 my-4" />
+
+      <.form
+        for={@form}
+        phx-change="validate"
+        phx-submit="approve_event"
+        phx-target={@myself}
+      >
+        <div class="grid grid-cols-2 gap-4">
+          <.input field={@form[:start]} type="datetime-local" label="Start Time" required />
+          <.input field={@form[:end]} type="datetime-local" label="End Time" required />
+        </div>
+
+        <div class="modal-action">
+          <.button
+            phx-disable-with="Approving..."
+            type="submit"
+            class={[
+              "btn btn-primary",
+              if(@start_time not in [nil, ""] and @end_time not in [nil, ""],
+                do: "btn",
+                else: "btn-disabled"
+              )
+            ]}
+          >
+            Approve
+          </.button>
+          <.button
+            phx-disable-with="Denying..."
+            type="button"
+            class="btn"
+            phx-click="deny_event"
+            phx-value-event-id={@selected_event.id}
+            phx-target={@myself}
+          >
+            Deny
+          </.button>
+        </div>
+      </.form>
+    </div>
     """
   end
 

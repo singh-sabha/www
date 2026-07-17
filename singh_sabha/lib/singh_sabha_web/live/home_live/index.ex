@@ -1,8 +1,8 @@
-defmodule SinghSabhaWeb.HomeLive do
+defmodule SinghSabhaWeb.HomeLive.Index do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Events
-  alias SinghSabhaWeb.Helpers.{Timezone, User}
+  alias SinghSabhaWeb.Helpers.Timezone
 
   alias SinghSabhaWeb.HomeLive.{
     UpcomingEventsSection,
@@ -11,8 +11,6 @@ defmodule SinghSabhaWeb.HomeLive do
     LiveStreamSection,
     DonationsSection
   }
-
-  alias SinghSabhaWeb.Components.Modals.{BookEvent, CreateEvent}
 
   def render(assigns) do
     ~H"""
@@ -30,29 +28,6 @@ defmodule SinghSabhaWeb.HomeLive do
     <.section_wrapper>
       <DonationsSection.section />
     </.section_wrapper>
-
-    <.live_component
-      :if={User.privileged?(@current_scope)}
-      module={CreateEvent}
-      id="create_event_modal"
-      event_types={
-        if Map.has_key?(assigns, :selected_event_type),
-          do: [@selected_event_type],
-          else: @event_types
-      }
-    />
-    <.live_component
-      :if={!User.privileged?(@current_scope)}
-      module={BookEvent}
-      id="book_event_modal"
-      event_types={
-        if Map.has_key?(assigns, :selected_event_type),
-          do: [@selected_event_type],
-          else: @event_types
-      }
-    />
-
-    <div phx-hook="ModalManager" id="modal-manager"></div>
     """
   end
 
@@ -77,8 +52,8 @@ defmodule SinghSabhaWeb.HomeLive do
       |> assign(:page_title, "Home")
       |> assign(:current_time, now)
       |> assign(:live_stream, live_stream)
-      |> load_upcoming_events()
-      |> load_event_types()
+      |> assign(:event_types, Events.list_event_types(:public))
+      |> upcoming_events()
 
     {:ok, socket}
   end
@@ -102,36 +77,22 @@ defmodule SinghSabhaWeb.HomeLive do
   end
 
   def handle_info({:event_created, _event}, socket) do
-    {:noreply, load_upcoming_events(socket)}
+    {:noreply, upcoming_events(socket)}
   end
 
   def handle_info({:event_updated, _event}, socket) do
-    {:noreply, load_upcoming_events(socket)}
+    {:noreply, upcoming_events(socket)}
   end
 
   def handle_info({:event_deleted, _event}, socket) do
-    {:noreply, load_upcoming_events(socket)}
+    {:noreply, upcoming_events(socket)}
   end
 
   def handle_info({:put_flash, kind, message}, socket) do
     {:noreply, put_flash(socket, kind, message)}
   end
 
-  def handle_event("create_or_book_event", %{"event-id" => event_id}, socket) do
-    event_type = Enum.find(socket.assigns.event_types, &(&1.id == String.to_integer(event_id)))
-
-    modal_id =
-      if User.privileged?(socket.assigns.current_scope),
-        do: "create_event_modal",
-        else: "book_event_modal"
-
-    {:noreply,
-     socket
-     |> assign(:selected_event_type, event_type)
-     |> push_event("open-modal", %{id: modal_id})}
-  end
-
-  defp load_upcoming_events(socket) do
+  defp upcoming_events(socket) do
     today = DateTime.to_date(socket.assigns.current_time)
 
     week_start = Date.beginning_of_week(today, :sunday)
@@ -148,9 +109,5 @@ defmodule SinghSabhaWeb.HomeLive do
       end)
 
     assign(socket, :upcoming, upcoming)
-  end
-
-  defp load_event_types(socket) do
-    assign(socket, :event_types, Events.list_event_types(:public))
   end
 end

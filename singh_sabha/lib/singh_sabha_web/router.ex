@@ -26,7 +26,7 @@ defmodule SinghSabhaWeb.Router do
         {SinghSabhaWeb.Hooks.PresenceHook, :default},
         {SinghSabhaWeb.Live.Layouts, :full_width}
       ] do
-      live "/", HomeLive
+      live "/", HomeLive.Index, :index
     end
 
     live_session :default,
@@ -36,9 +36,13 @@ defmodule SinghSabhaWeb.Router do
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
       live "/calendar", CalendarLive.Index, :index
+      live "/calendar/new", CalendarLive.Index, :new
+      live "/calendar/:id", CalendarLive.Index, :show
+      live "/calendar/:id/edit", CalendarLive.Index, :edit
 
-      live "/about", AboutLive
-      live "/gallery", GalleryLive
+      live "/about", AboutLive.Index, :index
+      live "/gallery", GalleryLive.Index, :index
+      live "/gallery/:id", GalleryLive.Index, :show
     end
 
     live_session :require_privileged_user,
@@ -48,16 +52,14 @@ defmodule SinghSabhaWeb.Router do
         {SinghSabhaWeb.UserAuth, :require_privileged_user},
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
-      live "/calendar/assistant", Assistant.Index, :index
+      live "/assistant", AssistantLive.Index, :index
     end
 
     live_session :empty,
       on_mount: [
-        {SinghSabhaWeb.Hooks.PresenceHook, :default},
         {SinghSabhaWeb.Live.Layouts, :empty}
       ] do
-      live "/payment/success", PaymentsLive.Success
-      live "/payment/cancel", PaymentsLive.Cancel
+      live "/payment/:status", PaymentsLive.Index, :index
     end
   end
 
@@ -91,7 +93,9 @@ defmodule SinghSabhaWeb.Router do
       ] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
+
       live "/users/notifications", UserLive.Notifications, :index
+      live "/users/notifications/:id", UserLive.Notifications, :review
     end
 
     post "/users/update-password", UserSessionController, :update_password

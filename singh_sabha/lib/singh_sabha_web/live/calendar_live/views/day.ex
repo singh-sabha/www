@@ -9,8 +9,10 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     User
   }
 
+  import SinghSabhaWeb.CalendarLive.Index, only: [calendar_path: 2]
   import SinghSabhaWeb.CalendarLive.Components
 
+  attr :calendar_query, :map, required: true
   attr :current_date, :any, required: true
   attr :current_time, :any, required: true
   attr :current_scope, :map, default: nil
@@ -49,6 +51,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
             current_date={@current_date}
             current_scope={@current_scope}
             multi_day_events={@multi_day_events}
+            calendar_query={@calendar_query}
           />
 
           <div class="relative z-20 flex border-b border-base-300">
@@ -89,24 +92,30 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                       </div>
                     <% end %>
 
-                    <div
-                      class="absolute inset-x-0 top-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-                      phx-click="create_or_book_event"
-                      phx-value-date={@current_date}
-                      phx-value-time={hour}
-                    >
-                    </div>
+                    <.link patch={
+                      calendar_path(@calendar_query,
+                        action: :new,
+                        date: @current_date,
+                        time: hour
+                      )
+                    }>
+                      <div class="absolute inset-x-0 top-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer">
+                      </div>
+                    </.link>
 
                     <div class="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed border-base-300">
                     </div>
 
-                    <div
-                      class="absolute inset-x-0 bottom-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-                      phx-click="create_or_book_event"
-                      phx-value-date={@current_date}
-                      phx-value-time={hour + 0.5}
-                    >
-                    </div>
+                    <.link patch={
+                      calendar_path(@calendar_query,
+                        action: :new,
+                        date: @current_date,
+                        time: hour + 0.5
+                      )
+                    }>
+                      <div class="absolute inset-x-0 bottom-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer">
+                      </div>
+                    </.link>
                   </div>
                 <% end %>
 
@@ -122,8 +131,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                     ) %>
                   <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
                   <div class="absolute p-1 pointer-events-none" style={style}>
-                    <div
-                      class={[
+                    <.link patch={calendar_path(@calendar_query, action: {:show, event.id})}>
+                      <div class={[
                         "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
                         User.privileged?(@current_scope) &&
                           EventType.event_status_colour(
@@ -131,13 +140,11 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                             event.is_deposit_paid
                           ),
                         EventType.badge_colour(colour)
-                      ]}
-                      phx-click="view_event"
-                      phx-value-event-id={event.id}
-                    >
-                      <div class="font-medium truncate">{event.occasion}</div>
-                      {Timezone.format_time(event.start)} - {Timezone.format_time(event.end)}
-                    </div>
+                      ]}>
+                        <div class="font-medium truncate">{event.occasion}</div>
+                        {Timezone.format_time(event.start)} - {Timezone.format_time(event.end)}
+                      </div>
+                    </.link>
                   </div>
                 <% end %>
               </div>
@@ -263,6 +270,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     end)
   end
 
+  attr :calendar_query, :map, required: true
   attr :current_date, :any, required: true
   attr :multi_day_events, :list, required: true
   attr :current_scope, :map, default: nil
@@ -309,6 +317,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
               event_current_day={event_current_day}
               event_total_days={event_total_days}
               current_scope={@current_scope}
+              calendar_query={@calendar_query}
             />
           <% end %>
         </div>
@@ -317,6 +326,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     """
   end
 
+  attr :calendar_query, :map, required: true
   attr :event, :map, required: true
   attr :event_current_day, :integer, required: true
   attr :event_total_days, :integer, required: true
@@ -326,29 +336,27 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <div class={[
-      "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
-      User.privileged?(@current_scope) &&
-        EventType.event_status_colour(@event.is_verified, @event.is_deposit_paid),
-      EventType.card_colour(colour)
-    ]}>
-      <div
-        class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap cursor-pointer"
-        phx-click="view_event"
-        phx-value-event-id={@event.id}
-      >
-        <span class="truncate">
-          <span class="text-base-content/70 text-xs">
-            Day {@event_current_day} of {@event_total_days} •
+    <.link patch={calendar_path(@calendar_query, action: {:show, @event.id})}>
+      <div class={[
+        "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
+        User.privileged?(@current_scope) &&
+          EventType.event_status_colour(@event.is_verified, @event.is_deposit_paid),
+        EventType.card_colour(colour)
+      ]}>
+        <div class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap cursor-pointer">
+          <span class="truncate">
+            <span class="text-base-content/70 text-xs">
+              Day {@event_current_day} of {@event_total_days} •
+            </span>
+            <span class={EventType.text_colour(colour)}>{@event.occasion}</span>
           </span>
-          <span class={EventType.text_colour(colour)}>{@event.occasion}</span>
-        </span>
 
-        <span class={["ml-2", EventType.text_colour(colour)]}>
-          {Timezone.format_time(@event.start)}
-        </span>
+          <span class={["ml-2", EventType.text_colour(colour)]}>
+            {Timezone.format_time(@event.start)}
+          </span>
+        </div>
       </div>
-    </div>
+    </.link>
     """
   end
 end

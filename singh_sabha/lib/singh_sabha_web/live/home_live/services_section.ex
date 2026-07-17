@@ -33,14 +33,10 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
     assigns = assign(assigns, :colour, colour)
 
     ~H"""
-    <div
-      class={[
-        "flex flex-col gap-3 rounded-md border p-4 cursor-pointer",
-        EventType.card_colour(@colour)
-      ]}
-      phx-click="create_or_book_event"
-      phx-value-event-id={assigns.event_type.id}
-    >
+    <div class={[
+      "flex flex-col gap-3 rounded-md border p-4",
+      EventType.card_colour(@colour)
+    ]}>
       <h4 class={[
         "font-semibold leading-tight",
         EventType.text_colour(@colour)
