@@ -9,10 +9,13 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
     User
   }
 
+  import SinghSabhaWeb.CalendarLive.Index, only: [calendar_path: 2]
+
   attr :current_date, :any, required: true
   attr :current_time, :any, required: true
   attr :current_scope, :map, default: nil
   attr :events, :list, required: true
+  attr :calendar_query, :map, required: true
 
   def agenda(assigns) do
     {single_day_events, multi_day_events} = Event.partition_events(assigns.events)
@@ -34,6 +37,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
                 events={day_group.events}
                 multi_day_events={day_group.multi_day_events}
                 current_scope={@current_scope}
+                calendar_query={@calendar_query}
               />
             <% end %>
           </div>
@@ -52,6 +56,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   attr :events, :list, required: true
   attr :multi_day_events, :list, required: true
   attr :current_scope, :any, required: true
+  attr :calendar_query, :map, required: true
 
   defp day_group(assigns) do
     sorted_events = Enum.sort_by(assigns.events, & &1.start, DateTime)
@@ -79,10 +84,15 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
             event_current_day={event_current_day}
             event_total_days={event_total_days}
             current_scope={@current_scope}
+            calendar_query={@calendar_query}
           />
         <% end %>
         <%= for event <- @sorted_events do %>
-          <.event_card event={event} current_scope={@current_scope} />
+          <.event_card
+            event={event}
+            current_scope={@current_scope}
+            calendar_query={@calendar_query}
+          />
         <% end %>
       </div>
     </div>
@@ -93,95 +103,96 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   attr :event_current_day, :integer, default: nil
   attr :event_total_days, :integer, default: nil
   attr :current_scope, :any, required: true
+  attr :calendar_query, :map, required: true
 
   # TODO: could this be extracted into core_components? We're using a variation in AssistantLive
   defp event_card(assigns) do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <div
-      class={[
-        "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
-        EventType.card_colour(colour),
-        User.privileged?(@current_scope) &&
-          EventType.event_status_colour(
-            @event.is_verified,
-            @event.is_deposit_paid
-          )
-      ]}
-      phx-click="view_event"
-      phx-value-event-id={@event.id}
-      role="button"
-      tabindex="0"
-    >
-      <div class="flex flex-1 flex-col gap-2">
-        <%= if User.privileged?(@current_scope) do %>
-          <div class="mb-1 flex items-center gap-1.5">
-            <%= cond do %>
-              <% !@event.is_verified -> %>
-                <span class={[
-                  "badge badge-sm gap-1",
-                  EventType.badge_colour(:red)
-                ]}>
-                  <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
+    <.link patch={calendar_path(@calendar_query, action: {:show, @event.id})}>
+      <div
+        class={[
+          "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
+          EventType.card_colour(colour),
+          User.privileged?(@current_scope) &&
+            EventType.event_status_colour(
+              @event.is_verified,
+              @event.is_deposit_paid
+            )
+        ]}
+        role="button"
+        tabindex="0"
+      >
+        <div class="flex flex-1 flex-col gap-2">
+          <%= if User.privileged?(@current_scope) do %>
+            <div class="mb-1 flex items-center gap-1.5">
+              <%= cond do %>
+                <% !@event.is_verified -> %>
+                  <span class={[
+                    "badge badge-sm gap-1",
+                    EventType.badge_colour(:red)
+                  ]}>
+                    <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
+                  </span>
+                <% @event.is_verified && !@event.is_deposit_paid -> %>
+                  <span class={[
+                    "badge badge-sm gap-1",
+                    EventType.badge_colour(:yellow)
+                  ]}>
+                    <.icon name="hero-currency-dollar" class="size-3" /> Awaiting Payment
+                  </span>
+                <% true -> %>
+                  <span class={[
+                    "badge badge-sm gap-1",
+                    EventType.badge_colour(:green)
+                  ]}>
+                    <.icon name="hero-check-circle" class="size-3" /> Confirmed
+                  </span>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="flex items-center gap-1.5">
+            <p class="font-medium">
+              <%= if @event_current_day && @event_total_days do %>
+                <span class="mr-1 text-xs text-base-content/70">
+                  Day {@event_current_day} of {@event_total_days} •
                 </span>
-              <% @event.is_verified && !@event.is_deposit_paid -> %>
-                <span class={[
-                  "badge badge-sm gap-1",
-                  EventType.badge_colour(:yellow)
-                ]}>
-                  <.icon name="hero-currency-dollar" class="size-3" /> Awaiting Payment
-                </span>
-              <% true -> %>
-                <span class={[
-                  "badge badge-sm gap-1",
-                  EventType.badge_colour(:green)
-                ]}>
-                  <.icon name="hero-check-circle" class="size-3" /> Confirmed
-                </span>
-            <% end %>
+              <% end %>
+              <span class={EventType.text_colour(colour)}>
+                {@event.occasion}
+              </span>
+            </p>
           </div>
-        <% end %>
 
-        <div class="flex items-center gap-1.5">
-          <p class="font-medium">
-            <%= if @event_current_day && @event_total_days do %>
-              <span class="mr-1 text-xs text-base-content/70">
-                Day {@event_current_day} of {@event_total_days} •
-              </span>
-            <% end %>
-            <span class={EventType.text_colour(colour)}>
-              {@event.occasion}
-            </span>
-          </p>
-        </div>
+          <div class="flex items-center gap-1.5">
+            <.icon name="hero-user" class="size-3 shrink-0 text-base-content/70" />
+            <p class="text-xs">
+              <%= if @event.registrant_full_name && (User.privileged?(@current_scope) or @event.is_public) do %>
+                {@event.registrant_full_name}
+              <% else %>
+                <span class="flex items-center gap-1">
+                  <.icon name="hero-check-badge" class="size-3 bg-info" /> Gurdwara Singh Sabha
+                </span>
+              <% end %>
+            </p>
+          </div>
 
-        <div class="flex items-center gap-1.5">
-          <.icon name="hero-user" class="size-3 shrink-0 text-base-content/70" />
-          <p class="text-xs">
-            <%= if @event.registrant_full_name && (User.privileged?(@current_scope) or @event.is_public) do %>
-              {@event.registrant_full_name}
-            <% else %>
-              <span class="flex items-center gap-1">
-                <.icon name="hero-check-badge" class="size-3 bg-info" /> Gurdwara Singh Sabha
-              </span>
-            <% end %>
-          </p>
-        </div>
+          <div class="flex items-center gap-1.5">
+            <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
+            <p class="text-xs">
+              {Timezone.format_time(@event.start)} - {Timezone.format_time(@event.end)}
+            </p>
+          </div>
 
-        <div class="flex items-center gap-1.5">
-          <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
-          <p class="text-xs">
-            {Timezone.format_time(@event.start)} - {Timezone.format_time(@event.end)}
-          </p>
-        </div>
-
-        <div class="flex items-center gap-1.5">
-          <.icon name="hero-tag" class="size-3 shrink-0 text-base-content/70" />
-          <p class="text-xs">{@event.event_type.display_name}</p>
+          <div class="flex items-center gap-1.5">
+            <.icon name="hero-tag" class="size-3 shrink-0 text-base-content/70" />
+            <p class="text-xs">{@event.event_type.display_name}</p>
+          </div>
         </div>
       </div>
-    </div>
+    </.link>
     """
   end
 

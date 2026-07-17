@@ -13,6 +13,9 @@ defmodule SinghSabha.Payments do
       payment_method_types: [:card],
       mode: :payment,
       customer_email: event.registrant_email,
+      metadata: %{
+        event_id: to_string(event.id)
+      },
       line_items: [
         %{
           price_data: %{
@@ -27,7 +30,8 @@ defmodule SinghSabha.Payments do
       ],
       success_url:
         "#{base_url}/payment/success?session_id={CHECKOUT_SESSION_ID}&event_id=#{event.id}",
-      cancel_url: "#{base_url}/payment/cancel?event_id=#{event.id}"
+      cancel_url:
+        "#{base_url}/payment/cancel?session_id={CHECKOUT_SESSION_ID}&event_id=#{event.id}"
     }
 
     Session.create(params)

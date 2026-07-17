@@ -5,6 +5,8 @@ defmodule SinghSabha.Events.EventNotifier do
 
   alias SinghSabha.{MailingLists, Mailer, Payments}
 
+  require Logger
+
   @from {"Gurdwara Singh Sabha of Victoria", "no-reply@singhsabha.net"}
 
   def event_confirmation(event) do
@@ -24,6 +26,13 @@ defmodule SinghSabha.Events.EventNotifier do
       |> subject("Event approved: #{event.occasion}")
       |> render_body("event_approved.html", %{event: event, payment_url: session.url})
       |> Mailer.deliver()
+    else
+      {:error, reason} ->
+        Logger.error(
+          "Failed to create checkout session for event #{event.id}: #{inspect(reason)}"
+        )
+
+        {:error, :checkout_session_failed}
     end
   end
 

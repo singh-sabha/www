@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.GalleryLive do
+defmodule SinghSabhaWeb.GalleryLive.Index do
   use SinghSabhaWeb, :live_view
   use SinghSabhaWeb, :html
 
@@ -21,7 +21,6 @@ defmodule SinghSabhaWeb.GalleryLive do
     ~H"""
     <div class="space-y-6">
       <h1 class="text-2xl font-bold">Gallery</h1>
-
       <div class="flex flex-col gap-3 rounded-md border border-base-300 p-4">
         <div class="flex items-center gap-2">
           <h2 class="font-semibold">Construction and Growth</h2>
@@ -34,33 +33,30 @@ defmodule SinghSabhaWeb.GalleryLive do
           to the spaces where our sangat gathers today.
         </p>
       </div>
-
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-        <div
+        <.link
           :for={image <- @images}
-          class="overflow-hidden rounded-md border border-base-300 cursor-pointer"
-          phx-click="select"
-          phx-value-id={image.id}
+          patch={~p"/gallery/#{image.id}"}
+          class="overflow-hidden rounded-md border border-base-300 cursor-pointer block"
         >
           <img
             src={image.src}
             alt={image.alt}
             loading="lazy"
             class="w-full h-40 object-cover"
-            onerror="this.closest('.cursor-pointer').style.display='none'"
+            onerror="this.closest('a').style.display='none'"
           />
-        </div>
+        </.link>
       </div>
 
-      <.live_component
-        :if={@selected_image}
-        module={ViewImage}
-        id="view_image_modal"
-        image={@selected_image}
-        total={length(@images)}
-      />
-
-      <div phx-hook="ModalManager" id="gallery-modal-manager"></div>
+      <dialog :if={@live_action == :show} class="modal modal-open">
+        <.live_component
+          module={ViewImage}
+          id="view_image_modal"
+          image={@selected_image}
+          total={length(@images)}
+        />
+      </dialog>
     </div>
     """
   end
@@ -69,16 +65,35 @@ defmodule SinghSabhaWeb.GalleryLive do
     {:ok,
      socket
      |> assign(:page_title, "Gallery")
-     |> assign(:images, @images)
-     |> assign(:selected_image, nil)}
+     |> assign(:images, @images)}
   end
 
-  def handle_event("select", %{"id" => id}, socket) do
-    image = Enum.find(socket.assigns.images, &(&1.id == String.to_integer(id)))
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
 
-    {:noreply,
-     socket
-     |> assign(:selected_image, image)
-     |> push_event("open-modal", %{id: "view_image_modal"})}
+  defp apply_action(socket, :index, _params) do
+    assign(socket, :selected_event, nil)
+  end
+
+  defp apply_action(socket, :show, %{"id" => id}) do
+    case Integer.parse(id) do
+      {int_id, ""} ->
+        case Enum.find(socket.assigns.images, &(&1.id == int_id)) do
+          nil ->
+            socket
+            |> put_flash(:error, "Image not found.")
+            |> push_patch(to: ~p"/gallery")
+
+          image ->
+            assign(socket, :selected_image, image)
+        end
+
+      :error ->
+        socket
+        |> put_flash(:error, "Image not found.")
+        |> push_patch(to: ~p"/gallery")
+    end
   end
 end
+

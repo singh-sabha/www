@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.AboutLive do
+defmodule SinghSabhaWeb.AboutLive.Index do
   use SinghSabhaWeb, :live_view
   use SinghSabhaWeb, :html
 

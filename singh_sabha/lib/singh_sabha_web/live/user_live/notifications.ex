@@ -3,11 +3,8 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Events
-
   alias SinghSabha.Events.EventNotifier
-
-  alias SinghSabhaWeb.Helpers.{User, EventType}
-
+  alias SinghSabhaWeb.Helpers.{User, EventType, Timezone}
   alias SinghSabhaWeb.UsersLive.Modals.ReviewEvent
 
   @impl true
@@ -25,57 +22,34 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
         <div class="space-y-3">
           <%= for event <- @pending_events do %>
             <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
-            <div
-              class={[
-                "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
+            <.link patch={~p"/users/notifications/#{event.id}"}>
+              <div class={[
+                "flex select-none items-center justify-between gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
                 EventType.card_colour(colour)
-              ]}
-              phx-click="review_event"
-              phx-value-event-id={event.id}
-              role="button"
-              tabindex="0"
-            >
-              <div class="flex flex-1 flex-col gap-2">
-                <div class="flex items-center gap-1.5">
-                  <span class={["badge badge-sm gap-1", EventType.badge_colour(:red)]}>
-                    <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
-                  </span>
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <p class="font-medium">
-                    <span class={EventType.text_colour(colour)}>
-                      {event.occasion}
-                    </span>
+              ]}>
+                <div class="flex flex-col gap-1 min-w-0">
+                  <p class="font-medium truncate">
+                    <span class={EventType.text_colour(colour)}>{event.occasion}</span>
+                  </p>
+                  <p class="text-xs text-base-content/60 truncate">
+                    {event.registrant_full_name} • {event.event_type.display_name}
                   </p>
                 </div>
-
-                <div class="flex items-center gap-1.5">
-                  <.icon name="hero-user" class="size-3 shrink-0 text-base-content/70" />
-                  <p class="text-xs">{event.registrant_full_name}</p>
-                </div>
-
-                <div class="flex items-center gap-1.5">
-                  <.icon name="hero-tag" class="size-3 shrink-0 text-base-content/70" />
-                  <p class="text-xs">{event.event_type.display_name}</p>
-                </div>
+                <.icon name="hero-chevron-right" class="size-4 shrink-0 text-base-content/40" />
               </div>
-
-              <.icon name="hero-chevron-right" class="size-4 text-base-content/40 shrink-0" />
-            </div>
+            </.link>
           <% end %>
         </div>
       <% end %>
 
-      <.live_component
-        :if={@selected_event}
-        module={ReviewEvent}
-        id="review_event_modal"
-        selected_event={@selected_event}
-        current_scope={@current_scope}
-      />
-
-      <div phx-hook="ModalManager" id="modal-manager"></div>
+      <dialog :if={@live_action == :review} class="modal modal-open overflow-y-auto">
+        <.live_component
+          module={ReviewEvent}
+          id="review_event_modal"
+          selected_event={@selected_event}
+          current_scope={@current_scope}
+        />
+      </dialog>
     </div>
     """
   end
@@ -89,20 +63,30 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
     socket =
       socket
       |> assign(:page_title, "Notifications")
-      |> assign(:selected_event, nil)
       |> load_pending_events()
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event("review_event", %{"event-id" => event_id}, socket) do
-    event = Event.find_event(event_id, socket.assigns.pending_events)
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
 
-    {:noreply,
-     socket
-     |> assign(:selected_event, event)
-     |> push_event("open-modal", %{id: "review_event_modal"})}
+  defp apply_action(socket, :index, _params) do
+    assign(socket, :selected_event, nil)
+  end
+
+  defp apply_action(socket, :review, %{"id" => event_id}) do
+    case Event.find_event(event_id, socket.assigns.pending_events) do
+      nil ->
+        socket
+        |> put_flash(:error, "Notification not found.")
+        |> push_patch(to: ~p"/users/notifications")
+
+      event ->
+        assign(socket, :selected_event, event)
+    end
   end
 
   @impl true
@@ -112,26 +96,22 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
     params =
       params
       |> Map.put("is_verified", true)
+      |> Timezone.convert_datetime_params()
 
     case Events.update_event(event, params) do
       {:ok, updated_event} ->
-        Phoenix.PubSub.broadcast(
-          SinghSabha.PubSub,
-          "events",
-          {:event_updated, updated_event}
-        )
-
+        Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_updated, updated_event})
         EventNotifier.event_approved(updated_event)
 
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "review_event_modal"})
+         |> push_patch(to: ~p"/users/notifications")
          |> put_flash(:success, "Event approved successfully!")}
 
       {:error, _} ->
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "review_event_modal"})
+         |> push_patch(to: ~p"/users/notifications")
          |> put_flash(:error, "Could not approve event. Please try again later.")}
     end
   end
@@ -141,23 +121,18 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
     case Events.delete_event(event) do
       {:ok, _} ->
-        Phoenix.PubSub.broadcast(
-          SinghSabha.PubSub,
-          "events",
-          {:event_deleted, event}
-        )
-
+        Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
         EventNotifier.event_denied(event)
 
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "review_event_modal"})
+         |> push_patch(to: ~p"/users/notifications")
          |> put_flash(:success, "Event denied successfully!")}
 
       {:error, _} ->
         {:noreply,
          socket
-         |> push_event("close-modal", %{id: "review_event_modal"})
+         |> push_patch(to: ~p"/users/notifications")
          |> put_flash(:error, "Could not deny event. Please try again later.")}
     end
   end
@@ -185,3 +160,4 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
     end
   end
 end
+

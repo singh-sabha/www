@@ -1,5 +1,6 @@
 defmodule SinghSabhaWeb.CalendarLive.Views.Month do
   use Phoenix.Component
+  use SinghSabhaWeb, :html
 
   alias SinghSabhaWeb.Helpers.{
     EventType,
@@ -85,19 +86,17 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
       "flex h-full flex-col border-t border-base-300 py-1.5 lg:py-1",
       !@saturday? && "border-r"
     ]}>
-      <button
-        phx-click="change_view_to_date"
-        phx-value-date={Date.to_iso8601(@date)}
-        class={[
+      <.link patch={~p"/calendar?#{[view: :day, date: Date.to_string(@date)]}"}>
+        <button class={[
           "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0 mb-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-base-content/10 cursor-pointer",
           !@today? &&
             "hover:bg-base-content/10",
           !@current_month? && "text-base-content/50",
           @today? && "bg-primary text-primary-content"
-        ]}
-      >
-        {@date.day}
-      </button>
+        ]}>
+          {@date.day}
+        </button>
+      </.link>
 
       <div class={[
         "flex flex-1 h-6 gap-1 px-2 lg:h-auto lg:flex-col lg:gap-2 lg:px-0",
@@ -119,8 +118,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
                 EventType.dot_colour(colour)
               ]}>
               </div>
-              <div
-                class={[
+              <.link patch={~p"/calendar/#{segment.event.id}"}>
+                <div class={[
                   "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
                   EventType.badge_colour(colour),
                   User.privileged?(@current_scope) && segment.starts? &&
@@ -134,17 +133,15 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
                   !segment.ends? && "rounded-r-none border-r-0",
                   !@sunday? && "-ml-px",
                   !@saturday? && "-mr-px"
-                ]}
-                phx-click="view_event"
-                phx-value-event-id={segment.event.id}
-              >
-                <%= if segment.starts? do %>
-                  <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
-                    <span class="truncate">{segment.event.occasion}</span>
-                    <span>{Timezone.format_time(segment.event.start)}</span>
-                  </div>
-                <% end %>
-              </div>
+                ]}>
+                  <%= if segment.starts? do %>
+                    <div class="flex w-full items-center justify-between px-2 overflow-hidden whitespace-nowrap">
+                      <span class="truncate">{segment.event.occasion}</span>
+                      <span>{Timezone.format_time(segment.event.start)}</span>
+                    </div>
+                  <% end %>
+                </div>
+              </.link>
             </div>
           <% else %>
             <div class="lg:flex-1"></div>
