@@ -247,8 +247,15 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => event_id}) do
-    event = Events.get_event!(event_id)
-    assign(socket, :selected_event, event)
+    case Events.get_event(event_id) do
+      {:ok, event} ->
+        assign(socket, :selected_event, event)
+
+      nil ->
+        socket
+        |> put_flash(:error, "Event not found.")
+        |> push_patch(to: calendar_path(socket.assigns.calendar_query))
+    end
   end
 
   defp get_presence_users do
