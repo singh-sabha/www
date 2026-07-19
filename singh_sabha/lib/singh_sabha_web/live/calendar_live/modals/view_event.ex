@@ -100,7 +100,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
               </.link>
               <button
                 type="button"
-                class="btn"
+                class="btn btn-error"
                 phx-click="delete_event"
                 phx-value-event-id={@selected_event.id}
               >
