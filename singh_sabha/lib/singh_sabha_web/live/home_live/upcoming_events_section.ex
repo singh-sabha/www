@@ -83,11 +83,12 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
       "w-full max-w-md flex flex-col gap-3 rounded-md border p-4",
       Colour.card_colour(@colour)
     ]}>
-      <div class="flex items-center justify-between">
-        <div class={["badge badge-sm gap-1", Colour.badge_colour(@colour)]}>
-          <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
-          {@time_label}
-        </div>
+      <div class={[
+        "badge badge-sm gap-1",
+        if(@time_label == "Happening Now", do: "badge-error", else: "badge-neutral")
+      ]}>
+        <.icon name="hero-clock" class="size-3 shrink-0" />
+        {@time_label}
       </div>
 
       <h4 class={[
