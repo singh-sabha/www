@@ -5,13 +5,15 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
   alias SinghSabhaWeb.Helpers.{
     EventType,
     Timezone,
-    User
+    User,
+    Path
   }
 
   attr :current_date, :any, required: true
   attr :current_time, :any, required: true
   attr :current_scope, :map, default: nil
   attr :events, :list, required: true
+  attr :origin_path, :map, required: true
 
   def month(assigns) do
     max_visible_events = 4
@@ -49,6 +51,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
             events={@events}
             event_positions={@event_positions}
             max_visible_events={@max_visible_events}
+            origin_path={@origin_path}
           />
         <% end %>
       </div>
@@ -63,6 +66,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
   attr :events, :list, required: true
   attr :event_positions, :map, required: true
   attr :max_visible_events, :integer, required: true
+  attr :origin_path, :map, required: true
 
   defp day_cell(assigns) do
     {segments, overflow} =
@@ -86,7 +90,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
       "flex h-full flex-col border-t border-base-300 py-1.5 lg:py-1",
       !@saturday? && "border-r"
     ]}>
-      <.link patch={~p"/calendar?#{[view: :day, date: Date.to_string(@date)]}"}>
+      <.link patch={Path.calendar(%{@origin_path | view: "day", date: @date})}>
         <button class={[
           "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0 mb-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-base-content/10 cursor-pointer",
           !@today? &&
@@ -118,7 +122,9 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
                 EventType.dot_colour(colour)
               ]}>
               </div>
-              <.link patch={~p"/calendar/#{segment.event.id}"}>
+              <.link patch={
+                Path.calendar(%{@origin_path | date: @date}, action: {:show, segment.event.id})
+              }>
                 <div class={[
                   "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
                   EventType.badge_colour(colour),
