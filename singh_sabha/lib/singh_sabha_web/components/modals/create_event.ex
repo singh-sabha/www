@@ -1,11 +1,9 @@
 defmodule SinghSabhaWeb.Components.Modals.CreateEvent do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.Timezone
+  alias SinghSabhaWeb.Helpers.{Timezone, Path}
   alias SinghSabha.Events.{Event}
   alias SinghSabha.Events
-
-  import SinghSabhaWeb.CalendarLive.Index, only: [calendar_path: 1]
 
   attr :calendar_query, :map, required: true
   attr :id, :string, required: true
@@ -19,7 +17,7 @@ defmodule SinghSabhaWeb.Components.Modals.CreateEvent do
       <button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        phx-click={JS.patch(calendar_path(@calendar_query))}
+        phx-click={JS.patch(Path.calendar(@calendar_query))}
       >
         <.icon name="hero-x-mark" class="size-4" />
       </button>
@@ -142,7 +140,7 @@ defmodule SinghSabhaWeb.Components.Modals.CreateEvent do
         Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_created, event})
         send(self(), {:put_flash, :success, "Event created successfully!"})
 
-        {:noreply, push_patch(socket, to: calendar_path(socket.assigns.calendar_query))}
+        {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.calendar_query))}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset, as: :create_event))}

@@ -4,10 +4,9 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
   alias SinghSabhaWeb.Helpers.{
     EventType,
     Timezone,
-    User
+    User,
+    Path
   }
-
-  import SinghSabhaWeb.CalendarLive.Index, only: [calendar_path: 1, calendar_path: 2]
 
   attr :calendar_query, :map, required: true
   attr :id, :string, required: true
@@ -21,7 +20,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
       <button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        phx-click={JS.patch(calendar_path(@calendar_query))}
+        phx-click={JS.patch(Path.calendar(@calendar_query))}
       >
         <.icon name="hero-x-mark" class="size-4" />
       </button>
@@ -91,7 +90,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
         <%= if User.privileged?(@current_scope) do %>
           <div class="modal-action">
             <%= if @selected_event.is_deposit_paid do %>
-              <.link patch={calendar_path(@calendar_query, action: {:edit, @selected_event.id})}>
+              <.link patch={Path.calendar(@calendar_query, action: {:edit, @selected_event.id})}>
                 <button
                   type="button"
                   class="btn"

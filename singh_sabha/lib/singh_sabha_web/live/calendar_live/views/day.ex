@@ -6,10 +6,10 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     Event,
     Timezone,
     EventType,
-    User
+    User,
+    Path
   }
 
-  import SinghSabhaWeb.CalendarLive.Index, only: [calendar_path: 2]
   import SinghSabhaWeb.CalendarLive.Components
 
   attr :calendar_query, :map, required: true
@@ -93,7 +93,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                     <% end %>
 
                     <.link patch={
-                      calendar_path(@calendar_query,
+                      Path.calendar(@calendar_query,
                         action: :new,
                         date: @current_date,
                         time: hour
@@ -107,7 +107,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                     </div>
 
                     <.link patch={
-                      calendar_path(@calendar_query,
+                      Path.calendar(@calendar_query,
                         action: :new,
                         date: @current_date,
                         time: hour + 0.5
@@ -131,7 +131,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                     ) %>
                   <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
                   <div class="absolute p-1 pointer-events-none" style={style}>
-                    <.link patch={calendar_path(@calendar_query, action: {:show, event.id})}>
+                    <.link patch={Path.calendar(@calendar_query, action: {:show, event.id})}>
                       <div class={[
                         "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
                         User.privileged?(@current_scope) &&
@@ -336,7 +336,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <.link patch={calendar_path(@calendar_query, action: {:show, @event.id})}>
+    <.link patch={Path.calendar(@calendar_query, action: {:show, @event.id})}>
       <div class={[
         "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
         User.privileged?(@current_scope) &&
