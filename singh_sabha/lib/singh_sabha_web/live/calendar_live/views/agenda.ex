@@ -105,7 +105,6 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   attr :current_scope, :any, required: true
   attr :origin_path, :map, required: true
 
-  # TODO: could this be extracted into core_components? We're using a variation in AssistantLive
   defp event_card(assigns) do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
