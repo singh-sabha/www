@@ -21,7 +21,7 @@ defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
 
       <h3 class="font-bold text-lg">{@selected_event.occasion}</h3>
 
-      <div class="space-y-3 mt-4">
+      <div class="space-y-2 mt-4">
         <div class="flex items-start gap-2">
           <.icon name="hero-user" class="mt-1 size-4 shrink-0" />
           <div>

@@ -92,7 +92,7 @@
     </button>
   </form>
 
-  <div class={["space-y-3", !@processing? && "hidden"]}>
+  <div class={["space-y-2", !@processing? && "hidden"]}>
     <%= for file <- @uploaded_files do %>
       <%= case file.status do %>
         <% :processing -> %>
