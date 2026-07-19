@@ -6,10 +6,9 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
     Event,
     Timezone,
     EventType,
-    User
+    User,
+    Path
   }
-
-  import SinghSabhaWeb.CalendarLive.Index, only: [calendar_path: 2]
 
   attr :current_date, :any, required: true
   attr :current_time, :any, required: true
@@ -110,7 +109,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <.link patch={calendar_path(@calendar_query, action: {:show, @event.id})}>
+    <.link patch={Path.calendar(@calendar_query, action: {:show, @event.id})}>
       <div
         class={[
           "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",

@@ -110,7 +110,7 @@
 
           <%= if User.privileged?(@current_scope) do %>
             <div class="join w-full lg:w-auto">
-              <.link patch={calendar_path(@calendar_query, action: :new)}>
+              <.link patch={Path.calendar(@calendar_query, action: :new)}>
                 <button
                   type="button"
                   class="btn btn-primary join-item w-full lg:w-auto flex items-center gap-1"
@@ -136,7 +136,7 @@
               </div>
             </div>
           <% else %>
-            <.link patch={calendar_path(@calendar_query, action: :new)}>
+            <.link patch={Path.calendar(@calendar_query, action: :new)}>
               <button class="btn btn-primary w-full lg:w-auto">
                 <span class="flex items-center gap-1">
                   <.icon name="hero-plus-circle" class="size-4" /> Book Event
