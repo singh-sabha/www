@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.AssistantLive.Edit do
   use SinghSabhaWeb, :live_view
 
-  alias SinghSabhaWeb.Helpers.{EventType, Timezone, Path}
+  alias SinghSabhaWeb.Helpers.{EventType, Timezone, Path, Colour}
   alias SinghSabhaWeb.Components.Modals.EditEvent
 
   alias SinghSabha.Events

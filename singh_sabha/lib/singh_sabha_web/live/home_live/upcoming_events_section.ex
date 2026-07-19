@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.Helpers.{Timezone, EventType}
+  alias SinghSabhaWeb.Helpers.{Timezone, EventType, Colour}
 
   attr :upcoming, :list, required: true
   attr :current_time, :any, required: true
@@ -81,10 +81,10 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
     ~H"""
     <div class={[
       "w-full max-w-md flex flex-col gap-3 rounded-md border p-4",
-      EventType.card_colour(@colour)
+      Colour.card_colour(@colour)
     ]}>
       <div class="flex items-center justify-between">
-        <div class={["badge badge-sm gap-1", EventType.badge_colour(@colour)]}>
+        <div class={["badge badge-sm gap-1", Colour.badge_colour(@colour)]}>
           <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
           {@time_label}
         </div>
@@ -92,7 +92,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
 
       <h4 class={[
         "font-semibold leading-tight line-clamp-2",
-        EventType.text_colour(@colour)
+        Colour.text_colour(@colour)
       ]}>
         {@event.occasion}
       </h4>

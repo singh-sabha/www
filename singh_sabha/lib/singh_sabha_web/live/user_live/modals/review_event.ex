@@ -77,7 +77,7 @@ defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
             phx-disable-with="Approving..."
             type="submit"
             class={[
-              "btn btn-primary",
+              "btn btn-success",
               if(@start_time not in [nil, ""] and @end_time not in [nil, ""],
                 do: "btn",
                 else: "btn-disabled"
@@ -89,7 +89,7 @@ defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
           <.button
             phx-disable-with="Denying..."
             type="button"
-            class="btn"
+            class="btn btn-error"
             phx-click="deny_event"
             phx-value-event-id={@selected_event.id}
             phx-target={@myself}

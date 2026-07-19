@@ -10,7 +10,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
     Event,
     Timezone,
     EventType,
-    Path
+    Path,
+    Colour
   }
 
   attr :origin_path, :map, required: true
@@ -184,7 +185,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
               "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
               User.privileged?(@current_scope) &&
                 EventType.event_status_colour(event.is_verified, event.is_deposit_paid),
-              EventType.badge_colour(colour)
+              Colour.badge_colour(colour)
             ]}>
               <div class="font-medium truncate">{event.occasion}</div>
               {Timezone.format_time(event.start)} - {Timezone.format_time(event.end)}
@@ -266,7 +267,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
     <.link patch={Path.calendar(@origin_path, action: {:show, @event.id})}>
       <div class={[
         "h-6.5 text-xs font-medium flex items-center border -mx-px cursor-pointer",
-        EventType.badge_colour(colour),
+        Colour.badge_colour(colour),
         User.privileged?(@current_scope) && @starts &&
           EventType.event_status_colour(@event.is_verified, @event.is_deposit_paid),
         @starts && "rounded-l-md ml-1",

@@ -6,7 +6,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
     EventType,
     Timezone,
     User,
-    Path
+    Path,
+    Colour
   }
 
   attr :current_date, :any, required: true
@@ -119,7 +120,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
             ]}>
               <div class={[
                 "block w-2 h-2 rounded-full lg:hidden",
-                EventType.dot_colour(colour)
+                Colour.dot_colour(colour)
               ]}>
               </div>
               <.link patch={
@@ -127,7 +128,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
               }>
                 <div class={[
                   "hidden lg:flex h-6.5 items-center text-xs font-medium border cursor-pointer",
-                  EventType.badge_colour(colour),
+                  Colour.badge_colour(colour),
                   User.privileged?(@current_scope) && segment.starts? &&
                     EventType.event_status_colour(
                       segment.event.is_verified,

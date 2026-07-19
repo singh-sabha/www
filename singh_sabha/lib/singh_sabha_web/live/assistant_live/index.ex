@@ -1,7 +1,7 @@
 defmodule SinghSabhaWeb.AssistantLive.Index do
   use SinghSabhaWeb, :live_view
 
-  alias SinghSabhaWeb.Helpers.EventType
+  alias SinghSabhaWeb.Helpers.Colour
   alias SinghSabha.Drafts
   alias SinghSabha.Workers.Poster
 
