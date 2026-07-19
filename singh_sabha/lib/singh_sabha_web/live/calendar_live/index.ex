@@ -7,7 +7,6 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
     Event,
     Timezone,
     User,
-    EventType,
     Path,
     Colour
   }
