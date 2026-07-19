@@ -1,8 +1,6 @@
 defmodule SinghSabhaWeb.Components.Modals.BookEvent do
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.Path
-
   alias SinghSabha.Events.{Event, EventNotifier}
   alias SinghSabha.Events
 
