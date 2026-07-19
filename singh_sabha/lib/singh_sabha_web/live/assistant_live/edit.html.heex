@@ -1,0 +1,79 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <h1 class="text-xl font-semibold mb-6">Assistant</h1>
+
+  <div class="space-y-3">
+    <%= for event <- @draft.events do %>
+      <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
+      <div class={[
+        "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors",
+        EventType.card_colour(colour)
+      ]}>
+        <div class="flex flex-1 flex-col gap-2 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <p class="font-medium">
+              <span class={EventType.text_colour(colour)}>
+                {event.occasion}
+              </span>
+            </p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <.icon name="hero-clock" class="size-3 shrink-0 text-base-content/70" />
+            <p class="text-xs">
+              {Timezone.format_datetime(event.start)} - {Timezone.format_datetime(event.end)}
+            </p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <.icon name="hero-tag" class="size-3 shrink-0 text-base-content/70" />
+            <p class="text-xs">{event.event_type.display_name}</p>
+          </div>
+          <%= if event.note do %>
+            <div class="flex items-center gap-1.5">
+              <.icon name="hero-document-text" class="size-3 shrink-0 text-base-content/70" />
+              <p class="text-xs">{event.note}</p>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="flex items-center gap-1 shrink-0">
+          <.link patch={~p"/assistant/#{@draft.id}/edit/#{event.id}"}>
+            <button
+              type="button"
+              class="btn btn-xs btn-ghost btn-circle"
+              aria-label="Edit event"
+            >
+              <.icon name="hero-pencil-square" class="size-4" />
+            </button>
+          </.link>
+          <button
+            type="button"
+            class="btn btn-xs btn-ghost btn-circle text-success"
+            aria-label="Accept event"
+            phx-click="accept_event"
+            phx-value-event-id={event.id}
+          >
+            <.icon name="hero-check" class="size-4" />
+          </button>
+          <button
+            type="button"
+            class="btn btn-xs btn-ghost btn-circle text-error"
+            aria-label="Deny event"
+            phx-click="deny_event"
+            phx-value-event-id={event.id}
+          >
+            <.icon name="hero-x-mark" class="size-4" />
+          </button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<dialog :if={@live_action == :edit_event} class="modal modal-open">
+  <.live_component
+    :if={@selected_event}
+    module={EditEvent}
+    id="edit_event_modal"
+    selected_event={@selected_event}
+    origin_path={Path.assistant(@origin_path)}
+  />
+</dialog>

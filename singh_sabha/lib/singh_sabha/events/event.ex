@@ -1,7 +1,8 @@
 defmodule SinghSabha.Events.Event do
-  alias SinghSabhaWeb.Helpers.Timezone
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias SinghSabhaWeb.Helpers.Timezone
 
   schema "events" do
     field :registrant_full_name, :string
@@ -17,6 +18,7 @@ defmodule SinghSabha.Events.Event do
     field :is_deposit_paid, :boolean, default: false
 
     belongs_to :event_type, SinghSabha.Events.EventType, foreign_key: :type
+    belongs_to :draft, SinghSabha.Drafts.Draft
 
     timestamps()
   end
@@ -24,6 +26,7 @@ defmodule SinghSabha.Events.Event do
   def changeset(event, attrs) do
     event
     |> cast(attrs, [
+      :draft_id,
       :type,
       :start,
       :end,

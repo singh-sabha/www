@@ -1,5 +1,5 @@
 defmodule SinghSabha.Workers.Poster do
-  use Oban.Worker, queue: :posters, max_attempts: 3
+  use Oban.Worker, queue: :posters, max_attempts: 1
 
   require Logger
 
@@ -7,42 +7,134 @@ defmodule SinghSabha.Workers.Poster do
 
   alias SinghSabhaWeb.Helpers.Timezone
 
-  alias SinghSabha.Events.{Event, EventType}
   alias SinghSabha.Events
+  alias SinghSabha.Drafts
 
   @model "google:gemini-3.1-flash-lite"
 
   @impl Oban.Worker
   def perform(%Oban.Job{
-        args: %{"id" => id, "key" => key, "filename" => filename, "topic" => topic},
-        attempt: attempt
+        args: %{"id" => id, "key" => key, "filename" => filename}
       }) do
-    case extract_event(key, filename) do
-      {:error, %ReqLLM.Error.API.Request{status: 503}} when attempt < 3 ->
-        {:snooze, 30}
+    response = %{
+      "events" => [
+        %{
+          "end" => "2026-10-17T23:59",
+          "occasion" => "Sangrand (Katak) Evening Programme",
+          "start" => "2026-10-17T18:00",
+          "type" => "Other"
+        },
+        %{
+          "end" => "2026-10-17T23:59",
+          "notes" => "Guru Ghar",
+          "occasion" => "Langar",
+          "start" => "2026-10-17T12:00",
+          "type" => "Langar"
+        },
+        %{
+          "end" => "2026-10-18T20:00",
+          "notes" => "Sewa by Satbir Singh",
+          "occasion" => "Sri Sukhmani Sahib",
+          "start" => "2026-10-18T18:00",
+          "type" => "Sukhmani Sahib Path"
+        },
+        %{
+          "end" => "2026-10-18T20:00",
+          "notes" => "Sewa by Satbir Singh",
+          "occasion" => "Langar",
+          "start" => "2026-10-18T18:00",
+          "type" => "Langar"
+        },
+        %{
+          "end" => "2026-10-19T14:00",
+          "notes" => "Sewa by Bibi Manjil Kaur",
+          "occasion" => "Sunday Diwan Langar",
+          "start" => "2026-10-19T11:00",
+          "type" => "Langar"
+        },
+        %{
+          "end" => "2026-10-19T14:00",
+          "notes" => "Sewa by Rajinder Kaur",
+          "occasion" => "Sehaj Path Bhog",
+          "start" => "2026-10-19T11:00",
+          "type" => "Sehaj Path"
+        },
+        %{
+          "end" => "2026-10-21T20:30",
+          "notes" => "Bandi Chhor Divas",
+          "occasion" => "Diwali Evening Diwan",
+          "start" => "2026-10-21T17:00",
+          "type" => "Other"
+        },
+        %{
+          "end" => "2026-10-21T20:30",
+          "notes" => "Sewa by Bibi Balwinder Kaur",
+          "occasion" => "Langar",
+          "start" => "2026-10-21T17:00",
+          "type" => "Langar"
+        },
+        %{
+          "end" => "2026-10-25T12:00",
+          "notes" => "At home of Sr. Kuldar Singh",
+          "occasion" => "Sri Sukhmani Sahib Path",
+          "start" => "2026-10-25T09:00",
+          "type" => "Sukhmani Sahib Path"
+        },
+        %{
+          "end" => "2026-10-26T14:00",
+          "notes" => "Sewa by Surjeet Singh Dhaneta",
+          "occasion" => "Sunday Diwan",
+          "start" => "2026-10-26T11:00",
+          "type" => "Other"
+        },
+        %{
+          "end" => "2026-10-26T14:00",
+          "notes" => "Sewa by Surjeet Singh Dhaneta",
+          "occasion" => "Sri Sukhmani Sahib Path",
+          "start" => "2026-10-26T11:00",
+          "type" => "Sukhmani Sahib Path"
+        },
+        %{
+          "end" => "2026-10-26T14:00",
+          "notes" => "Sewa by Surjeet Singh Dhaneta",
+          "occasion" => "Langar",
+          "start" => "2026-10-26T11:00",
+          "type" => "Langar"
+        }
+      ]
+    }
 
-      results ->
-        Phoenix.PubSub.broadcast(
-          SinghSabha.PubSub,
-          topic,
-          {:poster_processed, id, results}
-        )
+    with {:ok, %{draft: draft}} <- build_events(response, key) do
+      Logger.info("created draft #{draft.id}")
 
-        case results do
-          {:ok, _} -> :ok
-          {:error, reason} -> {:error, reason}
-        end
+      Phoenix.PubSub.broadcast(SinghSabha.PubSub, "drafts", {:draft_created, draft.id})
+
+      :ok
+    else
+      {:error, %ReqLLM.Error.API.Request{status: 503}} = error ->
+        Logger.error("hit a rate limit")
+        error
+
+      {:error, :events, changeset, _changes_so_far} ->
+        Logger.error("event failed validation: #{inspect(changeset.errors)}")
+        {:error, changeset}
+
+      {:error, :draft, changeset, _changes_so_far} ->
+        Logger.error("draft failed validation: #{inspect(changeset.errors)}")
+        {:error, changeset}
+
+      {:error, reason} = error ->
+        Logger.error("could not build draft: #{inspect(reason)}")
+        error
     end
   end
 
-  defp extract_event(key, filename) do
-    event_types = Events.list_event_types(:all)
-    type_names = Enum.map(event_types, & &1.display_name)
+  defp extract_events(key, filename) do
+    Logger.info("extracting events for #{filename}...")
 
-    type_descriptions =
-      Enum.map_join(event_types, "\n", fn type ->
-        "- #{type.display_name}: #{type.description}"
-      end)
+    event_types =
+      Events.list_event_types(:all)
+      |> Enum.map(& &1.display_name)
 
     prompt = """
     Extract every distinct event listed on this poster. Posters often list a
@@ -57,12 +149,12 @@ defmodule SinghSabha.Workers.Poster do
     - All output fields must be in English.
     - If a field isn't present for a given event, omit it.
     - For "type", choose the single best match for each event from this list:
-    #{type_descriptions}
+    #{event_types}
     - If the poster states a year only once (e.g. in a title or header), apply
       that year to every event's date.
-    - Format "start" and "end" exactly as: YYYY-MM-DD HH:MM:SS (24-hour time).
-      For example, October 5 2026 at 9:00 AM is "2026-10-05 09:00:00". If no
-      time is given for an event, use "00:00:00".
+    - Format "start" and "end" exactly as: YYYY-MM-DDTHH:MM (24-hour time).
+      For example, October 5 2026 at 9:00 AM is "2026-10-05T09:00". If no
+      time is given for an event, use "00:00".
     """
 
     image_binary =
@@ -93,15 +185,15 @@ defmodule SinghSabha.Workers.Poster do
               },
               "start" => %{
                 "type" => "string",
-                "description" => "Format: YYYY-MM-DD HH:MM:SS"
+                "description" => "Format: YYYY-MM-DDTHH:MM"
               },
               "end" => %{
                 "type" => "string",
-                "description" => "Format: YYYY-MM-DD HH:MM:SS"
+                "description" => "Format: YYYY-MM-DDTHH:MM"
               },
               "type" => %{
                 "type" => "string",
-                "enum" => type_names
+                "enum" => event_types
               },
               "notes" => %{
                 "type" => "string"
@@ -115,48 +207,52 @@ defmodule SinghSabha.Workers.Poster do
     }
 
     case ReqLLM.generate_object(@model, messages, schema) do
-      {:ok, response} -> build_events(response.object, event_types)
-      {:error, reason} -> {:error, reason}
+      {:ok, response} ->
+        Logger.info("successfully extracted events for #{filename}!")
+
+        ReqLLM.Response.object(response)
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 
-  defp build_events(%{"events" => events}, event_types) do
-    name_to_id = Map.new(event_types, &{&1.display_name, &1.id})
+  defp build_events(%{"events" => events}, key) do
+    Logger.info("building draft with events...")
 
-    results =
-      Enum.flat_map(events, fn event ->
-        with {:ok, start} <- Timezone.local_to_utc_full(event["start"]),
-             # "end" is a reversed keyword, so we use "end_" instead
-             {:ok, end_} <- Timezone.local_to_utc_full(event["end"]),
-             {:ok, type_id} <- Map.fetch(name_to_id, event["type"]) do
-          [
-            %Event{
-              occasion: event["occasion"],
-              # required: in DB "type" is a foreign key used for modal population
-              type: type_id,
-              event_type: %EventType{
-                id: type_id,
-                display_name: event["type"]
-              },
-              start: start,
-              end: end_,
-              note: event["note"],
-              is_deposit_paid: true,
-              is_verified: true,
-              is_public: true
-            }
-          ]
-        else
-          _ ->
-            Logger.warning("aborted: encountered a malformed entry during agentic extraction")
-            []
-        end
-      end)
+    name_to_id =
+      Events.list_event_types(:all)
+      |> Map.new(&{&1.display_name, &1.id})
 
-    if length(results) != length(events) do
-      {:error, "aborted: we were not able to extract some events"}
-    else
-      {:ok, results}
+    events
+    |> Enum.reduce_while({:ok, []}, fn event, {:ok, acc} ->
+      with {:ok, type_id} <- fetch_type_id(name_to_id, event["type"]),
+           params <-
+             event
+             |> Map.merge(%{"is_deposit_paid" => true, "is_verified" => true, "type" => type_id})
+             |> Timezone.convert_datetime_params() do
+        {:cont, {:ok, [params | acc]}}
+      else
+        {:error, reason} -> {:halt, {:error, reason}}
+      end
+    end)
+    |> case do
+      {:ok, event_params} ->
+        Drafts.create_draft(%{
+          "image_path" => key,
+          "status" => "pending",
+          "events" => Enum.reverse(event_params)
+        })
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp fetch_type_id(name_to_id, type) do
+    case Map.fetch(name_to_id, type) do
+      {:ok, id} -> {:ok, id}
+      :error -> {:error, {:unknown_event_type, type}}
     end
   end
 end

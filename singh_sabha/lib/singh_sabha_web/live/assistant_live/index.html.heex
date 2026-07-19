@@ -1,6 +1,30 @@
 <div class="container mx-auto px-4 py-8 max-w-2xl">
   <h1 class="text-xl font-semibold mb-6">Assistant</h1>
+
+  <div :if={@drafts != []} class="space-y-2 mt-6">
+    <h2 class="text-lg font-semibold">Pending review</h2>
+
+    <%= for draft <- @drafts do %>
+      <.link patch={~p"/assistant/#{draft.id}/edit"}>
+        <div class="flex select-none items-center justify-between rounded-md border border-base-300 p-3 text-sm cursor-pointer mb-3">
+          <div class="flex flex-col gap-1 min-w-0">
+            <p class="font-medium truncate">
+              <span>
+                Poster uploaded {Calendar.strftime(draft.inserted_at, "%b %-d, %-I:%M %p")}
+              </span>
+            </p>
+            <p class="text-xs text-base-content/60 truncate">
+              {draft.image_path}
+            </p>
+          </div>
+          <.icon name="hero-chevron-right" class="size-4 shrink-0 text-base-content/40" />
+        </div>
+      </.link>
+    <% end %>
+  </div>
+
   <form
+    :if={length(@drafts) == 0}
     id="upload-form"
     phx-change="validate"
     phx-submit="save"
@@ -68,60 +92,6 @@
   <div class={["space-y-3", !@processing? && "hidden"]}>
     <%= for file <- @uploaded_files do %>
       <%= case file.status do %>
-        <% :done -> %>
-          <div class="collapse collapse-arrow rounded-md border border-base-300">
-            <input
-              type="checkbox"
-              checked={@open_file_id == file.id}
-              phx-click="toggle_file"
-              phx-value-file-id={file.id}
-            />
-
-            <div class="collapse-title min-h-0 !py-3 !pl-3 !pr-10 flex items-center gap-3 text-sm">
-              <.icon name="hero-photo" class="size-4 shrink-0 text-base-content/70" />
-              <span class="font-medium truncate flex-1">{file.filename}</span>
-              <span class="badge badge-sm badge-ghost shrink-0">
-                {length(file.events)} event{if length(file.events) != 1, do: "s"}
-              </span>
-            </div>
-
-            <div class="collapse-content !pb-3 space-y-3">
-              <% selected = Map.get(@selected_event_ids, file.id, MapSet.new()) %>
-
-              <div class="flex items-center justify-between pb-1">
-                <label class="flex items-center gap-2 text-xs text-base-content/60 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    class="checkbox checkbox-xs"
-                    checked={
-                      MapSet.size(selected) == length(file.events) and length(file.events) > 0
-                    }
-                    phx-click="toggle_select_all"
-                    phx-value-file-id={file.id}
-                  /> Select all
-                </label>
-
-                <button
-                  type="button"
-                  class="btn btn-xs btn-primary"
-                  disabled={MapSet.size(selected) == 0}
-                  phx-click="accept_events"
-                  phx-value-file-id={file.id}
-                >
-                  <.icon name="hero-check" class="size-3" /> Accept
-                </button>
-              </div>
-
-              <%= for {event, index} <- Enum.with_index(file.events) do %>
-                <.event_card
-                  event={event}
-                  event_id={index}
-                  file_id={file.id}
-                  checked={MapSet.member?(selected, index)}
-                />
-              <% end %>
-            </div>
-          </div>
         <% :processing -> %>
           <div class="flex items-center gap-3 rounded-md border border-base-300 p-3 text-sm">
             <.icon name="hero-photo" class="size-4 shrink-0 text-base-content/70" />
@@ -143,13 +113,3 @@
     <% end %>
   </div>
 </div>
-
-<.live_component
-  :if={@selected_event}
-  module={EditEvent}
-  id="edit_event_modal"
-  selected_event={@selected_event}
-  source={@edit_source}
-/>
-
-<div phx-hook="ModalManager" id="modal-manager"></div>

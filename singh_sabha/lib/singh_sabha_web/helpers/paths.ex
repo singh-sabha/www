@@ -15,4 +15,10 @@ defmodule SinghSabhaWeb.Helpers.Path do
       {:edit, id} -> ~p"/calendar/#{id}/edit?#{queries}"
     end
   end
+
+  def assistant(query, opts \\ []) do
+    draft_id = Keyword.get(opts, :draft_id, query.draft_id)
+
+    ~p"/assistant/#{draft_id}/edit"
+  end
 end
