@@ -1,5 +1,41 @@
 # Changelog
 
+## [2.0.0](https://github.com/singh-sabha/www/compare/v1.5.0...v2.0.0) (2026-07-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* support drafts in the agentic workflow
+
+### Features
+
+* delete a draft and its associated events ([c95cbaf](https://github.com/singh-sabha/www/commit/c95cbaf9e7a082a8c82a58871be3d00e96ceba62))
+* move away from using `ModalManager` for modal manipulation ([1f89f99](https://github.com/singh-sabha/www/commit/1f89f998e7a50789aba931e2aa2c487a4cb7ec8a))
+* support drafts in the agentic workflow ([803edc6](https://github.com/singh-sabha/www/commit/803edc651619a03ded459956d1d25d1d7fcf946d))
+
+
+### Bug Fixes
+
+* add `assistant` path resolver function ([803edc6](https://github.com/singh-sabha/www/commit/803edc651619a03ded459956d1d25d1d7fcf946d))
+* automatic width adjustments ([d04f7e8](https://github.com/singh-sabha/www/commit/d04f7e89d26cf36b8ff2a8f5044f367fbd0e5f3f))
+* broken modal usage ([3bdd0c6](https://github.com/singh-sabha/www/commit/3bdd0c6115353a8b95b693aed127efe4e4165fc1))
+* consider all events not just single day ([32568c1](https://github.com/singh-sabha/www/commit/32568c16b858f16192eea98b9c4af4f4481d5e11))
+* dont change the view when setting the current date ([e9efa46](https://github.com/singh-sabha/www/commit/e9efa464dfe0dbb1eec5dfa278b6acc77f05f69c))
+* filter out events that have a draft ([93eb97f](https://github.com/singh-sabha/www/commit/93eb97ff7b54a31441dec5b35d5f01a6538f9cc9))
+* link tag was not rendering space ([7c48221](https://github.com/singh-sabha/www/commit/7c48221f6b63b3bb8928b9a2bc7203230ba52bfb))
+* make wider ([1dfe76d](https://github.com/singh-sabha/www/commit/1dfe76d3eff9f91e541113b152df1312155df79e))
+* no longer raising when an event is not found ([e3433a7](https://github.com/singh-sabha/www/commit/e3433a7269913fe2328cd3f6e3d5a0d4d5f99f14))
+* remove inaccurate todo ([6fc44b7](https://github.com/singh-sabha/www/commit/6fc44b75adddf66469e04a9acd74e95a9f908de7))
+* remove stubs ([ef6ccf5](https://github.com/singh-sabha/www/commit/ef6ccf557865ed8a42472dfc2849a94cab3cdb64))
+* spacing ([5670a99](https://github.com/singh-sabha/www/commit/5670a99da7606451d565952b5a35a92432522848))
+* traversing through buttons did not preserve query path ([10c72ab](https://github.com/singh-sabha/www/commit/10c72ab3364b7208adf186f80414661b9210e3a4))
+* update design style ([1dfe76d](https://github.com/singh-sabha/www/commit/1dfe76d3eff9f91e541113b152df1312155df79e))
+
+
+### Performance Improvements
+
+* remove unused function ([cb6725d](https://github.com/singh-sabha/www/commit/cb6725da92ca67a61eb4f6a8919d7f74222645cc))
+
 ## [1.5.0](https://github.com/singh-sabha/www/compare/v1.4.0...v1.5.0) (2026-07-03)
 
 
