@@ -72,4 +72,9 @@ defmodule SinghSabhaWeb.AssistantLive.Index do
       {:noreply, put_flash(socket, :error, "Please wait for the upload to finish.")}
     end
   end
+
+  @impl true
+  def handle_info({:draft_created, draft_id}, socket) do
+    {:noreply, push_navigate(socket, to: ~p"/assistant/#{draft_id}/edit")}
+  end
 end

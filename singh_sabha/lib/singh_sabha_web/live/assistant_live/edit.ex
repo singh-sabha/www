@@ -54,6 +54,19 @@ defmodule SinghSabhaWeb.AssistantLive.Edit do
     end
   end
 
+  def handle_event("delete_draft", _params, socket) do
+    case Drafts.delete_draft_and_events(socket.assigns.draft) do
+      {:ok, _deleted} ->
+        {:noreply,
+         socket
+         |> put_flash(:success, "Draft deleted.")
+         |> push_navigate(to: ~p"/assistant")}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, "Could not delete draft.")}
+    end
+  end
+
   @impl true
   def handle_info({:event_updated, updated_event}, socket) do
     draft = socket.assigns.draft
