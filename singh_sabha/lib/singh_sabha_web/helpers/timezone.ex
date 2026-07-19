@@ -7,6 +7,11 @@ defmodule SinghSabhaWeb.Helpers.Timezone do
     DateTime.shift_zone!(utc_datetime, local())
   end
 
+  def happening_now?(current_time, event_start_time, event_end_time) do
+    DateTime.compare(current_time, event_start_time) in [:gt, :eq] &&
+      DateTime.compare(current_time, event_end_time) == :lt
+  end
+
   def format(utc_datetime, format_string \\ "%B %d, %Y at %I:%M %p") do
     utc_datetime
     |> to_local()
@@ -15,15 +20,6 @@ defmodule SinghSabhaWeb.Helpers.Timezone do
 
   def local_to_utc(datetime_string) when is_binary(datetime_string) do
     with {:ok, naive} <- NaiveDateTime.from_iso8601(datetime_string <> ":00"),
-         {:ok, local_dt} <- DateTime.from_naive(naive, local()) do
-      {:ok, DateTime.shift_zone!(local_dt, "Etc/UTC")}
-    end
-  end
-
-  def local_to_utc_full(datetime_string) when is_binary(datetime_string) do
-    normalized = String.replace(datetime_string, " ", "T")
-
-    with {:ok, naive} <- NaiveDateTime.from_iso8601(normalized),
          {:ok, local_dt} <- DateTime.from_naive(naive, local()) do
       {:ok, DateTime.shift_zone!(local_dt, "Etc/UTC")}
     end

@@ -53,20 +53,24 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
 
     event_start_date = DateTime.to_date(assigns.event.start)
 
-    # TODO: use happening_now? function
-    is_happening_now =
-      DateTime.compare(assigns.current_time, assigns.event.start) in [:gt, :eq] &&
-        DateTime.compare(assigns.current_time, assigns.event.end) == :lt
-
     days_until = Date.diff(event_start_date, assigns.current_time)
 
     time_label =
       cond do
-        is_happening_now -> "Happening Now"
-        days_until == 0 -> "Today"
-        days_until == 1 -> "Tomorrow"
-        days_until <= 7 -> "In #{days_until} days"
-        true -> Calendar.strftime(assigns.event.start, "%b %-d")
+        Timezone.happening_now?(assigns.current_time, assigns.event.start, assigns.event.end) ->
+          "Happening Now"
+
+        days_until == 0 ->
+          "Today"
+
+        days_until == 1 ->
+          "Tomorrow"
+
+        days_until <= 7 ->
+          "In #{days_until} days"
+
+        true ->
+          Calendar.strftime(assigns.event.start, "%b %-d")
       end
 
     assigns =
@@ -114,9 +118,7 @@ defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
       <div class="flex items-center gap-1.5">
         <.icon name="hero-calendar" class="size-3 shrink-0 text-base-content/70" />
         <p class="text-xs">
-          {Timezone.format_datetime(@event.start)} - {Timezone.format_datetime(
-            @event.end
-          )}
+          {Timezone.format_datetime(@event.start)} - {Timezone.format_datetime(@event.end)}
         </p>
       </div>
     </div>

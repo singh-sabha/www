@@ -47,9 +47,4 @@ defmodule SinghSabhaWeb.CalendarLive.Components do
       ~H""
     end
   end
-
-  def happening_now?(current_time, event_start_time, event_end_time) do
-    DateTime.compare(current_time, event_start_time) in [:gt, :eq] &&
-      DateTime.compare(current_time, event_end_time) == :lt
-  end
 end
