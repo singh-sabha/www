@@ -194,7 +194,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
         </calendar-date>
 
         <div class="p-2">
-          <% current_events = ongoing_events(@current_time, @single_day_events) %>
+          <% current_events = ongoing_events(@current_time, @events) %>
           <%= if length(current_events) > 0 do %>
             <div class="flex items-start gap-2 px-4 pt-4">
               <div class="inline-grid *:[grid-area:1/1] mt-[5px]">
@@ -261,8 +261,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     """
   end
 
-  defp ongoing_events(current_time, single_day_events) do
-    Enum.reduce(single_day_events, [], fn event, acc ->
+  defp ongoing_events(current_time, events) do
+    Enum.reduce(events, [], fn event, acc ->
       if Timezone.happening_now?(current_time, event.start, event.end) do
         [event | acc]
       else
