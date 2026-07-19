@@ -14,97 +14,10 @@ defmodule SinghSabha.Workers.Poster do
 
   @impl Oban.Worker
   def perform(%Oban.Job{
-        args: %{"id" => id, "key" => key, "filename" => filename}
+        args: %{"id" => _id, "key" => key, "filename" => filename}
       }) do
-    response = %{
-      "events" => [
-        %{
-          "end" => "2026-10-17T23:59",
-          "occasion" => "Sangrand (Katak) Evening Programme",
-          "start" => "2026-10-17T18:00",
-          "type" => "Other"
-        },
-        %{
-          "end" => "2026-10-17T23:59",
-          "notes" => "Guru Ghar",
-          "occasion" => "Langar",
-          "start" => "2026-10-17T12:00",
-          "type" => "Langar"
-        },
-        %{
-          "end" => "2026-10-18T20:00",
-          "notes" => "Sewa by Satbir Singh",
-          "occasion" => "Sri Sukhmani Sahib",
-          "start" => "2026-10-18T18:00",
-          "type" => "Sukhmani Sahib Path"
-        },
-        %{
-          "end" => "2026-10-18T20:00",
-          "notes" => "Sewa by Satbir Singh",
-          "occasion" => "Langar",
-          "start" => "2026-10-18T18:00",
-          "type" => "Langar"
-        },
-        %{
-          "end" => "2026-10-19T14:00",
-          "notes" => "Sewa by Bibi Manjil Kaur",
-          "occasion" => "Sunday Diwan Langar",
-          "start" => "2026-10-19T11:00",
-          "type" => "Langar"
-        },
-        %{
-          "end" => "2026-10-19T14:00",
-          "notes" => "Sewa by Rajinder Kaur",
-          "occasion" => "Sehaj Path Bhog",
-          "start" => "2026-10-19T11:00",
-          "type" => "Sehaj Path"
-        },
-        %{
-          "end" => "2026-10-21T20:30",
-          "notes" => "Bandi Chhor Divas",
-          "occasion" => "Diwali Evening Diwan",
-          "start" => "2026-10-21T17:00",
-          "type" => "Other"
-        },
-        %{
-          "end" => "2026-10-21T20:30",
-          "notes" => "Sewa by Bibi Balwinder Kaur",
-          "occasion" => "Langar",
-          "start" => "2026-10-21T17:00",
-          "type" => "Langar"
-        },
-        %{
-          "end" => "2026-10-25T12:00",
-          "notes" => "At home of Sr. Kuldar Singh",
-          "occasion" => "Sri Sukhmani Sahib Path",
-          "start" => "2026-10-25T09:00",
-          "type" => "Sukhmani Sahib Path"
-        },
-        %{
-          "end" => "2026-10-26T14:00",
-          "notes" => "Sewa by Surjeet Singh Dhaneta",
-          "occasion" => "Sunday Diwan",
-          "start" => "2026-10-26T11:00",
-          "type" => "Other"
-        },
-        %{
-          "end" => "2026-10-26T14:00",
-          "notes" => "Sewa by Surjeet Singh Dhaneta",
-          "occasion" => "Sri Sukhmani Sahib Path",
-          "start" => "2026-10-26T11:00",
-          "type" => "Sukhmani Sahib Path"
-        },
-        %{
-          "end" => "2026-10-26T14:00",
-          "notes" => "Sewa by Surjeet Singh Dhaneta",
-          "occasion" => "Langar",
-          "start" => "2026-10-26T11:00",
-          "type" => "Langar"
-        }
-      ]
-    }
-
-    with {:ok, %{draft: draft}} <- build_events(response, key) do
+    with {:ok, response} <- extract_events(key, filename),
+         {:ok, %{draft: draft}} <- build_events(response, key) do
       Logger.info("created draft #{draft.id}")
 
       Phoenix.PubSub.broadcast(SinghSabha.PubSub, "drafts", {:draft_created, draft.id})
@@ -126,6 +39,13 @@ defmodule SinghSabha.Workers.Poster do
       {:error, reason} = error ->
         Logger.error("could not build draft: #{inspect(reason)}")
         error
+
+      {:error, :events, changeset, _changes_so_far} ->
+        Logger.error("event failed validation: #{inspect(changeset.errors)}")
+
+        Phoenix.PubSub.broadcast(SinghSabha.PubSub, "drafts", {:draft_failed, reason: changeset})
+
+        {:error, changeset}
     end
   end
 
@@ -195,7 +115,7 @@ defmodule SinghSabha.Workers.Poster do
                 "type" => "string",
                 "enum" => event_types
               },
-              "notes" => %{
+              "note" => %{
                 "type" => "string"
               }
             },
@@ -209,8 +129,7 @@ defmodule SinghSabha.Workers.Poster do
     case ReqLLM.generate_object(@model, messages, schema) do
       {:ok, response} ->
         Logger.info("successfully extracted events for #{filename}!")
-
-        ReqLLM.Response.object(response)
+        {:ok, ReqLLM.Response.object(response)}
 
       {:error, reason} ->
         {:error, reason}
