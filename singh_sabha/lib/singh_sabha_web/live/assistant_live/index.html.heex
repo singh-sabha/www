@@ -13,9 +13,12 @@
                 Poster uploaded {Calendar.strftime(draft.inserted_at, "%b %-d, %-I:%M %p")}
               </span>
             </p>
-            <p class="text-xs text-base-content/60 truncate">
-              {draft.image_path}
-            </p>
+            <div class="flex items-center gap-1.5">
+              <.icon name="hero-folder" class="size-3 shrink-0 text-base-content/60" />
+              <p class="text-xs text-base-content/60 truncate">
+                {draft.image_path}
+              </p>
+            </div>
           </div>
           <.icon name="hero-chevron-right" class="size-4 shrink-0 text-base-content/40" />
         </div>
