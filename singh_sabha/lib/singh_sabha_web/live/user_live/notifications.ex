@@ -31,9 +31,12 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
                   <p class="font-medium truncate">
                     <span class={Colour.text_colour(colour)}>{event.occasion}</span>
                   </p>
-                  <p class="text-xs text-base-content/60 truncate">
-                    {event.registrant_full_name} • {event.event_type.display_name}
-                  </p>
+                  <div class="flex items-center gap-1.5">
+                    <.icon name="hero-tag" class="size-3 shrink-0 text-base-content/70" />
+                    <p class="text-xs text-base-content/60 truncate">
+                      {event.event_type.display_name}
+                    </p>
+                  </div>
                 </div>
                 <.icon name="hero-chevron-right" class="size-4 shrink-0 text-base-content/40" />
               </div>

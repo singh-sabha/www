@@ -10,7 +10,7 @@ defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
 
   def render(assigns) do
     ~H"""
-    <div class="modal-box">
+    <div class="modal-box max-w-xl">
       <button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
