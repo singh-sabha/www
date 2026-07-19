@@ -31,14 +31,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "events")
       Phoenix.PubSub.subscribe(SinghSabha.PubSub, "global:presence")
-
-      # TODO: could probably abstract this away; pretty sure we use it in multiple places
-      seconds_until_next_minute = 60 - now.second
-
-      milliseconds_until_next_minute =
-        seconds_until_next_minute * 1000 - rem(now.microsecond |> elem(0), 1000)
-
-      Process.send_after(self(), :tick, milliseconds_until_next_minute)
+      Process.send_after(self(), :tick, Timezone.schedule_next_tick(now))
     end
 
     event_types =

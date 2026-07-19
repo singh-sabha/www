@@ -50,6 +50,13 @@ defmodule SinghSabhaWeb.Helpers.Timezone do
     %{event | start: utc_to_local(start), end: utc_to_local(end_time)}
   end
 
+  def schedule_next_tick(now) do
+    seconds_until_next_minute = 60 - now.second
+
+    # milliseconds until next minute
+    seconds_until_next_minute * 1_000 - rem(elem(now.microsecond, 0), 1_000)
+  end
+
   def format_time(%DateTime{} = utc_datetime) do
     datetime = to_local(utc_datetime)
     hour = datetime.hour
