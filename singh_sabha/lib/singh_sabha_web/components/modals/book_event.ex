@@ -6,7 +6,7 @@ defmodule SinghSabhaWeb.Components.Modals.BookEvent do
   alias SinghSabha.Events.{Event, EventNotifier}
   alias SinghSabha.Events
 
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :string, required: true
   attr :id, :string, required: true
   attr :event_types, :list, required: true
   attr :requested_date, :string, default: nil
@@ -17,7 +17,7 @@ defmodule SinghSabhaWeb.Components.Modals.BookEvent do
       <button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        phx-click={JS.patch(Path.calendar(@calendar_query))}
+        phx-click={JS.patch(@origin_path)}
       >
         <.icon name="hero-x-mark" class="size-4" />
       </button>
@@ -160,7 +160,7 @@ defmodule SinghSabhaWeb.Components.Modals.BookEvent do
            "Event booking submitted successfully! Please check your email for confirmation."}
         )
 
-        {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.calendar_query))}
+        {:noreply, push_patch(socket, to: socket.assigns.origin_path)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset, as: :book_event))}

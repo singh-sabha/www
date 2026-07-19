@@ -11,9 +11,9 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
     Path
   }
 
-  alias SinghSabhaWeb.Components.Modals.{BookEvent, CreateEvent}
+  alias SinghSabhaWeb.Components.Modals.{BookEvent, CreateEvent, EditEvent}
 
-  alias SinghSabhaWeb.CalendarLive.Modals.{EditEvent, ViewEvent}
+  alias SinghSabhaWeb.CalendarLive.Modals.ViewEvent
 
   import SinghSabhaWeb.CalendarLive.Views.{
     Day,
@@ -70,7 +70,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
       socket
       |> assign(:view_mode, view)
       |> assign(:current_date, date)
-      |> assign(:calendar_query, %{view: view, date: date})
+      |> assign(:origin_path, %{view: view, date: date})
       |> load_events()
 
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
@@ -80,22 +80,19 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
   def handle_event("prev_period", _, socket) do
     new_date = shift_date(socket.assigns.current_date, socket.assigns.view_mode, -1)
 
-    {:noreply,
-     push_patch(socket, to: Path.calendar(socket.assigns.calendar_query, date: new_date))}
+    {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.origin_path, date: new_date))}
   end
 
   def handle_event("next_period", _, socket) do
     new_date = shift_date(socket.assigns.current_date, socket.assigns.view_mode, 1)
 
-    {:noreply,
-     push_patch(socket, to: Path.calendar(socket.assigns.calendar_query, date: new_date))}
+    {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.origin_path, date: new_date))}
   end
 
   def handle_event("date-selected", %{"date" => date}, socket) do
     case Date.from_iso8601(date) do
       {:ok, date} ->
-        {:noreply,
-         push_patch(socket, to: Path.calendar(socket.assigns.calendar_query, date: date))}
+        {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.origin_path, date: date))}
 
       {:error, _} ->
         {:noreply, socket}
@@ -109,13 +106,13 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
       {:ok, _} ->
         Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
 
-        {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.calendar_query))}
+        {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.origin_path))}
 
       {:error, _} ->
         {:noreply,
          socket
          |> put_flash(:error, "Failed to delete event. Please try again.")
-         |> push_patch(to: Path.calendar(socket.assigns.calendar_query))}
+         |> push_patch(to: Path.calendar(socket.assigns.origin_path))}
     end
   end
 
@@ -223,24 +220,24 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
       nil ->
         socket
         |> put_flash(:error, "Event not found.")
-        |> push_patch(to: Path.calendar(socket.assigns.calendar_query))
+        |> push_patch(to: Path.calendar(socket.assigns.origin_path))
 
       false ->
         socket
         |> put_flash(:warning, "Event not available.")
-        |> push_patch(to: Path.calendar(socket.assigns.calendar_query))
+        |> push_patch(to: Path.calendar(socket.assigns.origin_path))
     end
   end
 
   defp apply_action(socket, :edit, %{"id" => event_id}) do
     case Events.get_event(event_id) do
-      {:ok, event} ->
-        assign(socket, :selected_event, event)
-
       nil ->
         socket
         |> put_flash(:error, "Event not found.")
-        |> push_patch(to: Path.calendar(socket.assigns.calendar_query))
+        |> push_patch(to: Path.calendar(socket.assigns.origin_path))
+
+      event ->
+        assign(socket, :selected_event, event)
     end
   end
 
