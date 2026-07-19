@@ -12,7 +12,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
 
   import SinghSabhaWeb.CalendarLive.Components
 
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :map, required: true
   attr :current_date, :any, required: true
   attr :current_time, :any, required: true
   attr :current_scope, :map, default: nil
@@ -51,7 +51,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
             current_date={@current_date}
             current_scope={@current_scope}
             multi_day_events={@multi_day_events}
-            calendar_query={@calendar_query}
+            origin_path={@origin_path}
           />
 
           <div class="relative z-20 flex border-b border-base-300">
@@ -93,7 +93,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                     <% end %>
 
                     <.link patch={
-                      Path.calendar(@calendar_query,
+                      Path.calendar(@origin_path,
                         action: :new,
                         date: @current_date,
                         time: hour
@@ -107,7 +107,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                     </div>
 
                     <.link patch={
-                      Path.calendar(@calendar_query,
+                      Path.calendar(@origin_path,
                         action: :new,
                         date: @current_date,
                         time: hour + 0.5
@@ -131,7 +131,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                     ) %>
                   <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
                   <div class="absolute p-1 pointer-events-none" style={style}>
-                    <.link patch={Path.calendar(@calendar_query, action: {:show, event.id})}>
+                    <.link patch={Path.calendar(@origin_path, action: {:show, event.id})}>
                       <div class={[
                         "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
                         User.privileged?(@current_scope) &&
@@ -262,7 +262,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
 
   defp ongoing_events(current_time, single_day_events) do
     Enum.reduce(single_day_events, [], fn event, acc ->
-      if happening_now?(current_time, event.start, event.end) do
+      if Timezone.happening_now?(current_time, event.start, event.end) do
         [event | acc]
       else
         acc
@@ -270,7 +270,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     end)
   end
 
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :map, required: true
   attr :current_date, :any, required: true
   attr :multi_day_events, :list, required: true
   attr :current_scope, :map, default: nil
@@ -317,7 +317,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
               event_current_day={event_current_day}
               event_total_days={event_total_days}
               current_scope={@current_scope}
-              calendar_query={@calendar_query}
+              origin_path={@origin_path}
             />
           <% end %>
         </div>
@@ -326,7 +326,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     """
   end
 
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :map, required: true
   attr :event, :map, required: true
   attr :event_current_day, :integer, required: true
   attr :event_total_days, :integer, required: true
@@ -336,7 +336,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <.link patch={Path.calendar(@calendar_query, action: {:show, @event.id})}>
+    <.link patch={Path.calendar(@origin_path, action: {:show, @event.id})}>
       <div class={[
         "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
         User.privileged?(@current_scope) &&

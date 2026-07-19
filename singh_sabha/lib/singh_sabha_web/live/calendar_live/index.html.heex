@@ -110,7 +110,7 @@
 
           <%= if User.privileged?(@current_scope) do %>
             <div class="join w-full lg:w-auto">
-              <.link patch={Path.calendar(@calendar_query, action: :new)}>
+              <.link patch={Path.calendar(@origin_path, action: :new)}>
                 <button
                   type="button"
                   class="btn btn-primary join-item w-full lg:w-auto flex items-center gap-1"
@@ -136,7 +136,7 @@
               </div>
             </div>
           <% else %>
-            <.link patch={Path.calendar(@calendar_query, action: :new)}>
+            <.link patch={Path.calendar(@origin_path, action: :new)}>
               <button class="btn btn-primary w-full lg:w-auto">
                 <span class="flex items-center gap-1">
                   <.icon name="hero-plus-circle" class="size-4" /> Book Event
@@ -155,7 +155,7 @@
           current_time={@current_time}
           current_scope={@current_scope}
           events={@events}
-          calendar_query={@calendar_query}
+          origin_path={@origin_path}
         />
       <% end %>
 
@@ -185,7 +185,7 @@
           events={@events}
           working_hours={@working_hours}
           visible_hours={@visible_hours}
-          calendar_query={@calendar_query}
+          origin_path={@origin_path}
         />
       <% end %>
     </div>
@@ -198,7 +198,7 @@
       id="create_event_modal"
       event_types={@event_types}
       current_scope={@current_scope}
-      calendar_query={@calendar_query}
+      origin_path={Path.calendar(@origin_path)}
     />
     <.live_component
       :if={!User.privileged?(@current_scope)}
@@ -206,7 +206,7 @@
       id="book_event_modal"
       event_types={@event_types}
       current_scope={@current_scope}
-      calendar_query={@calendar_query}
+      origin_path={Path.calendar(@origin_path)}
     />
   </dialog>
 
@@ -216,7 +216,7 @@
       id="view_event_modal"
       selected_event={@selected_event}
       current_scope={@current_scope}
-      calendar_query={@calendar_query}
+      origin_path={@origin_path}
     />
   </dialog>
 
@@ -226,7 +226,7 @@
       module={EditEvent}
       id="edit_event_modal"
       selected_event={@selected_event}
-      calendar_query={@calendar_query}
+      origin_path={Path.calendar(@origin_path)}
     />
   </dialog>
 </div>

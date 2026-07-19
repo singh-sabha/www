@@ -14,7 +14,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   attr :current_time, :any, required: true
   attr :current_scope, :map, default: nil
   attr :events, :list, required: true
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :map, required: true
 
   def agenda(assigns) do
     {single_day_events, multi_day_events} = Event.partition_events(assigns.events)
@@ -36,7 +36,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
                 events={day_group.events}
                 multi_day_events={day_group.multi_day_events}
                 current_scope={@current_scope}
-                calendar_query={@calendar_query}
+                origin_path={@origin_path}
               />
             <% end %>
           </div>
@@ -55,7 +55,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   attr :events, :list, required: true
   attr :multi_day_events, :list, required: true
   attr :current_scope, :any, required: true
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :map, required: true
 
   defp day_group(assigns) do
     sorted_events = Enum.sort_by(assigns.events, & &1.start, DateTime)
@@ -83,14 +83,14 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
             event_current_day={event_current_day}
             event_total_days={event_total_days}
             current_scope={@current_scope}
-            calendar_query={@calendar_query}
+            origin_path={@origin_path}
           />
         <% end %>
         <%= for event <- @sorted_events do %>
           <.event_card
             event={event}
             current_scope={@current_scope}
-            calendar_query={@calendar_query}
+            origin_path={@origin_path}
           />
         <% end %>
       </div>
@@ -102,14 +102,14 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
   attr :event_current_day, :integer, default: nil
   attr :event_total_days, :integer, default: nil
   attr :current_scope, :any, required: true
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :map, required: true
 
   # TODO: could this be extracted into core_components? We're using a variation in AssistantLive
   defp event_card(assigns) do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <.link patch={Path.calendar(@calendar_query, action: {:show, @event.id})}>
+    <.link patch={Path.calendar(@origin_path, action: {:show, @event.id})}>
       <div
         class={[
           "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
