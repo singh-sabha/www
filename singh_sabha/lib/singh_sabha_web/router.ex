@@ -53,6 +53,8 @@ defmodule SinghSabhaWeb.Router do
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
       live "/assistant", AssistantLive.Index, :index
+      live "/assistant/:draft_id/edit", AssistantLive.Edit, :edit
+      live "/assistant/:draft_id/edit/:event_id", AssistantLive.Edit, :edit_event
     end
 
     live_session :empty,
