@@ -98,30 +98,6 @@ defmodule SinghSabha.Events do
   end
 
   @doc """
-  Creates multiple events.
-  """
-  def create_events(attrs_list \\ [%{}]) do
-    attrs_list
-    |> Enum.with_index()
-    |> Enum.reduce(Ecto.Multi.new(), fn {attrs, index}, multi ->
-      Ecto.Multi.insert(multi, {:event, index}, Event.changeset(%Event{}, attrs))
-    end)
-    |> Repo.transact()
-    |> case do
-      {:ok, results} ->
-        events =
-          results
-          |> Enum.sort_by(fn {{:event, index}, _event} -> index end)
-          |> Enum.map(fn {_key, event} -> Repo.preload(event, :event_type) end)
-
-        {:ok, events}
-
-      {:error, _failed_key, changeset, _changes_so_far} ->
-        {:error, changeset}
-    end
-  end
-
-  @doc """
   Books an event.
   """
   def book_event(attrs \\ %{}) do
