@@ -74,7 +74,7 @@
 
         <div class="space-y-2 lg:space-y-0 lg:space-x-4 lg:flex lg:items-center">
           <div class="join w-full lg:w-auto">
-            <.link patch={~p"/calendar?view=agenda"}>
+            <.link patch={Path.calendar(@origin_path, view: "agenda")}>
               <button class={[
                 "btn join-item flex-1 lg:flex-none",
                 @view_mode == :agenda && "btn-active"
@@ -82,7 +82,7 @@
                 <.icon name="hero-list-bullet" class="size-4" />
               </button>
             </.link>
-            <.link patch={~p"/calendar?view=month"}>
+            <.link patch={Path.calendar(@origin_path, view: "month")}>
               <button class={[
                 "btn join-item flex-1 lg:flex-none",
                 @view_mode == :month && "btn-active"
@@ -90,7 +90,7 @@
                 <.icon name="hero-calendar-days" class="size-4" />
               </button>
             </.link>
-            <.link patch={~p"/calendar?view=week"}>
+            <.link patch={Path.calendar(@origin_path, view: "week")}>
               <button class={[
                 "btn join-item flex-1 lg:flex-none",
                 @view_mode == :week && "btn-active"
@@ -98,7 +98,7 @@
                 <.icon name="hero-calendar-date-range" class="size-4" />
               </button>
             </.link>
-            <.link patch={~p"/calendar?view=day"}>
+            <.link patch={Path.calendar(@origin_path, view: "day")}>
               <button class={[
                 "btn join-item flex-1 lg:flex-none",
                 @view_mode == :day && "btn-active"
@@ -165,6 +165,7 @@
           current_time={@current_time}
           current_scope={@current_scope}
           events={@events}
+          origin_path={@origin_path}
         />
       <% end %>
       <%= if @view_mode == :week do %>
@@ -175,6 +176,7 @@
           events={@events}
           working_hours={@working_hours}
           visible_hours={@visible_hours}
+          origin_path={@origin_path}
         />
       <% end %>
       <%= if @view_mode == :day do %>

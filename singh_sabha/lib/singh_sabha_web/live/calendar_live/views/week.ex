@@ -9,9 +9,11 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
   alias SinghSabhaWeb.Helpers.{
     Event,
     Timezone,
-    EventType
+    EventType,
+    Path
   }
 
+  attr :origin_path, :map, required: true
   attr :current_date, :any, required: true
   attr :current_time, :any, required: true
   attr :current_scope, :map, default: nil
@@ -51,6 +53,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
           current_date={@current_date}
           current_scope={@current_scope}
           multi_day_events={@multi_day_events}
+          origin_path={@origin_path}
         />
         <div class="relative z-20 flex border-b border-base-300">
           <div class="w-18 flex-shrink-0"></div>
@@ -92,6 +95,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
                   events={@single_day_events}
                   working_hours={@working_hours}
                   current_scope={@current_scope}
+                  origin_path={@origin_path}
                 />
               <% end %>
             </div>
@@ -109,6 +113,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
   attr :events, :list, required: true
   attr :working_hours, :map, required: true
   attr :current_scope, :map, default: nil
+  attr :origin_path, :map, required: true
 
   defp day_column(assigns) do
     day_events =
@@ -138,24 +143,30 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
             <div class="pointer-events-none absolute inset-x-0 top-0 border-b border-base-300"></div>
           <% end %>
 
-          <div
-            class="absolute inset-x-0 top-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-            phx-click="create_or_book_event"
-            phx-value-date={@day}
-            phx-value-time={hour}
-          >
-          </div>
+          <.link patch={
+            Path.calendar(@origin_path,
+              action: :new,
+              date: @day,
+              time: hour
+            )
+          }>
+            <div class="absolute inset-x-0 top-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer">
+            </div>
+          </.link>
 
           <div class="pointer-events-none absolute inset-x-0 top-1/2 border-b border-dashed border-base-300">
           </div>
 
-          <div
-            class="absolute inset-x-0 bottom-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer"
-            phx-click="create_or_book_event"
-            phx-value-date={@day}
-            phx-value-time={hour}
-          >
-          </div>
+          <.link patch={
+            Path.calendar(@origin_path,
+              action: :new,
+              date: @day,
+              time: hour
+            )
+          }>
+            <div class="absolute inset-x-0 bottom-0 h-[48px] transition-colors hover:bg-base-content/10 cursor-pointer">
+            </div>
+          </.link>
         </div>
       <% end %>
 
@@ -168,7 +179,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
         <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
 
         <div class="absolute p-1 pointer-events-none" style={style}>
-          <.link patch={~p"/calendar/event.id"}>
+          <.link patch={Path.calendar(@origin_path, action: {:show, event.id})}>
             <div class={[
               "h-full rounded-md border px-2 py-1 text-xs overflow-hidden cursor-pointer pointer-events-auto",
               User.privileged?(@current_scope) &&
@@ -188,6 +199,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
   attr :current_date, :any, required: true
   attr :multi_day_events, :list, required: true
   attr :current_scope, :map, default: nil
+  attr :origin_path, :map, required: true
 
   defp multiday_event_row(assigns) do
     week_start = Date.beginning_of_week(assigns.current_date, :sunday)
@@ -227,6 +239,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
                     starts={starts}
                     ends={ends}
                     current_scope={@current_scope}
+                    origin_path={@origin_path}
                   />
                 <% else %>
                   <div class="h-6.5"></div>
@@ -244,12 +257,13 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
   attr :starts, :boolean, required: true
   attr :ends, :boolean, required: true
   attr :current_scope, :map, default: nil
+  attr :origin_path, :map, required: true
 
   defp multiday_event_badge(assigns) do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <.link patch={~p"/calendar/@event.id"}>
+    <.link patch={Path.calendar(@origin_path, action: {:show, @event.id})}>
       <div class={[
         "h-6.5 text-xs font-medium flex items-center border -mx-px cursor-pointer",
         EventType.badge_colour(colour),
