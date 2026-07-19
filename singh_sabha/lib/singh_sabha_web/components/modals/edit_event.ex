@@ -1,11 +1,10 @@
-defmodule SinghSabhaWeb.CalendarLive.Modals.EditEvent do
+defmodule SinghSabhaWeb.Components.Modals.EditEvent do
   alias SinghSabhaWeb.Helpers.Timezone
   use SinghSabhaWeb, :live_component
 
-  alias SinghSabhaWeb.Helpers.Path
   alias SinghSabha.Events
 
-  attr :calendar_query, :map, required: true
+  attr :origin_path, :string, required: true
   attr :id, :string, required: true
   attr :selected_event, :map, default: nil
 
@@ -15,7 +14,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.EditEvent do
       <button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-        phx-click={JS.patch(Path.calendar(@calendar_query))}
+        phx-click={JS.patch(@origin_path)}
       >
         <.icon name="hero-x-mark" class="size-4" />
       </button>
@@ -96,7 +95,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.EditEvent do
       {:ok, event} ->
         Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_updated, event})
         send(self(), {:put_flash, :success, "Event updated!"})
-        {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.calendar_query))}
+        {:noreply, push_patch(socket, to: socket.assigns.origin_path)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         send(self(), {:put_flash, :error, "Error when updating event. Please try again."})
