@@ -1,11 +1,12 @@
 defmodule SinghSabhaWeb.NotFoundLive do
-  alias SinghSabhaWeb.Helpers.EventType
   use SinghSabhaWeb, :live_view
+
+  alias SinghSabhaWeb.Helpers.Colour
 
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto mt-8 p-6 space-y-4">
-      <div class={["alert", EventType.badge_colour(:yellow)]}>
+      <div class={["alert", Colour.badge_colour(:yellow)]}>
         <.icon name="hero-exclamation-triangle" class="size-6" />
         <div>
           <h3 class="font-bold">Page Not Found</h3>

@@ -7,7 +7,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
     Timezone,
     EventType,
     User,
-    Path
+    Path,
+    Colour
   }
 
   attr :current_date, :any, required: true
@@ -113,7 +114,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
       <div
         class={[
           "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
-          EventType.card_colour(colour),
+          Colour.card_colour(colour),
           User.privileged?(@current_scope) &&
             EventType.event_status_colour(
               @event.is_verified,
@@ -130,21 +131,21 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
                 <% !@event.is_verified -> %>
                   <span class={[
                     "badge badge-sm gap-1",
-                    EventType.badge_colour(:red)
+                    Colour.badge_colour(:red)
                   ]}>
                     <.icon name="hero-exclamation-circle" class="size-3" /> Pending Approval
                   </span>
                 <% @event.is_verified && !@event.is_deposit_paid -> %>
                   <span class={[
                     "badge badge-sm gap-1",
-                    EventType.badge_colour(:yellow)
+                    Colour.badge_colour(:yellow)
                   ]}>
                     <.icon name="hero-currency-dollar" class="size-3" /> Awaiting Payment
                   </span>
                 <% true -> %>
                   <span class={[
                     "badge badge-sm gap-1",
-                    EventType.badge_colour(:green)
+                    Colour.badge_colour(:green)
                   ]}>
                     <.icon name="hero-check-circle" class="size-3" /> Confirmed
                   </span>
@@ -159,7 +160,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
                   Day {@event_current_day} of {@event_total_days} •
                 </span>
               <% end %>
-              <span class={EventType.text_colour(colour)}>
+              <span class={Colour.text_colour(colour)}>
                 {@event.occasion}
               </span>
             </p>

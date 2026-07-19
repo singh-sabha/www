@@ -8,7 +8,8 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
     Timezone,
     User,
     EventType,
-    Path
+    Path,
+    Colour
   }
 
   alias SinghSabhaWeb.Components.Modals.{BookEvent, CreateEvent, EditEvent}

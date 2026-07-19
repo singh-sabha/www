@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.Helpers.EventType
+  alias SinghSabhaWeb.Helpers.{EventType, Colour}
 
   attr :event_types, :list, required: true
   attr :current_scope, :map, default: nil
@@ -35,11 +35,11 @@ defmodule SinghSabhaWeb.HomeLive.ServicesSection do
     ~H"""
     <div class={[
       "flex flex-col gap-3 rounded-md border p-4",
-      EventType.card_colour(@colour)
+      Colour.card_colour(@colour)
     ]}>
       <h4 class={[
         "font-semibold leading-tight",
-        EventType.text_colour(@colour)
+        Colour.text_colour(@colour)
       ]}>
         {@event_type.display_name}
       </h4>

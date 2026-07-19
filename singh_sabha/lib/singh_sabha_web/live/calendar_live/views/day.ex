@@ -7,7 +7,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
     Timezone,
     EventType,
     User,
-    Path
+    Path,
+    Colour
   }
 
   import SinghSabhaWeb.CalendarLive.Components
@@ -139,7 +140,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
                             event.is_verified,
                             event.is_deposit_paid
                           ),
-                        EventType.badge_colour(colour)
+                        Colour.badge_colour(colour)
                       ]}>
                         <div class="font-medium truncate">{event.occasion}</div>
                         {Timezone.format_time(event.start)} - {Timezone.format_time(event.end)}
@@ -197,8 +198,8 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
           <%= if length(current_events) > 0 do %>
             <div class="flex items-start gap-2 px-4 pt-4">
               <div class="inline-grid *:[grid-area:1/1] mt-[5px]">
-                <div class={["status animate-ping", EventType.dot_colour(:red)]}></div>
-                <div class={["status", EventType.dot_colour(:red)]}></div>
+                <div class={["status animate-ping", Colour.dot_colour(:red)]}></div>
+                <div class={["status", Colour.dot_colour(:red)]}></div>
               </div>
               <p class="text-sm font-semibold">Happening Now</p>
             </div>
@@ -341,17 +342,17 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Day do
         "flex h-6.5 items-center text-xs font-medium px-2 rounded-md border",
         User.privileged?(@current_scope) &&
           EventType.event_status_colour(@event.is_verified, @event.is_deposit_paid),
-        EventType.card_colour(colour)
+        Colour.card_colour(colour)
       ]}>
         <div class="flex w-full items-center justify-between overflow-hidden whitespace-nowrap cursor-pointer">
           <span class="truncate">
             <span class="text-base-content/70 text-xs">
               Day {@event_current_day} of {@event_total_days} •
             </span>
-            <span class={EventType.text_colour(colour)}>{@event.occasion}</span>
+            <span class={Colour.text_colour(colour)}>{@event.occasion}</span>
           </span>
 
-          <span class={["ml-2", EventType.text_colour(colour)]}>
+          <span class={["ml-2", Colour.text_colour(colour)]}>
             {Timezone.format_time(@event.start)}
           </span>
         </div>

@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.Helpers.EventType
+  alias SinghSabhaWeb.Helpers.Colour
 
   @channel_id "UCtMxxM3Lr4qf8_EzrQORhQg"
 
@@ -14,8 +14,8 @@ defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
       <div class="flex justify-center items-center gap-2">
         <%= if @live_stream do %>
           <div class="inline-grid *:[grid-area:1/1]">
-            <div class={["status animate-ping", EventType.dot_colour(:red)]}></div>
-            <div class={["status", EventType.dot_colour(:red)]}></div>
+            <div class={["status animate-ping", Colour.dot_colour(:red)]}></div>
+            <div class={["status", Colour.dot_colour(:red)]}></div>
           </div>
           <h3 class="text-lg font-semibold">Currently Live</h3>
         <% else %>

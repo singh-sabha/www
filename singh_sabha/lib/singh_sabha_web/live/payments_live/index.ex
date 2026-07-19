@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabha.Events
-  alias SinghSabhaWeb.Helpers.EventType
+  alias SinghSabhaWeb.Helpers.Colour
   alias Stripe.Checkout.Session
 
   def mount(_params, _session, socket) do
@@ -128,7 +128,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
   def render(%{status: :success} = assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto mt-8 p-6 space-y-4">
-      <div class={["alert", EventType.badge_colour(:green)]}>
+      <div class={["alert", Colour.badge_colour(:green)]}>
         <.icon name="hero-check-circle" class="size-6" />
         <div>
           <h3 class="font-bold">Payment Successful!</h3>
@@ -177,7 +177,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
   def render(%{status: :confirm_cancel} = assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto mt-8 p-6 space-y-4">
-      <div class={["alert", EventType.badge_colour(:yellow)]}>
+      <div class={["alert", Colour.badge_colour(:yellow)]}>
         <.icon name="hero-exclamation-triangle" class="size-6" />
         <div>
           <h3 class="font-bold">Cancel this booking?</h3>
@@ -202,7 +202,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
   def render(%{status: :cancel} = assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto mt-8 p-6 space-y-4">
-      <div class={["alert", EventType.badge_colour(:red)]}>
+      <div class={["alert", Colour.badge_colour(:red)]}>
         <.icon name="hero-information-circle" class="size-6" />
         <div>
           <h3 class="font-bold">Booking Cancelled</h3>
@@ -234,7 +234,7 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
   def render(%{status: :error} = assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto mt-8 p-6 space-y-4">
-      <div class={["alert", EventType.badge_colour(:red)]}>
+      <div class={["alert", Colour.badge_colour(:red)]}>
         <.icon name="hero-exclamation-circle" class="size-6" />
         <div>
           <h3 class="font-bold">Something Went Wrong</h3>
@@ -249,4 +249,3 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
     """
   end
 end
-

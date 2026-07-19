@@ -4,7 +4,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
 
   alias SinghSabha.Events
   alias SinghSabha.Events.EventNotifier
-  alias SinghSabhaWeb.Helpers.{User, EventType, Timezone}
+  alias SinghSabhaWeb.Helpers.{User, EventType, Timezone, Colour}
   alias SinghSabhaWeb.UsersLive.Modals.ReviewEvent
 
   @impl true
@@ -25,11 +25,11 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
             <.link patch={~p"/users/notifications/#{event.id}"}>
               <div class={[
                 "flex select-none items-center justify-between gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
-                EventType.card_colour(colour)
+                Colour.card_colour(colour)
               ]}>
                 <div class="flex flex-col gap-1 min-w-0">
                   <p class="font-medium truncate">
-                    <span class={EventType.text_colour(colour)}>{event.occasion}</span>
+                    <span class={Colour.text_colour(colour)}>{event.occasion}</span>
                   </p>
                   <p class="text-xs text-base-content/60 truncate">
                     {event.registrant_full_name} • {event.event_type.display_name}
@@ -160,4 +160,3 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
     end
   end
 end
-

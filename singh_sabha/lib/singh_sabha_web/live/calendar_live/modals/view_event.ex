@@ -2,10 +2,10 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabhaWeb.Helpers.{
-    EventType,
     Timezone,
     User,
-    Path
+    Path,
+    Colour
   }
 
   attr :origin_path, :map, required: true
@@ -29,7 +29,7 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
 
       <div class="space-y-4 mt-4">
         <%= if @selected_event.is_verified && !@selected_event.is_deposit_paid do %>
-          <div class={["mt-4 alert", EventType.badge_colour(:yellow)]}>
+          <div class={["mt-4 alert", Colour.badge_colour(:yellow)]}>
             <.icon name="hero-currency-dollar" class="size-5" />
             <span>
               Awaiting payment from organizer. Payment link sent to {@selected_event.registrant_email}

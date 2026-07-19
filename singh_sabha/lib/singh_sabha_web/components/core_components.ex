@@ -30,7 +30,7 @@ defmodule SinghSabhaWeb.CoreComponents do
   use Gettext, backend: SinghSabhaWeb.Gettext
 
   alias Phoenix.LiveView.JS
-  alias SinghSabhaWeb.Helpers.EventType
+  alias SinghSabhaWeb.Helpers.Colour
 
   @doc """
   Renders flash notices.
@@ -66,10 +66,10 @@ defmodule SinghSabhaWeb.CoreComponents do
     >
       <div class={[
         "alert w-80 sm:w-96 max-w-80 sm:max-w-96 text-wrap",
-        @kind == :info && EventType.badge_colour(:blue),
-        @kind == :warning && EventType.badge_colour(:yellow),
-        @kind == :success && EventType.badge_colour(:green),
-        @kind == :error && EventType.badge_colour(:red)
+        @kind == :info && Colour.badge_colour(:blue),
+        @kind == :warning && Colour.badge_colour(:yellow),
+        @kind == :success && Colour.badge_colour(:green),
+        @kind == :error && Colour.badge_colour(:red)
       ]}>
         <.icon :if={@kind == :info} name="hero-information-circle" class="size-5 shrink-0" />
         <.icon :if={@kind == :warning} name="hero-exclamation-triangle" class="size-5 shrink-0" />
