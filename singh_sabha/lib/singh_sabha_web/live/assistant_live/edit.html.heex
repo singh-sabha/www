@@ -11,7 +11,7 @@
     </button>
   </div>
 
-  <div class="space-y-3">
+  <div class="space-y-2">
     <%= for event <- @draft.events do %>
       <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
       <div class={[
