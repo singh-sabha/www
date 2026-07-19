@@ -109,7 +109,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Agenda do
     ~H"""
     <% colour = EventType.event_type_to_colour(@event.event_type.display_name) %>
 
-    <.link patch={Path.calendar(@origin_path, action: {:show, @event.id})}>
+    <.link patch={Path.calendar(@origin_path, action: {:show, @event.id})} class="block">
       <div
         class={[
           "flex select-none items-center gap-3 rounded-md border p-3 text-sm transition-colors cursor-pointer",
