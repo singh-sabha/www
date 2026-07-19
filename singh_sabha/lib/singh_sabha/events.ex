@@ -12,40 +12,32 @@ defmodule SinghSabha.Events do
   Returns the list of events.
   """
   def list_events(:all) do
-    from(e in Event,
-      where: not is_nil(e.start) and not is_nil(e.end),
-      order_by: e.start,
-      preload: [:event_type]
-    )
+    base_query()
+    |> where([e], not is_nil(e.start) and not is_nil(e.end))
     |> Repo.all()
   end
 
   def list_events(:public) do
-    from(e in Event,
-      where:
-        not is_nil(e.start) and not is_nil(e.end) and
-          e.is_verified and
-          e.is_deposit_paid and
-          e.is_public,
-      order_by: e.start,
-      preload: [:event_type]
-    )
+    base_query()
+    |> where([e], not is_nil(e.start) and not is_nil(e.end))
+    |> where([e], e.is_verified and e.is_deposit_paid and e.is_public)
     |> Repo.all()
-    |> Enum.map(fn e ->
-      %{e | registrant_email: nil, registrant_phone_number: nil}
-    end)
+    |> Enum.map(&%{&1 | registrant_email: nil, registrant_phone_number: nil})
   end
 
   def list_events(:pending) do
+    base_query()
+    |> where([e], not is_nil(e.requested) and is_nil(e.start) and is_nil(e.end))
+    |> order_by([e], e.requested)
+    |> Repo.all()
+  end
+
+  defp base_query do
     from(e in Event,
-      where:
-        not is_nil(e.requested) and
-          is_nil(e.start) and
-          is_nil(e.end),
-      order_by: e.requested,
+      where: is_nil(e.draft_id),
+      order_by: e.start,
       preload: [:event_type]
     )
-    |> Repo.all()
   end
 
   @doc """
