@@ -57,4 +57,15 @@ defmodule SinghSabha.Drafts do
   def delete_draft(draft) do
     Repo.delete(draft)
   end
+
+  def delete_draft_and_events(draft) do
+    Ecto.Multi.new()
+    |> Ecto.Multi.delete_all(:events, from(e in Event, where: e.draft_id == ^draft.id))
+    |> Ecto.Multi.delete(:draft, draft)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{draft: draft}} -> {:ok, draft}
+      {:error, _op, reason, _changes} -> {:error, reason}
+    end
+  end
 end
