@@ -74,33 +74,33 @@
 
         <div class="space-y-2 lg:space-y-0 lg:space-x-4 lg:flex lg:items-center">
           <div class="join w-full lg:w-auto">
-            <.link patch={Path.calendar(@origin_path, view: "agenda")}>
+            <.link patch={Path.calendar(@origin_path, view: "agenda")} class="flex-1 lg:flex-none">
               <button class={[
-                "btn join-item flex-1 lg:flex-none",
+                "btn join-item w-full",
                 @view_mode == :agenda && "btn-active"
               ]}>
                 <.icon name="hero-list-bullet" class="size-4" />
               </button>
             </.link>
-            <.link patch={Path.calendar(@origin_path, view: "month")}>
+            <.link patch={Path.calendar(@origin_path, view: "month")} class="flex-1 lg:flex-none">
               <button class={[
-                "btn join-item flex-1 lg:flex-none",
+                "btn join-item w-full",
                 @view_mode == :month && "btn-active"
               ]}>
                 <.icon name="hero-calendar-days" class="size-4" />
               </button>
             </.link>
-            <.link patch={Path.calendar(@origin_path, view: "week")}>
+            <.link patch={Path.calendar(@origin_path, view: "week")} class="flex-1 lg:flex-none">
               <button class={[
-                "btn join-item flex-1 lg:flex-none",
+                "btn join-item w-full",
                 @view_mode == :week && "btn-active"
               ]}>
                 <.icon name="hero-calendar-date-range" class="size-4" />
               </button>
             </.link>
-            <.link patch={Path.calendar(@origin_path, view: "day")}>
+            <.link patch={Path.calendar(@origin_path, view: "day")} class="flex-1 lg:flex-none">
               <button class={[
-                "btn join-item flex-1 lg:flex-none",
+                "btn join-item w-full",
                 @view_mode == :day && "btn-active"
               ]}>
                 <.icon name="hero-calendar" class="size-4" />
@@ -110,7 +110,7 @@
 
           <%= if User.privileged?(@current_scope) do %>
             <div class="join w-full lg:w-auto">
-              <.link patch={Path.calendar(@origin_path, action: :new)}>
+              <.link patch={Path.calendar(@origin_path, action: :new)} class="flex-1 lg:flex-none">
                 <button
                   type="button"
                   class="btn btn-primary join-item w-full lg:w-auto flex items-center gap-1"
@@ -118,7 +118,6 @@
                   <.icon name="hero-plus-circle" class="size-4" /> Create Event
                 </button>
               </.link>
-
               <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-primary join-item px-2">
                   <.icon name="hero-chevron-down" class="size-4" />
