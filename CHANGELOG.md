@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/singh-sabha/www/compare/v2.0.0...v2.0.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* improve badge contrast ([8a947a3](https://github.com/singh-sabha/www/commit/8a947a32848ed5b8afccbf2d3a757a341d8d1265))
+
 ## [2.0.0](https://github.com/singh-sabha/www/compare/v1.5.0...v2.0.0) (2026-07-19)
 
 
