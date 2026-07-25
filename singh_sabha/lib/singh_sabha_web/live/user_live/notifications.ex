@@ -19,7 +19,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
           <p class="text-sm text-base-content/60">No pending notifications</p>
         </div>
       <% else %>
-        <div class="space-y-2">
+        <div class="grid grid-flow-rows space-y-2">
           <%= for event <- @pending_events do %>
             <% colour = EventType.event_type_to_colour(event.event_type.display_name) %>
             <.link patch={~p"/users/notifications/#{event.id}"}>
