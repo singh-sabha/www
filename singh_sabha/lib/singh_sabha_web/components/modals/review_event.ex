@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
+defmodule SinghSabhaWeb.Components.Modals.ReviewEvent do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabha.Events

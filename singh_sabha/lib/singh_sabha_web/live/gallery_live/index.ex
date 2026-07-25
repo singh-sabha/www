@@ -2,7 +2,7 @@ defmodule SinghSabhaWeb.GalleryLive.Index do
   use SinghSabhaWeb, :live_view
   use SinghSabhaWeb, :html
 
-  alias SinghSabhaWeb.GalleryLive.Modals.ViewImage
+  alias SinghSabhaWeb.Components.Modals.ViewImage
 
   # TODO: use S3
   @images "priv/static/images/construction/gurdwara_construction_*.jpeg"
@@ -96,4 +96,3 @@ defmodule SinghSabhaWeb.GalleryLive.Index do
     end
   end
 end
-

@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
+defmodule SinghSabhaWeb.Components.Modals.ViewEvent do
   use SinghSabhaWeb, :live_component
 
   alias SinghSabhaWeb.Helpers.{

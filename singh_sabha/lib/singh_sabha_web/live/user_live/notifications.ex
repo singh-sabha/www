@@ -5,7 +5,7 @@ defmodule SinghSabhaWeb.UserLive.Notifications do
   alias SinghSabha.Events
   alias SinghSabha.Events.EventNotifier
   alias SinghSabhaWeb.Helpers.{User, EventType, Timezone, Colour}
-  alias SinghSabhaWeb.UsersLive.Modals.ReviewEvent
+  alias SinghSabhaWeb.Components.Modals.ReviewEvent
 
   @impl true
   def render(assigns) do

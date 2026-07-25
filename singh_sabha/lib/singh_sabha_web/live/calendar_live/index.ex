@@ -13,7 +13,7 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
 
   alias SinghSabhaWeb.Components.Modals.{BookEvent, CreateEvent, EditEvent}
 
-  alias SinghSabhaWeb.CalendarLive.Modals.ViewEvent
+  alias SinghSabhaWeb.Components.Modals.ViewEvent
 
   import SinghSabhaWeb.CalendarLive.Views.{
     Day,
