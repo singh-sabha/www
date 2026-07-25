@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/singh-sabha/www/compare/v2.0.1...v2.0.2) (2026-07-25)
+
+
+### Bug Fixes
+
+* spacing in notifications ([324622d](https://github.com/singh-sabha/www/commit/324622d157f8c3c11c31aaa469d8986eb8c220e1))
+
 ## [2.0.1](https://github.com/singh-sabha/www/compare/v2.0.0...v2.0.1) (2026-07-19)
 
 
