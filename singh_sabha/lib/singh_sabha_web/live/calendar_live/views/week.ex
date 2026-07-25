@@ -2,17 +2,16 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
-  import SinghSabhaWeb.CalendarLive.Components
-
-  alias SinghSabhaWeb.Helpers.User
-
   alias SinghSabhaWeb.Helpers.{
     Event,
     Timezone,
     EventType,
     Path,
-    Colour
+    Colour,
+    User
   }
+
+  alias SinghSabhaWeb.Components.Timeline
 
   attr :origin_path, :map, required: true
   attr :current_date, :any, required: true
@@ -101,7 +100,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Week do
               <% end %>
             </div>
 
-            <.timeline current_time={@current_time} hours={@hours} />
+            <Timeline.timeline current_time={@current_time} hours={@hours} />
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.CalendarLive.Components do
+defmodule SinghSabhaWeb.Components.Timeline do
   use Phoenix.Component
 
   alias SinghSabhaWeb.Helpers.Timezone
