@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.NotFoundLive do
+defmodule SinghSabhaWeb.NotFoundLive.Index do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabhaWeb.Helpers.Colour

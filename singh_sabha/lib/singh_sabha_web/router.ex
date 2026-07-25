@@ -125,7 +125,7 @@ defmodule SinghSabhaWeb.Router do
         {SinghSabhaWeb.UserAuth, :mount_current_scope},
         {SinghSabhaWeb.Live.Layouts, :empty}
       ] do
-      live "/*path", NotFoundLive, :index
+      live "/*path", NotFoundLive.Index, :index
     end
   end
 end

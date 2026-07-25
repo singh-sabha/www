@@ -1,5 +1,5 @@
 <%= if assigns[:show_navbar] do %>
-  {live_render(@socket, SinghSabhaWeb.NavbarLive,
+  {live_render(@socket, SinghSabhaWeb.NavbarLive.Index,
     id: "navbar",
     session: %{"current_scope" => @current_scope}
   )}

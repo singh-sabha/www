@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.NavbarLive do
+defmodule SinghSabhaWeb.NavbarLive.Index do
   use SinghSabhaWeb, :live_view
 
   alias SinghSabhaWeb.Helpers.User
