@@ -55,7 +55,7 @@
                 />
               </div>
 
-              <button
+              <.button
                 type="button"
                 phx-click="cancel_upload"
                 phx-value-ref={entry.ref}
@@ -63,7 +63,7 @@
                 aria-label="Remove"
               >
                 <.icon name="hero-x-mark" class="size-3" />
-              </button>
+              </.button>
             </div>
           <% end %>
         </div>
@@ -81,7 +81,7 @@
         </span>
       </div>
     <% end %>
-    <button
+    <.button
       type="submit"
       class="btn btn-primary mt-4 w-full"
       disabled={
@@ -89,7 +89,7 @@
       }
     >
       Upload
-    </button>
+    </.button>
   </form>
 
   <div class={["space-y-2", !@processing? && "hidden"]}>

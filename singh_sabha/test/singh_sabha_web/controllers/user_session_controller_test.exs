@@ -104,7 +104,7 @@ defmodule SinghSabhaWeb.UserSessionControllerTest do
 
       assert get_session(conn, :user_token)
       assert redirected_to(conn) == ~p"/"
-      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User confirmed successfully."
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User confirmed successfully!"
 
       assert Accounts.get_user!(user.id).confirmed_at
 

@@ -8,13 +8,13 @@ defmodule SinghSabhaWeb.GalleryLive.Modals.ViewImage do
   def render(assigns) do
     ~H"""
     <div class="modal-box max-w-4xl">
-      <button
+      <.button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
         phx-click={JS.patch(~p"/gallery")}
       >
         <.icon name="hero-x-mark" class="size-4" />
-      </button>
+      </.button>
 
       <h3 class="font-bold text-lg">Construction and Growth</h3>
       <p class="text-sm text-base-content/70 tabular-nums">
@@ -33,4 +33,3 @@ defmodule SinghSabhaWeb.GalleryLive.Modals.ViewImage do
     {:ok, assign(socket, assigns)}
   end
 end
-

@@ -11,13 +11,13 @@ defmodule SinghSabhaWeb.UsersLive.Modals.ReviewEvent do
   def render(assigns) do
     ~H"""
     <div class="modal-box max-w-xl">
-      <button
+      <.button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
         phx-click={JS.patch(~p"/users/notifications")}
       >
         <.icon name="hero-x-mark" class="size-4" />
-      </button>
+      </.button>
 
       <h3 class="font-bold text-lg">{@selected_event.occasion}</h3>
 

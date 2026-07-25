@@ -23,7 +23,6 @@ defmodule SinghSabhaWeb.Router do
     live_session :full_width,
       on_mount: [
         {SinghSabhaWeb.UserAuth, :mount_current_scope},
-        {SinghSabhaWeb.Hooks.PresenceHook, :default},
         {SinghSabhaWeb.Live.Layouts, :full_width}
       ] do
       live "/", HomeLive.Index, :index
@@ -48,7 +47,6 @@ defmodule SinghSabhaWeb.Router do
     live_session :require_privileged_user,
       on_mount: [
         {SinghSabhaWeb.UserAuth, :mount_current_scope},
-        {SinghSabhaWeb.Hooks.PresenceHook, :default},
         {SinghSabhaWeb.UserAuth, :require_privileged_user},
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
@@ -90,7 +88,6 @@ defmodule SinghSabhaWeb.Router do
     live_session :require_authenticated_user,
       on_mount: [
         {SinghSabhaWeb.UserAuth, :require_authenticated},
-        {SinghSabhaWeb.Hooks.PresenceHook, :default},
         {SinghSabhaWeb.Live.Layouts, :default}
       ] do
       live "/users/settings", UserLive.Settings, :edit

@@ -99,7 +99,10 @@ defmodule SinghSabhaWeb.CalendarLive.Index do
       {:ok, _} ->
         Phoenix.PubSub.broadcast(SinghSabha.PubSub, "events", {:event_deleted, event})
 
-        {:noreply, push_patch(socket, to: Path.calendar(socket.assigns.origin_path))}
+        {:noreply,
+         socket
+         |> put_flash(:success, "Event deleted successfully!")
+         |> push_patch(to: Path.calendar(socket.assigns.origin_path))}
 
       {:error, _} ->
         {:noreply,

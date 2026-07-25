@@ -17,13 +17,13 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
   def render(assigns) do
     ~H"""
     <div class="modal-box">
-      <button
+      <.button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
         phx-click={JS.patch(Path.calendar(@origin_path))}
       >
         <.icon name="hero-x-mark" class="size-4" />
-      </button>
+      </.button>
 
       <h3 class="font-bold text-lg">{@selected_event.occasion}</h3>
 
@@ -91,21 +91,21 @@ defmodule SinghSabhaWeb.CalendarLive.Modals.ViewEvent do
           <div class="modal-action">
             <%= if @selected_event.is_deposit_paid do %>
               <.link patch={Path.calendar(@origin_path, action: {:edit, @selected_event.id})}>
-                <button
+                <.button
                   type="button"
                   class="btn"
                 >
                   Edit
-                </button>
+                </.button>
               </.link>
-              <button
+              <.button
                 type="button"
                 class="btn btn-error"
                 phx-click="delete_event"
                 phx-value-event-id={@selected_event.id}
               >
                 Delete
-              </button>
+              </.button>
             <% end %>
           </div>
         <% end %>

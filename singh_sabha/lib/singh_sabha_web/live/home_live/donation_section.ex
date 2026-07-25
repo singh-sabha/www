@@ -36,13 +36,13 @@ defmodule SinghSabhaWeb.HomeLive.DonationsSection do
               value={@etransfer_email}
               readonly
             />
-            <button
+            <.button
               class="btn btn-square btn-sm"
               phx-click={JS.dispatch("phx:copy", detail: %{text: @etransfer_email})}
             >
               <.icon name="hero-clipboard" class="size-4 [[data-copied]_&]:hidden" />
               <.icon name="hero-check" class="size-4 hidden [[data-copied]_&]:block" />
-            </button>
+            </.button>
           </div>
         </div>
 

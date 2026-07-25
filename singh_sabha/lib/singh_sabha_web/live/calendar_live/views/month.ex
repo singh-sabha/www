@@ -92,7 +92,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
       !@saturday? && "border-r"
     ]}>
       <.link patch={Path.calendar(%{@origin_path | view: "day", date: @date})}>
-        <button class={[
+        <.button class={[
           "flex w-6 h-6 translate-x-1 items-center justify-center rounded-full text-xs font-semibold shrink-0 mb-1 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-base-content/10 cursor-pointer",
           !@today? &&
             "hover:bg-base-content/10",
@@ -100,7 +100,7 @@ defmodule SinghSabhaWeb.CalendarLive.Views.Month do
           @today? && "bg-primary text-primary-content"
         ]}>
           {@date.day}
-        </button>
+        </.button>
       </.link>
 
       <div class={[

@@ -179,7 +179,7 @@ defmodule SinghSabhaWeb.UserLive.SettingsTest do
       assert {:live_redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/settings"
       assert %{"info" => message} = flash
-      assert message == "Email changed successfully."
+      assert message == "Email changed successfully!"
       refute Accounts.get_user_by_email(user.email)
       assert Accounts.get_user_by_email(email)
 

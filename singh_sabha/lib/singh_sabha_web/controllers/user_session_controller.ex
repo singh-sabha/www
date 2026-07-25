@@ -5,7 +5,7 @@ defmodule SinghSabhaWeb.UserSessionController do
   alias SinghSabhaWeb.UserAuth
 
   def create(conn, %{"_action" => "confirmed"} = params) do
-    create(conn, params, "User confirmed successfully.")
+    create(conn, params, "User confirmed successfully!")
   end
 
   def create(conn, params) do
@@ -61,7 +61,7 @@ defmodule SinghSabhaWeb.UserSessionController do
 
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, "Logged out successfully.")
+    |> put_flash(:info, "Logged out successfully!")
     |> UserAuth.log_out_user()
   end
 end

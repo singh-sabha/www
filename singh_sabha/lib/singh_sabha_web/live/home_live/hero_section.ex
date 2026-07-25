@@ -46,13 +46,13 @@ defmodule SinghSabhaWeb.HomeLive.HeroSection do
             </.link>
           </div>
         </div>
-        <button
+        <.button
           phx-click={JS.dispatch("scroll-to-content", detail: %{target: "#upcoming-events"})}
           class="absolute bottom-8 left-1/2 -translate-x-1/2 text-primary-content hover:text-primary-content/80 transition-colors focus:outline-none cursor-pointer animate-bounce"
           aria-label="Scroll to content"
         >
           <.icon name="hero-chevron-down" class="w-8 h-8" />
-        </button>
+        </.button>
       </div>
     </section>
     """

@@ -26,8 +26,6 @@ defmodule SinghSabhaWeb.Hooks.PresenceHook do
     peer_data = get_connect_info(socket, :peer_data)
     x_headers = get_connect_info(socket, :x_headers) || []
 
-    Logger.info("fetch_ip peer_data=#{inspect(peer_data)} x_headers=#{inspect(x_headers)}")
-
     case List.keyfind(x_headers, "x-forwarded-for", 0) do
       {_, ip} -> ip |> String.split(",") |> List.first() |> String.trim()
       nil when not is_nil(peer_data) -> peer_data.address |> Tuple.to_list() |> Enum.join(".")

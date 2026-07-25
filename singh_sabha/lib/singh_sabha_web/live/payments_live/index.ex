@@ -151,13 +151,13 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
             value={@event.id}
             readonly
           />
-          <button
+          <.button
             class="btn btn-square btn-sm"
             phx-click={JS.dispatch("phx:copy", detail: %{text: to_string(@event.id)})}
           >
             <.icon name="hero-clipboard" class="size-4 [[data-copied]_&]:hidden" />
             <.icon name="hero-check" class="size-4 hidden [[data-copied]_&]:block" />
-          </button>
+          </.button>
         </div>
         <p class="text-sm text-base-content/60">
           For any questions or changes, reach us at
@@ -188,12 +188,12 @@ defmodule SinghSabhaWeb.PaymentsLive.Index do
       </div>
 
       <div class="flex gap-2">
-        <button type="button" class="btn btn-error" phx-click="confirm_cancel">
+        <.button class="btn btn-error" phx-click="confirm_cancel">
           <.icon name="hero-trash" class="size-4" /> Cancel Booking
-        </button>
-        <button type="button" class="btn" phx-click="keep_booking">
+        </.button>
+        <.button class="btn" phx-click="keep_booking">
           Keep Booking
-        </button>
+        </.button>
       </div>
     </div>
     """

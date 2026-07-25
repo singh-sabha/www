@@ -59,7 +59,7 @@ defmodule SinghSabhaWeb.AssistantLive.Edit do
       {:ok, _deleted} ->
         {:noreply,
          socket
-         |> put_flash(:success, "Draft deleted.")
+         |> put_flash(:success, "Draft deleted successfully!")
          |> push_navigate(to: ~p"/assistant")}
 
       {:error, _changeset} ->

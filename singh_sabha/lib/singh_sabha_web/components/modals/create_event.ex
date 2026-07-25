@@ -14,13 +14,13 @@ defmodule SinghSabhaWeb.Components.Modals.CreateEvent do
   def render(assigns) do
     ~H"""
     <div class="modal-box max-w-4xl">
-      <button
+      <.button
         type="button"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
         phx-click={JS.patch(@origin_path)}
       >
         <.icon name="hero-x-mark" class="size-4" />
-      </button>
+      </.button>
 
       <h3 class="font-bold text-lg">
         Create Event
