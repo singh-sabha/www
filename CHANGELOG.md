@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.3](https://github.com/singh-sabha/www/compare/v2.0.2...v2.0.3) (2026-07-25)
+
+
+### Bug Fixes
+
+* wrong import ([f735f09](https://github.com/singh-sabha/www/commit/f735f09dcdc5fab7728a8f61179e1a03769cb697))
+
 ## [2.0.2](https://github.com/singh-sabha/www/compare/v2.0.1...v2.0.2) (2026-07-25)
 
 
