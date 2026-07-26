@@ -24,12 +24,17 @@ defmodule SinghSabha.LiveStreamPoller do
   end
 
   def handle_info(:refresh, state) do
-    case LiveStream.fetch_live_stream() do
-      {:ok, result} ->
-        :ets.insert(@table, {:live_stream, result})
+    if Mix.env() == :prod do
+      case LiveStream.fetch_live_stream() do
+        {:ok, result} ->
+          :ets.insert(@table, {:live_stream, result})
+          Logger.info("Youtube fetch successful!")
 
-      {:error, reason} ->
-        Logger.warning("YouTube fetch failed: #{inspect(reason)}")
+        {:error, reason} ->
+          Logger.warning("YouTube fetch failed: #{inspect(reason)}")
+      end
+    else
+      Logger.info("Skipping YouTube fetch due to runtime environment")
     end
 
     Process.send_after(self(), :refresh, @interval)
