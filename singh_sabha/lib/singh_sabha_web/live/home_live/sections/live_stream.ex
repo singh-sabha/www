@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.HomeLive.LiveStreamSection do
+defmodule SinghSabhaWeb.HomeLive.Sections.LiveStream do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 

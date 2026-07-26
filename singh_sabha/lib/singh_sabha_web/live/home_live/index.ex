@@ -4,29 +4,29 @@ defmodule SinghSabhaWeb.HomeLive.Index do
   alias SinghSabha.Events
   alias SinghSabhaWeb.Helpers.Timezone
 
-  alias SinghSabhaWeb.HomeLive.{
-    UpcomingEventsSection,
-    HeroSection,
-    ServicesSection,
-    LiveStreamSection,
-    DonationsSection
+  alias SinghSabhaWeb.HomeLive.Sections.{
+    UpcomingEvents,
+    Hero,
+    Services,
+    LiveStream,
+    Donations
   }
 
   def render(assigns) do
     ~H"""
-    <HeroSection.section />
+    <Hero.section />
 
     <.section_wrapper>
-      <ServicesSection.section event_types={@event_types} current_scope={@current_scope} />
+      <Services.section event_types={@event_types} current_scope={@current_scope} />
     </.section_wrapper>
     <.section_wrapper>
-      <UpcomingEventsSection.section upcoming={@upcoming} current_time={@current_time} />
+      <UpcomingEvents.section upcoming={@upcoming} current_time={@current_time} />
     </.section_wrapper>
     <.section_wrapper>
-      <LiveStreamSection.section live_stream={@live_stream} />
+      <LiveStream.section live_stream={@live_stream} />
     </.section_wrapper>
     <.section_wrapper>
-      <DonationsSection.section />
+      <Donations.section />
     </.section_wrapper>
     """
   end

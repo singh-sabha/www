@@ -2,9 +2,11 @@ defmodule SinghSabha.LiveStreamPoller do
   use GenServer
   require Logger
 
+  alias SinghSabhaWeb.HomeLive.Sections.LiveStream
+
   # 10 minutes
   @interval 10 * 60 * 1000
-  @table :livestream_cache
+  @table :live_stream_cache
 
   def start_link(_), do: GenServer.start_link(__MODULE__, [], name: __MODULE__)
 
@@ -22,7 +24,7 @@ defmodule SinghSabha.LiveStreamPoller do
   end
 
   def handle_info(:refresh, state) do
-    case SinghSabhaWeb.HomeLive.LiveStreamSection.fetch_live_stream() do
+    case LiveStream.fetch_live_stream() do
       {:ok, result} ->
         :ets.insert(@table, {:live_stream, result})
 

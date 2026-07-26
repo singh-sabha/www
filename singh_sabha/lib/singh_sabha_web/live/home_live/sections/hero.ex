@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.HomeLive.HeroSection do
+defmodule SinghSabhaWeb.HomeLive.Sections.Hero do
   use Phoenix.Component
   use SinghSabhaWeb, :verified_routes
 
