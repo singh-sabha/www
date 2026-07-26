@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.HomeLive.ServicesSection do
+defmodule SinghSabhaWeb.HomeLive.Sections.Services do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 

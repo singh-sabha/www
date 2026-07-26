@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.HomeLive.DonationsSection do
+defmodule SinghSabhaWeb.HomeLive.Sections.Donations do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 

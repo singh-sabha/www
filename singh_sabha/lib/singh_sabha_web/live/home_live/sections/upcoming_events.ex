@@ -1,4 +1,4 @@
-defmodule SinghSabhaWeb.HomeLive.UpcomingEventsSection do
+defmodule SinghSabhaWeb.HomeLive.Sections.UpcomingEvents do
   use Phoenix.Component
   use SinghSabhaWeb, :html
 
