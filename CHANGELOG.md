@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.4](https://github.com/singh-sabha/www/compare/v2.0.3...v2.0.4) (2026-07-26)
+
+
+### Bug Fixes
+
+* only make request to YouTube when in a production environment ([d7b9636](https://github.com/singh-sabha/www/commit/d7b96366bf73131f070c55f9a8aa798aaea1ebde))
+
 ## [2.0.3](https://github.com/singh-sabha/www/compare/v2.0.2...v2.0.3) (2026-07-25)
 
 
