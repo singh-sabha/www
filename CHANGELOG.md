@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.4](https://github.com/singh-sabha/www/compare/v2.0.3...v2.0.4) (2026-07-28)
+
+
+### Bug Fixes
+
+* move home page sections into their own folder ([4af98d4](https://github.com/singh-sabha/www/commit/4af98d4946672091bd10d1f59299b237706a8874))
+
 ## [2.0.4](https://github.com/singh-sabha/www/compare/v2.0.3...v2.0.4) (2026-07-26)
 
 
