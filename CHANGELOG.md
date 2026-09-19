@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/singh-sabha/www/compare/v3.0.0...v3.0.1) (2026-09-19)
+
+
+### Bug Fixes
+
+* issue where upcoming events include those in the past ([88346c5](https://github.com/singh-sabha/www/commit/88346c530edb8fb8d13e4e642bd57b3cc626ec82))
+
 ## [3.0.0](https://github.com/singh-sabha/www/compare/v2.0.4...v3.0.0) (2026-07-28)
 
 
