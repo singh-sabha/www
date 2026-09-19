@@ -6,6 +6,8 @@ defmodule SinghSabha.Events do
   import Ecto.Query, warn: false
   alias SinghSabha.Repo
 
+  alias SinghSabhaWeb.Helpers.Timezone
+
   alias SinghSabha.Events.{Event, EventType}
 
   @doc """
@@ -44,8 +46,16 @@ defmodule SinghSabha.Events do
   Returns the list of public events for the given week.
   """
   def list_events_between_dates(:public, start_date, end_date) do
-    start_dt = DateTime.new!(start_date, ~T[00:00:00], "Etc/UTC")
-    end_dt = DateTime.new!(end_date, ~T[23:59:59], "Etc/UTC")
+    start_dt =
+      start_date
+      |> DateTime.new!(~T[00:00:00], Timezone.local())
+      |> DateTime.shift_zone!("Etc/UTC")
+
+    end_dt =
+      end_date
+      |> Date.add(1)
+      |> DateTime.new!(~T[00:00:00], Timezone.local())
+      |> DateTime.shift_zone!("Etc/UTC")
 
     from(e in Event,
       where:
